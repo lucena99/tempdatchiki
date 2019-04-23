@@ -1,4 +1,4 @@
-package ru.psv4.mvc;
+package ru.psv4.tempdatchiki.mvc;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;

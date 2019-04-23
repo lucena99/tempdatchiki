@@ -1,4 +1,4 @@
-package ru.psv4.dto;
+package ru.psv4.tempdatchiki.dto;
 
 public class DateRow {
     public String date1;

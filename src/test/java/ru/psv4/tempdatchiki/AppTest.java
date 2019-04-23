@@ -1,4 +1,4 @@
-package ru.psv4;
+package ru.psv4.tempdatchiki;
 
 import static org.junit.Assert.assertTrue;
 

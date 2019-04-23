@@ -20,7 +20,7 @@ RUN mkdir -p /log
 
 CMD [ "java", \
     "-Dlog4j.configurationFile=file:/resources/log4j2.xml", \
-    "-Dserver.port=${PORT}", \
+    "-Dport=${PORT}", \
     "-Xmx1G", \
     "-DlogPath=/log", \
     "-jar", "/app/tempdatchiki.war"]

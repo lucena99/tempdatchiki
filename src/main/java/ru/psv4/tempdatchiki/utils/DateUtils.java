@@ -1,4 +1,4 @@
-package ru.psv4.utils;
+package ru.psv4.tempdatchiki.utils;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

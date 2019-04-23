@@ -1,4 +1,4 @@
-package ru.psv4;
+package ru.psv4.tempdatchiki;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,7 +10,6 @@ import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
-import ru.psv4.beans.FtpStorage;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
@@ -41,10 +40,4 @@ public class TempdatchikiApplication extends SpringBootServletInitializer {
         log.info("now datetime = " + ZonedDateTime.now());
         log.info("server.port = " + env.getProperty("server.port"));
     }
-
-	@Bean
-	public FtpStorage getFtpStorage() {
-		return new FtpStorage();
-	}
-
 }
