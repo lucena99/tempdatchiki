@@ -8,9 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import ru.psv4.tempdatchiki.beans.DeviceService;
 
+import javax.persistence.EntityManager;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
@@ -30,14 +31,9 @@ public class TempdatchikiApplication extends SpringBootServletInitializer {
     }
 
     @Autowired
-	public void outputEnvironment(Environment env) {
-        log.info("ftp.path = " + env.getProperty("ftp.path"));
-        log.info("ftp.host = " + env.getProperty("ftp.host"));
-        log.info("ftp.user = " + env.getProperty("ftp.user"));
-        log.info("ftp.password = " + env.getProperty("ftp.password"));
-        log.info("ftp.port = " + env.getProperty("ftp.port"));
+    public void outputEnvironment(Environment env) {
         log.info("zone info = " + ZoneId.systemDefault());
         log.info("now datetime = " + ZonedDateTime.now());
-        log.info("server.port = " + env.getProperty("server.port"));
+        log.info("port = " + env.getProperty("port"));
     }
 }
