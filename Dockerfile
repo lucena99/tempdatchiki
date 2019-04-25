@@ -1,4 +1,4 @@
-FROM bridg/java8
+FROM 99taxis/mini-java8
 
 USER root
 
@@ -18,7 +18,7 @@ CMD [ "java", \
     "-Dlog4j.configurationFile=file:/resources/log4j2.xml", \
     "-Dport=${PORT}", \
     "-Ddburl=${DATABASE_URL}", \
-    "-Xmx1G", \
+    "-Xmx500m", \
     "-DlogPath=/log", \
     "-jar", "/app/tempdatchiki.war"]
 
