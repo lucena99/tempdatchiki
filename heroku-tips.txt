@@ -3,3 +3,9 @@ sudo heroku container:push web -a tempdatchiki
 sudo heroku container:release web -a tempdatchiki
 
 heroku logs -tail -a tempdatchiki
+
+heroku pg:pull DATABASE_URL td -a tempdatchiki
+
+heroku pg:push td DATABASE_URL -a tempdatchiki
+
+heroku run echo \$JDBC_DATABASE_URL

@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu1604-java8
 
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -26,8 +26,7 @@ RUN apt-get update &&\
 #
     apt-get purge -y --auto-remove libncurses5-dev bzip2 curl gcc g++ make
 
-VOLUME ["/sqlbase"]
+RUN mkdir -p /sqlbase
+COPY db.fdb /sqlbase/
 
 EXPOSE 3050
-
-ENTRYPOINT ["/usr/local/firebird/bin/fbguard"]

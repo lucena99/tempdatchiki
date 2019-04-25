@@ -136,10 +136,16 @@
     <!---->
 
     <!-- https://mvnrepository.com/artifact/org.firebirdsql.jdbc/jaybird-jdk18 -->
-    <dependency>
+    <!--<dependency>
       <groupId>org.firebirdsql.jdbc</groupId>
       <artifactId>jaybird-jdk18</artifactId>
       <version>3.0.5</version>
+    </dependency>-->
+
+    <dependency>
+      <groupId>org.postgresql</groupId>
+      <artifactId>postgresql</artifactId>
+      <version>42.2.1</version>
     </dependency>
 
   </dependencies>
