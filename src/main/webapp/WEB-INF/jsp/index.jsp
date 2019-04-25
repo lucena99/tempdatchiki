@@ -22,11 +22,9 @@
 			<div class="navbar-header">
 				<a class="navbar-brand" href="#">Главная</a>
 			</div>
-			<div id="navbar" class="collapse navbar-collapse">
-				<ul class="nav navbar-nav">
-					<li><a href="#about">About</a></li>
-				</ul>
-			</div>
+			<div class="navbar-header">
+            	<a class="navbar-brand" href="/restapi/test">Rest-api</a>
+            </div>
 		</div>
 	</nav>
 

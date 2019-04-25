@@ -6,7 +6,6 @@ RUN ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime && echo "Europe/Mosc
 
 RUN mkdir -p /app
 COPY target/tempdatchiki.war /app/
-COPY start.sh /app/
 
 RUN mkdir -p /resources
 COPY src/main/resources/log4j2.xml /resources/

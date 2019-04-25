@@ -6,9 +6,9 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("restapi")
-public class ZipArchiveReciever {
+public class RestapiActions {
 
-    private static final Logger log = LogManager.getLogger(ZipArchiveReciever.class);
+    private static final Logger log = LogManager.getLogger(RestapiActions.class);
 
     @RequestMapping(consumes = "application/gzip", method = RequestMethod.POST)
     public void put(@RequestHeader("Gk-Store") String zavod,
@@ -25,8 +25,8 @@ public class ZipArchiveReciever {
         return "Hello, Stas!";
     }
 
-    public static class ZipArchiveRecieverException extends RuntimeException {
-        public ZipArchiveRecieverException(String msg) {
+    public static class RestapiActionsException extends RuntimeException {
+        public RestapiActionsException(String msg) {
             super(msg);
         }
     }

@@ -12,12 +12,11 @@ import java.net.URISyntaxException;
 public class DBConfig {
     @Bean
     public javax.sql.DataSource getDataSource(Environment env) throws URISyntaxException {
-        URI dbUri = new URI(env.getProperty("dburl"));
-
-        String username = dbUri.getUserInfo().split(":")[0];
-        String password = dbUri.getUserInfo().split(":")[1];
-        String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath() + "?sslmode=require";
-
+        URI dburl = new URI(env.getProperty("dburl"));
+        String username = dburl.getUserInfo().split(":")[0];
+        String password = dburl.getUserInfo().split(":")[1];
+        String dbUrl = "jdbc:postgresql://" + dburl.getHost() + ':' +
+                dburl.getPort() + dburl.getPath() + "?sslmode=require";
         DataSourceBuilder b = DataSourceBuilder.create();
         b.driverClassName("org.postgresql.Driver");
         b.url(dbUrl);
