@@ -7,3 +7,5 @@ PGUSER=laba PGPASSWORD=laba heroku pg:pull DATABASE_URL td -a tempdatchiki
 PGUSER=laba PGPASSWORD=laba heroku pg:push td DATABASE_URL -a tempdatchiki
 
 heroku run echo \$DATABASE_URL
+
+heroku pg:reset --confirm tempdatchiki
