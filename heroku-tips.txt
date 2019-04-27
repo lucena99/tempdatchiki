@@ -6,4 +6,6 @@ heroku pg:pull DATABASE_URL td -a tempdatchiki
 
 heroku pg:push td DATABASE_URL -a tempdatchiki
 
-heroku run echo \$JDBC_DATABASE_URL
+heroku run echo \$JDBC_DATABASE_URL\
+
+heroku pg:reset --confirm tempdatchiki
