@@ -52,4 +52,15 @@ ALTER TABLE reg_recipient_controller
               REFERENCES recipient (uid);
 ALTER TABLE reg_recipient_controller
         ADD CONSTRAINT FK_reg_recipient_controller2controller FOREIGN KEY (controller_uid)
-              REFERENCES controller (uid);        
+              REFERENCES controller (uid);
+
+ALTER TABLE reg_recipient_controller ADD COLUMN uid VARCHAR(36);
+
+ALTER TABLE recipient ADD COLUMN created_datetime timestamp;
+ALTER TABLE controller ADD COLUMN created_datetime timestamp;
+ALTER TABLE sensor ADD COLUMN created_datetime timestamp;
+ALTER TABLE reg_recipient_controller ADD COLUMN subscribed_datetime timestamp;
+update recipient set created_datetime = now();
+update controller set created_datetime = now();
+update sensor set created_datetime = now();
+update reg_recipient_controller set subscribed_datetime = now();

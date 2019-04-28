@@ -2,7 +2,7 @@ package ru.psv4.tempdatchiki.mvc;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
-import ru.psv4.tempdatchiki.beans.DeviceService;
+import ru.psv4.tempdatchiki.beans.SensorService;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -11,11 +11,11 @@ import java.util.Map;
 public class IndexPageController {
 
     @Resource
-    private DeviceService deviceService;
+    private SensorService sensorService;
 
     @RequestMapping("/")
     public String index(Map<String, Object> model) {
-        model.put("devices", deviceService.getList());
+        model.put("sensors", sensorService.getList());
         return "index";
     }
 }

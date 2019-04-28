@@ -29,19 +29,20 @@
 	</nav>
 
 	<div class="container">
-
 		<div class="starter-template">
 			<h1>Температурные датчики</h1>
 		</div>
 
-		<div class="row text-center"><strong> Доступные устройства</strong></div>
-            <c:forEach var="d" items="${devices}">
+		<div class="row text-center"><strong> Доступные датчики</strong></div>
+            <c:forEach var="s" items="${sensors}">
                 <div class="row" style="border:1px solid green;padding:10px">
-                    <div class="col-md-4 text-center">${d.uid}</div>
-                    <div class="col-md-4 text-center" >${d.name}</div>
+                    <div class="col-md-4 text-center">${s.uid}</div>
+                    <div class="col-md-4 text-center" >${s.name}</div>
+                    <div class="col-md-4 text-center" >${s.createdDatetime}</div>
                 </div>
             </c:forEach>
 	    </div>
+	</div>
 </body>
 
 </html>
