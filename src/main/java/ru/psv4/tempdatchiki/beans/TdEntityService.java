@@ -5,10 +5,10 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.psv4.tempdatchiki.model.TdEntity;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityNotFoundException;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 
-public class TdEntityService<E extends TdEntity> {
+public abstract class TdEntityService<E extends TdEntity> {
 
     protected Class<E> eClass;
 
@@ -25,7 +25,7 @@ public class TdEntityService<E extends TdEntity> {
             return em.createQuery("SELECT r FROM " + eClass.getName() + " r WHERE r.uid = :uid", eClass)
                     .setParameter("uid", uid)
                     .getSingleResult();
-        } catch (EntityNotFoundException e) {
+        } catch (NoResultException e) {
             throw new NotFoundException();
         }
     }

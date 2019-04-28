@@ -12,9 +12,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 @Service
-public class RecipientControllerSubscribeService extends TdEntityService<RegRecipientController> {
+public class SubscribeService extends TdEntityService<RegRecipientController> {
 
-    public RecipientControllerSubscribeService() { super(RegRecipientController.class); }
+    public SubscribeService() { super(RegRecipientController.class); }
 
     @Transactional(propagation = Propagation.REQUIRED)
     public void subscribe(Recipient recipient, Controller controller, boolean notifyOver, boolean notifyError) {

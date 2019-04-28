@@ -10,17 +10,22 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(NotFoundRestException.class)
-    protected ResponseEntity<SimpleException> handleThereIsNoSuchElementException(NotFoundRestException e) {
-        return new ResponseEntity<>(new SimpleException("There is no such element"), HttpStatus.NOT_FOUND);
+    protected ResponseEntity<RestException> handleThereIsNoSuchElementException(NotFoundRestException e) {
+        return new ResponseEntity<>(new RestException(e.getMessage()), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(SystemRestException.class)
-    protected ResponseEntity<SimpleException> handleSystemException(SystemRestException e) {
-        return new ResponseEntity<>(new SimpleException("System error"), HttpStatus.INTERNAL_SERVER_ERROR);
+    protected ResponseEntity<RestException> handleSystemException(SystemRestException e) {
+        return new ResponseEntity<>(new RestException(e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private static class SimpleException {
+    @ExceptionHandler(ConflictRestException.class)
+    protected ResponseEntity<RestException> handleConflictException(ConflictRestException e) {
+        return new ResponseEntity<>(new RestException(e.getMessage()), HttpStatus.CONFLICT);
+    }
+
+    private static class RestException {
         private String message;
-        public SimpleException(String message) {this.message = message;}
+        public RestException(String message) {this.message = message;}
     }
 }

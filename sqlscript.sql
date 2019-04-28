@@ -64,3 +64,7 @@ update recipient set created_datetime = now();
 update controller set created_datetime = now();
 update sensor set created_datetime = now();
 update reg_recipient_controller set subscribed_datetime = now();
+
+CREATE UNIQUE INDEX idx_unique_recipient_name on recipient (LOWER(name));
+CREATE UNIQUE INDEX idx_unique_controller_name on controller (LOWER(name));
+CREATE UNIQUE INDEX idx_unique_sensor_name on sensor (LOWER(name));
