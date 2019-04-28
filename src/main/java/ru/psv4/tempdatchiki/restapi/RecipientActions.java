@@ -19,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("restapi")
-@Api(tags = {"Recipients Resource"})
+@Api(tags = {"Recipients Resource"}, description = "Действия с получателями")
 @SwaggerDefinition(tags = {
         @Tag(name = "Recipients Resource", description = "Действия с получателями")
 })
