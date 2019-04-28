@@ -1,5 +1,9 @@
-sudo heroku container:push web -a tempdatchiki && \
-sudo heroku container:release web -a tempdatchiki && \
+heroku container:login
+
+heroku container:push web -a tempdatchiki
+
+heroku container:release web -a tempdatchiki
+
 heroku logs -tail -a tempdatchiki
 
 PGUSER=laba PGPASSWORD=laba heroku pg:pull DATABASE_URL td -a tempdatchiki
@@ -8,4 +12,4 @@ PGUSER=laba PGPASSWORD=laba heroku pg:push td DATABASE_URL -a tempdatchiki
 
 heroku run echo \$DATABASE_URL
 
-heroku pg:reset --confirm tempdatchiki
+heroku pg:reset --confirm tempdatchiki -a tempdatchiki
