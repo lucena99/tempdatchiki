@@ -38,17 +38,22 @@ public class WebConfig extends WebMvcConfigurationSupport {
 
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
+        int cachePeriod = 604800;
         registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
+                .addResourceLocations("classpath:/META-INF/resources/")
+                .setCachePeriod(cachePeriod);
 
         registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+                .addResourceLocations("classpath:/META-INF/resources/webjars/")
+                .setCachePeriod(cachePeriod);
 
         registry.addResourceHandler("/css/**")
-                .addResourceLocations("/resources/css/");
+                .addResourceLocations("/resources/css/")
+                .setCachePeriod(cachePeriod);
 
         registry.addResourceHandler("/js/**")
-                .addResourceLocations("/resources/js/");
+                .addResourceLocations("/resources/js/")
+                .setCachePeriod(cachePeriod);
     }
 
     @Bean

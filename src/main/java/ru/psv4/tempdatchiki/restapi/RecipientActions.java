@@ -9,12 +9,13 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 import ru.psv4.tempdatchiki.beans.NotFoundException;
 import ru.psv4.tempdatchiki.beans.RecipientService;
+import ru.psv4.tempdatchiki.dto.DtoUtils;
 import ru.psv4.tempdatchiki.dto.RecipientCreateDto;
 import ru.psv4.tempdatchiki.dto.RecipientDto;
-import ru.psv4.tempdatchiki.dto.DtoUtils;
 import ru.psv4.tempdatchiki.model.Recipient;
 
 import javax.annotation.Resource;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -33,7 +34,7 @@ public class RecipientActions {
     @ApiOperation(value = "Получить всех получателей, отсортированных по дате создания", response = Iterable.class)
     @RequestMapping(path = "/recipients", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody List<RecipientDto> getRecipientsAll() {
-        return DtoUtils.convert(Recipient.class, RecipientDto.class, recipientService.getList());
+        return DtoUtils.convert(RecipientDto.class, recipientService.getList());
     }
 
     @ApiOperation(value = "Создать нового получателя", response = RecipientDto.class)
@@ -46,9 +47,11 @@ public class RecipientActions {
         }
         try {
             Recipient r = new Recipient();
+            r.setUid(dto.getUid());
             r.setName(dto.getName());
+            r.setCreatedDatetime(LocalDateTime.now());
             r = recipientService.save(r);
-            return DtoUtils.convert(Recipient.class, RecipientDto.class, r);
+            return DtoUtils.convert(RecipientDto.class, r);
         } catch (Exception e) {
             throw new SystemRestException(e.getMessage());
         }
@@ -59,7 +62,7 @@ public class RecipientActions {
     public @ResponseBody RecipientDto info(@PathVariable("uid") String uid) {
         try {
             Recipient r = recipientService.getByUid(uid);
-            return DtoUtils.convert(Recipient.class, RecipientDto.class, r);
+            return DtoUtils.convert(RecipientDto.class, r);
         } catch (NotFoundException e) {
             throw new NotFoundRestException(String.format("Получатель не найден по uid=%s", uid));
         }

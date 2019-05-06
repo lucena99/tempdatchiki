@@ -5,13 +5,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.annotations.ApiModelProperty;
 
-@JsonPropertyOrder({"uid", "name"})
+@JsonPropertyOrder({"name"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RecipientCreateDto {
-    @ApiModelProperty(required = true)
-    @JsonProperty("uid")
-    private String uid;
-
+public class ControllerCreateDto {
     @ApiModelProperty(required = true)
     @JsonProperty("name")
     private String name;
@@ -23,8 +19,4 @@ public class RecipientCreateDto {
     public void setName(String name) {
         this.name = name;
     }
-
-    public String getUid() { return uid; }
-
-    public void setUid(String uid) { this.uid = uid; }
 }

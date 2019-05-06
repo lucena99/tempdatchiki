@@ -13,11 +13,14 @@ import java.time.format.DateTimeFormatter;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class ReferenceDto {
     @JsonProperty("uid")
+    @EntityField("uid")
     private String uid;
 
     @JsonProperty("name")
+    @EntityField("name")
     private String name;
 
+    @EntityField("createdDatetime")
     @ApiModelProperty(notes = "Дата-время создания")
     @JsonProperty("created_datetime")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")

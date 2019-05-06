@@ -27,5 +27,10 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     private static class RestException {
         private String message;
         public RestException(String message) {this.message = message;}
+
+        @Override
+        public String toString() {
+            return message;
+        }
     }
 }
