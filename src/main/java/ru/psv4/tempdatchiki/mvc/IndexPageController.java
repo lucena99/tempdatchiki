@@ -10,7 +10,7 @@ import ru.psv4.tempdatchiki.beans.SubscribtionService;
 import javax.annotation.Resource;
 import java.util.Map;
 
-@Controller
+//@Controller
 public class IndexPageController {
 
     @Resource

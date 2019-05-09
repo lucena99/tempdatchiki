@@ -14,6 +14,8 @@ RUN mkdir -p /log
 
 WORKDIR /app
 
+EXPOSE 8181
+
 CMD [ "java", \
     "-Dlog4j.configurationFile=file:/resources/log4j2.xml", \
     "-Dport=${PORT}", \
@@ -22,4 +24,4 @@ CMD [ "java", \
     "-DlogPath=/log", \
     "-jar", "/app/tempdatchiki.war"]
 
-#sudo docker run --net="host" -e PORT=8181 -e JDBC_DATABASE_URL="jdbc:postgresql://localhost:5432/td" -e JDBC_DATABASE_USERNAME=laba -e JDBC_DATABASE_PASSWORD=laba td
+#sudo docker run --net="host" -e PORT=8181 -e DATABASE_URL="postgres://laba:laba@localhost:5432/td" td

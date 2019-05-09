@@ -76,4 +76,37 @@ ALTER TABLE subscription DROP COLUMN notify_error;
 ALTER TABLE subscription ADD COLUMN notify_over boolean;
 ALTER TABLE subscription ADD COLUMN notify_error boolean;
 
-select * from subscription
+CREATE TABLE "user"
+(
+    uid VARCHAR(36) NOT NULL,
+    name VARCHAR(256) NOT NULL,        
+    login VARCHAR(256) NOT NULL,        
+    password VARCHAR(256) NOT NULL,        
+    PRIMARY KEY (uid)
+);
+insert into "user"(uid, name, login, password) VALUES(
+uuid_in(md5(random()::text || clock_timestamp()::text)::cstring),
+'admin',
+'admin',
+'$2y$12$rj5.GYGUAdq799uTPvJYPu.j9jPJJu.1RSPw7H5zvY/VUmK6t5ZwW');
+
+CREATE UNIQUE INDEX idx_unique_user_name on "user" (LOWER(name));
+CREATE UNIQUE INDEX idx_unique_user_login on "user" (LOWER(login));
+ALTER TABLE "user" ADD COLUMN role VARCHAR(256);
+update "user" set password = '$2a$10$pqvxD0ncirSx.KuEpx9XQ.X0cJaOkJS5Vx.Z6l8U4o42iPeGTiHg.';
+ALTER TABLE "user" ALTER COLUMN role SET NOT NULL;
+ALTER TABLE "user" ADD COLUMN created_datetime timestamp;
+
+select * from "user";
+
+insert into "user"(uid, name, login, password, role, created_datetime) VALUES(
+uuid_in(md5(random()::text || clock_timestamp()::text)::cstring),
+'stas',
+'stas',
+'$2a$10$VdDKBq8ZjezYN.tXYADrqui/wil9JEK5ZPQ3EmEnTAocpmX7TN8Km',
+'recipient',
+now());
+
+select * from "user";
+
+update "user" set created_datetime = now() where name = 'admin';
