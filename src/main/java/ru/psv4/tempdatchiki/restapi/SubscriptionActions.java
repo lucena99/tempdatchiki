@@ -10,19 +10,17 @@ import org.springframework.web.bind.annotation.*;
 import ru.psv4.tempdatchiki.beans.ControllerService;
 import ru.psv4.tempdatchiki.beans.NotFoundException;
 import ru.psv4.tempdatchiki.beans.RecipientService;
-import ru.psv4.tempdatchiki.beans.SensorService;
+import ru.psv4.tempdatchiki.beans.SubscribtionService;
 import ru.psv4.tempdatchiki.dto.DtoUtils;
-import ru.psv4.tempdatchiki.dto.SensorCreateDto;
-import ru.psv4.tempdatchiki.dto.SensorDto;
+import ru.psv4.tempdatchiki.dto.SubscriptionCreateDto;
 import ru.psv4.tempdatchiki.dto.SubscriptionDto;
 import ru.psv4.tempdatchiki.model.Controller;
 import ru.psv4.tempdatchiki.model.Recipient;
-import ru.psv4.tempdatchiki.model.Sensor;
-import ru.psv4.tempdatchiki.utils.UIDUtils;
+import ru.psv4.tempdatchiki.model.Subscription;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("restapi")
@@ -38,10 +36,18 @@ public class SubscriptionActions {
     private RecipientService recipientService;
     @Resource
     private ControllerService controllerService;
+    @Resource
+    private SubscribtionService subscribtionService;
 
-    @ApiOperation(value = "Подписать слушателя к контроллеру", response = SensorDto.class)
-    @RequestMapping(path = "/sensors", method = RequestMethod.POST, produces = "application/json")
-    public void createSubscription(@RequestBody SubscriptionDto dto) {
+    @ApiOperation(value = "Получить все подписки, отсортированных по дате создания", response = Iterable.class)
+    @RequestMapping(path = "/subcriptions", method = RequestMethod.GET, produces = "application/json")
+    public @ResponseBody List<SubscriptionDto> getSubscriptionsAll() {
+        return DtoUtils.convert(SubscriptionDto.class, subscribtionService.getList());
+    }
+
+    @ApiOperation(value = "Подписать слушателя к контроллеру", response = SubscriptionDto.class)
+    @RequestMapping(path = "/subcriptions", method = RequestMethod.POST, produces = "application/json")
+    public @ResponseBody SubscriptionDto createSubscription(@RequestBody SubscriptionCreateDto dto) {
         String controllerUid = dto.getControllerUid();
         Controller c;
         try {
@@ -56,42 +62,27 @@ public class SubscriptionActions {
         } catch (NotFoundException e) {
             throw new ConflictRestException(String.format("Слушатель с uid %s не найден", recipientUid));
         }
-        List<Sub> existedList = sensorService.getByNameIgnoreCase(name, c);
-        if (existedList.size() > 0) {
-            throw new ConflictRestException(String.format("Уже существует датчик " +
-                    "с названием %s для контроллера %s", name, c.getName()));
+        Optional<Subscription> s = subscribtionService.get(r, c);
+        if (s.isPresent()) {
+            throw new ConflictRestException(String.format("Уже есть подписка " +
+                    "для слушателя %s на контроллер %s", r.getName(), c.getName()));
         }
+
         try {
-            Sensor s = new Sensor();
-            s.setUid(UIDUtils.generate());
-            s.setName(dto.getName());
-            s.setCreatedDatetime(LocalDateTime.now());
-            s.setController(c);
-            s = sensorService.save(s);
-            return DtoUtils.convert(SensorDto.class, s);
+            return DtoUtils.convert(SubscriptionDto.class, subscribtionService.create(r, c, dto.isNotifyOver(), dto.isNotifyError()));
         } catch (Exception e) {
+            log.error(e);
             throw new SystemRestException(e.getMessage());
         }
     }
 
-    @ApiOperation(value = "Получить датчик по uid", response = SensorDto.class)
-    @RequestMapping(path = "/sensors/{uid}", method = RequestMethod.GET, produces = "application/json")
-    public @ResponseBody SensorDto info(@PathVariable("uid") String uid) {
-        try {
-            Sensor s = sensorService.getByUid(uid);
-            return DtoUtils.convert(SensorDto.class, s);
-        } catch (NotFoundException e) {
-            throw new NotFoundRestException(String.format("Датчик не найден по uid=%s", uid));
-        }
-    }
-
-    @ApiOperation(value = "Удалить датчик по uid")
-    @RequestMapping(path = "/sensors/{uid}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Удалить подписку по uid")
+    @RequestMapping(path = "/subcriptions/{uid}", method = RequestMethod.DELETE)
     public void delete(@PathVariable("uid") String uid) {
         try {
-            sensorService.deleteByUid(uid);
+            subscribtionService.deleteByUid(uid);
         } catch (NotFoundException e) {
-            throw new NotFoundRestException(String.format("По uid=%s датчик не найден", uid));
+            throw new NotFoundRestException(String.format("По uid=%s подписка не найдена", uid));
         } catch (Exception e) {
             throw new SystemRestException(e.getMessage());
         }

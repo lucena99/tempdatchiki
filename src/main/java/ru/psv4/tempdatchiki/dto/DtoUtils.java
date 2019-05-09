@@ -9,7 +9,7 @@ import java.util.List;
 
 public class DtoUtils {
 
-    public static <R extends Reference, D extends ReferenceDto> List<D> convert(Class<D> dClass, List<R> list) {
+    public static <R, D> List<D> convert(Class<D> dClass, List<R> list) {
         List<D> result = new ArrayList<D>();
         for (R r : list) {
             result.add(convert(dClass, r));
@@ -17,7 +17,7 @@ public class DtoUtils {
         return result;
     }
 
-    public static <R extends Reference, D extends ReferenceDto> D convert(Class<D> dClass, R r) {
+    public static <R, D> D convert(Class<D> dClass, R r) {
         try {
             D dto = dClass.newInstance();
             Class<R> rClass = (Class<R>)dClass.getAnnotation(EntityClass.class).value();

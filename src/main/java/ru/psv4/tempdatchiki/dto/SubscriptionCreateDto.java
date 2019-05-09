@@ -1,20 +1,14 @@
 package ru.psv4.tempdatchiki.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.annotations.ApiModelProperty;
-import ru.psv4.tempdatchiki.model.Subscription;
 
-import java.time.LocalDateTime;
-
-@EntityClass(Subscription.class)
 @JsonPropertyOrder({"recipientUid", "controllerUid"})
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class SubscriptionDto {
+public class SubscriptionCreateDto {
 
-    @EntityField("recipient.uid")
     @ApiModelProperty(required = true)
     @JsonProperty("recipientUid")
     private String recipientUid;
@@ -23,12 +17,6 @@ public class SubscriptionDto {
     @ApiModelProperty(required = true)
     @JsonProperty("controllerUid")
     private String controllerUid;
-
-    @EntityField("createdDatetime")
-    @ApiModelProperty(notes = "Дата-время создания")
-    @JsonProperty("created_datetime")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdDatetime;
 
     @EntityField("notifyOver")
     @ApiModelProperty(required = true)
@@ -47,10 +35,6 @@ public class SubscriptionDto {
     public String getControllerUid() { return controllerUid; }
 
     public void setControllerUid(String controllerUid) { this.controllerUid = controllerUid; }
-
-    public LocalDateTime getCreatedDatetime() { return createdDatetime; }
-
-    public void setCreatedDatetime(LocalDateTime createdDatetime) { this.createdDatetime = createdDatetime; }
 
     public boolean isNotifyOver() {
         return notifyOver;

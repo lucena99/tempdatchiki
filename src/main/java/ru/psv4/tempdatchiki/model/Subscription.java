@@ -7,10 +7,10 @@ import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @Entity
-public class RegRecipientController extends TdEntity implements IReg<RegRecipientController> {
+public class Subscription extends TdEntity implements IReg<Subscription> {
 
-    @Column(name = "subscribed_datetime")
-    private LocalDateTime subscribedDatetime;
+    @Column(name = "created_datetime")
+    private LocalDateTime createdDatetime;
 
     @ManyToOne @JoinColumn(name = "recipient_uid", nullable = false)
     private Recipient recipient;
@@ -18,17 +18,17 @@ public class RegRecipientController extends TdEntity implements IReg<RegRecipien
     @ManyToOne @JoinColumn(name = "controller_uid", nullable = false)
     private Controller controller;
 
+    @Column(name = "notify_over", nullable = false)
     private boolean notifyOver;
 
+    @Column(name = "notify_error", nullable = false)
     private boolean notifyError;
 
-    public LocalDateTime getSubscribedDatetime() {
-        return subscribedDatetime;
+    public LocalDateTime getCreatedDatetime() {
+        return createdDatetime;
     }
 
-    public void setSubscribedDatetime(LocalDateTime subscribedDatetime) {
-        this.subscribedDatetime = subscribedDatetime;
-    }
+    public void setCreatedDatetime(LocalDateTime createdDatetime) { this.createdDatetime = createdDatetime; }
 
     public Recipient getRecipient() {
         return recipient;
@@ -63,7 +63,7 @@ public class RegRecipientController extends TdEntity implements IReg<RegRecipien
     }
 
     @Override
-    public boolean equivalent(RegRecipientController other) {
+    public boolean equivalent(Subscription other) {
         return recipient.equals(other.recipient) && controller.equals(other.controller);
     }
 }

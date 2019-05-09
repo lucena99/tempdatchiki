@@ -69,3 +69,11 @@ CREATE UNIQUE INDEX idx_unique_recipient_name on recipient (LOWER(name));
 CREATE UNIQUE INDEX idx_unique_controller_name on controller (LOWER(name));
 CREATE UNIQUE INDEX idx_unique_sensor_name on sensor (LOWER(name));
 
+ALTER TABLE reg_recipient_controller RENAME TO subscription;
+ALTER TABLE subscription RENAME COLUMN subscribed_datetime TO created_datetime;
+ALTER TABLE subscription DROP COLUMN notify_over;
+ALTER TABLE subscription DROP COLUMN notify_error;
+ALTER TABLE subscription ADD COLUMN notify_over boolean;
+ALTER TABLE subscription ADD COLUMN notify_error boolean;
+
+select * from subscription

@@ -90,19 +90,19 @@
     <div class="container">
         <div class="row text-center"><strong>Подписки</strong></div>
         <div class="row" style="border:1px solid blue;padding:10px">
-            <div class="col-md-3 text-center" style="background:#C0C0C0;">uid</div>
+            <div class="col-md-4 text-center" style="background:#C0C0C0;">uid</div>
             <div class="col-md-3 text-center" style="background:#C0C0C0;">Получатель</div>
             <div class="col-md-2 text-center" style="background:#C0C0C0;" >Контроллер</div>
             <div class="col-md-2 text-center" style="background:#C0C0C0;" >Превышение?</div>
-            <div class="col-md-2 text-center" style="background:#C0C0C0;" >Ошибка?</div>
+            <div class="col-md-1 text-center" style="background:#C0C0C0;" >Ошибка?</div>
         </div>
-        <c:forEach var="sb" items="${subscribers}">
+        <c:forEach var="s" items="${subscriptions}">
             <div class="row" style="border:1px solid blue;padding:10px">
-                <div class="col-md-2 text-left">${sb.uid}</div>
-                <div class="col-md-2 text-left" >${sb.recipient.name}</div>
-                <div class="col-md-2 text-left" >${sb.controller.name}</div>
-                <div class="col-md-2 text-left" >${sb.notifyOver}</div>
-                <div class="col-md-2 text-left" >${sb.notifyError}</div>
+                <div class="col-md-4 text-left">${s.uid}</div>
+                <div class="col-md-3 text-left" >${s.recipient.name}</div>
+                <div class="col-md-2 text-left" >${s.controller.name}</div>
+                <div class="col-md-2 text-left" >${s.notifyOver}</div>
+                <div class="col-md-1 text-left" >${s.notifyError}</div>
             </div>
         </c:forEach>
     </div>

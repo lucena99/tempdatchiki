@@ -17,7 +17,7 @@ public class ControllerService extends ReferenceService<Controller> {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     public List<Recipient> getControllersByRecipientUid(Controller controller) {
-        return em.createQuery("SELECT e.recipient FROM RegRecipientController e " +
+        return em.createQuery("SELECT e.recipient FROM Subscription e " +
                 "WHERE e.controller.uid = :controller ORDER BY e.subscribedDatetime", Recipient.class)
                 .setParameter("controller", controller).getResultList();
     }
