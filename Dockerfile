@@ -24,4 +24,5 @@ CMD [ "java", \
     "-DlogPath=/log", \
     "-jar", "/app/tempdatchiki.war"]
 
-#sudo docker run --net="host" -e PORT=8181 -e DATABASE_URL="postgres://laba:laba@localhost:5432/td" td
+#windows
+#docker run -p 8181:8181 -e PORT=8181 -e DATABASE_URL="postgres://laba:laba@host.docker.internal:5432/td" td
