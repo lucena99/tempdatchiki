@@ -40,7 +40,7 @@ public class MainView extends AbstractAppRouterLayout {
 
 	@Override
 	protected void configure(AppLayout appLayout, AppLayoutMenu menu) {
-		appLayout.setBranding(new Span("laba"));
+		appLayout.setBranding(new Span("Sensors App"));
 
 		if (SecurityUtils.isUserLoggedIn()) {
 			setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.EDIT.create(), TITLE_STOREFRONT, PAGE_STOREFRONT));
@@ -54,7 +54,7 @@ public class MainView extends AbstractAppRouterLayout {
 //			}
 
 			setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.ARROW_RIGHT.create(), TITLE_LOGOUT, e ->
-					UI.getCurrent().getPage().executeJavaScript("location.assign('logout')")));
+					UI.getCurrent().getPage().executeJavaScript("location.assign('/logout')")));
 		}
 		getElement().addEventListener("search-focus", e -> {
 			appLayout.getElement().getClassList().add("hide-navbar");

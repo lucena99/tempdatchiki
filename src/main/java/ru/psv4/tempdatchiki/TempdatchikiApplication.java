@@ -1,5 +1,6 @@
 package ru.psv4.tempdatchiki;
 
+import com.vaadin.flow.spring.SpringServlet;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +8,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.error.ErrorMvcAutoConfiguration;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.web.servlet.ServletComponentScan;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
 
 import java.time.ZoneId;
@@ -34,4 +37,9 @@ public class TempdatchikiApplication extends SpringBootServletInitializer {
         log.info("now datetime = " + ZonedDateTime.now());
         log.info("port = " + env.getProperty("port"));
     }
+
+//    @Bean
+//    public ServletRegistrationBean<SpringServlet> springServlet(ApplicationContext context) {
+//        return new ServletRegistrationBean<>(new SpringServlet(context, false), "/app/*", "/frontend/*");
+//    }
 }

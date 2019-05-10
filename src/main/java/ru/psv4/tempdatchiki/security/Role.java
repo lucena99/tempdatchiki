@@ -5,12 +5,11 @@ public class Role {
 	// This role implicitly allows access to all views.
 	public static final String ADMIN = "admin";
 
-	private Role() {
-		// Static methods and fields only
-	}
+	public static final String RESTAPI = "restapi";
 
-	public static String[] getAllRoles() {
+	private Role() {}
+
+	public static String[] getAppRoles() {
 		return new String[] { RECIPIENT, ADMIN };
 	}
-
 }

@@ -110,3 +110,13 @@ now());
 select * from "user";
 
 update "user" set created_datetime = now() where name = 'admin';
+
+insert into "user"(uid, name, login, password, role, created_datetime) VALUES(
+uuid_in(md5(random()::text || clock_timestamp()::text)::cstring),
+'restapi',
+'restapi',
+'$2a$10$hZS4S/XlFeT9.5afk6NQcecCCYi0BrOJuBteRa/QJ.w3atuJX7Xay',
+'restapi',
+now());
+
+update "user" set role = 'restapi1' where name = 'restapi';

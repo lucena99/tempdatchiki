@@ -33,7 +33,7 @@ public class ControllerActions {
     private ControllerService controllerService;
 
     @ApiOperation(value = "Получить всех контроллеры, отсортированных по дате создания", response = Iterable.class)
-    @RequestMapping(path = "/controllers", method = RequestMethod.GET)
+    @RequestMapping(path = "/controllers", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody List<ControllerDto> getControllersAll() {
         return DtoUtils.convert(ControllerDto.class, controllerService.getList());
     }

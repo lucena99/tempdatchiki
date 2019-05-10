@@ -1,22 +1,33 @@
 package ru.psv4.tempdatchiki.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.stereotype.Component;
 import ru.psv4.tempdatchiki.beans.UserService;
 import ru.psv4.tempdatchiki.model.User;
 import ru.psv4.tempdatchiki.utils.TdConst;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+
+import static springfox.documentation.builders.PathSelectors.regex;
 
 /**
  * Configures spring security, doing the following:
@@ -27,8 +38,7 @@ import ru.psv4.tempdatchiki.utils.TdConst;
 
  */
 @EnableWebSecurity
-@Configuration
-public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+public class SecurityConfiguration {
 
 	private static final String LOGIN_PROCESSING_URL = "/login";
 	private static final String LOGIN_FAILURE_URL = "/login?error";
@@ -66,79 +76,99 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	/**
 	 * Registers our UserDetailsService and the password encoder to be used on login attempts.
 	 */
-	@Override
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		super.configure(auth);
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+	@Autowired
+	public  void configureGlobal(AuthenticationManagerBuilder auth) {
+		try {
+			auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
-	/**
-	 * Require login to access internal pages and configure login form.
-	 */
-	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		// Not using Spring CSRF here to be able to use plain HTML for the login page
-		http.csrf().disable()
-
-				// Register our CustomRequestCache, that saves unauthorized access attempts, so
-				// the user is redirected after login.
-				.requestCache().requestCache(new CustomRequestCache())
-
-				// Restrict access to our application.
-				.and().authorizeRequests()
-
-				// Allow all flow internal requests.
-				.requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
-
-				// Allow all requests by logged in users.
-				.anyRequest().hasAnyAuthority(Role.getAllRoles())
-
-				// Configure the login page.
-				.and().formLogin().loginPage(LOGIN_URL).permitAll().loginProcessingUrl(LOGIN_PROCESSING_URL)
-				.failureUrl(LOGIN_FAILURE_URL)
-
-				// Register the success handler that redirects users to the page they last tried
-				// to access
-				.successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
-
-				// Configure logout
-				.and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
+	@Configuration
+	@Order(1)
+	public static class RestapiWebSecurityConfig extends WebSecurityConfigurerAdapter {
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+				http
+					.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+					.and()
+					.antMatcher("/restapi/**")
+					.authorizeRequests()
+						.anyRequest().hasAuthority(Role.RESTAPI)
+						.and()
+					.httpBasic();
+		}
 	}
 
-	/**
-	 * Allows access to static META-INF.resources, bypassing Spring security.
-	 */
-	@Override
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers(
-				// Vaadin Flow static META-INF.resources
-				"/VAADIN/**",
+	@Configuration
+	@Order(2)
+	public static class AppWebSecurityConfig extends WebSecurityConfigurerAdapter {
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			// Not using Spring CSRF here to be able to use plain HTML for the login page
+			http.csrf().disable()
+					// Register our CustomRequestCache, that saves unauthorized access attempts, so
+					// the user is redirected after login.
+					.requestCache().requestCache(new CustomRequestCache())
 
-				// the standard favicon URI
-				"/favicon.ico",
+					// Restrict access to our application.
+					.and().authorizeRequests()
 
-				// the robots exclusion standard
-				"/robots.txt",
+					// Allow all flow internal requests.
+					.requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
 
-				// web application manifest
-				"/manifest.webmanifest",
-				"/sw.js",
-				"/offline-page.html",
+					// Allow all requests by logged in users.
+					.anyRequest().hasAnyAuthority(Role.getAppRoles())
 
-				// icons and images
-				"/icons/**",
-				"/images/**",
+					// Configure the login page.
+					.and().formLogin().loginPage(LOGIN_URL).permitAll().loginProcessingUrl(LOGIN_PROCESSING_URL)
+					.failureUrl(LOGIN_FAILURE_URL)
 
-				// (development mode) static META-INF.resources
-				"/frontend/**",
+					// Register the success handler that redirects users to the page they last tried
+					// to access
+					.successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
 
-				// (development mode) webjars
-				"/webjars/**",
+					// Configure logout
+					.and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
+		}
 
-				// (development mode) H2 debugging console
-				"/h2-console/**",
+		/**
+		 * Allows access to static META-INF.resources, bypassing Spring security.
+		 */
+		@Override
+		public void configure(WebSecurity web) throws Exception {
+			web.ignoring().antMatchers(
+					// Vaadin Flow static META-INF.resources
+					"/VAADIN/**",
 
-				// (production mode) static META-INF.resources
-				"/static.frontend-es5/**", "/static.frontend-es6/**");
+					// the standard favicon URI
+					"/favicon.ico",
+
+					// the robots exclusion standard
+					"/robots.txt",
+
+					// web application manifest
+					"/manifest.webmanifest",
+					"/sw.js",
+					"/offline-page.html",
+
+					// icons and images
+					"/icons/**",
+					"/images/**",
+
+					// (development mode) static META-INF.resources
+					"/frontend/**",
+
+					// (development mode) webjars
+					"/webjars/**",
+
+					// (development mode) H2 debugging console
+					"/h2-console/**",
+
+					// (production mode) static META-INF.resources
+					"/static.frontend-es5/**", "/static.frontend-es6/**",
+					"/index.html");
+		}
 	}
 }
