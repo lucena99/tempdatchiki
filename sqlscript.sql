@@ -119,4 +119,6 @@ uuid_in(md5(random()::text || clock_timestamp()::text)::cstring),
 'restapi',
 now());
 
-update "user" set role = 'restapi1' where name = 'restapi';
+update "user" set role = 'restapi' where name = 'restapi';
+
+select * from recipient
