@@ -7,12 +7,12 @@ import io.swagger.annotations.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
-import ru.psv4.tempdatchiki.beans.ControllerService;
-import ru.psv4.tempdatchiki.beans.NotFoundException;
+import ru.psv4.tempdatchiki.backend.service.ControllerService;
+import ru.psv4.tempdatchiki.backend.service.NotFoundException;
 import ru.psv4.tempdatchiki.dto.ControllerCreateDto;
 import ru.psv4.tempdatchiki.dto.ControllerDto;
 import ru.psv4.tempdatchiki.dto.DtoUtils;
-import ru.psv4.tempdatchiki.model.Controller;
+import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.utils.UIDUtils;
 
 import javax.annotation.Resource;

@@ -43,8 +43,8 @@ public class MainView extends AbstractAppRouterLayout {
 		appLayout.setBranding(new Span("Sensors App"));
 
 		if (SecurityUtils.isUserLoggedIn()) {
-			setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.EDIT.create(), TITLE_STOREFRONT, PAGE_STOREFRONT));
-			setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.CLOCK.create(), TITLE_DASHBOARD, PAGE_DASHBOARD));
+			setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.EDIT.create(), TITLE_RECIPIENTS, PAGE_RECIPIENTS));
+			setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.CLOCK.create(), TITLE_CONTROLLERS, PAGE_CONTROLLERS));
 
 //			if (SecurityUtils.isAccessGranted(UsersView.class)) {
 //				setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.USER.create(), TITLE_USERS, PAGE_USERS));

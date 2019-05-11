@@ -6,8 +6,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.psv4.tempdatchiki.beans.UserService;
-import ru.psv4.tempdatchiki.model.User;
+import ru.psv4.tempdatchiki.backend.service.UserService;
+import ru.psv4.tempdatchiki.backend.data.User;
 
 import javax.annotation.Resource;
 import java.util.Collections;

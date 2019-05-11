@@ -10,7 +10,7 @@ import com.vaadin.flow.router.*;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import ru.psv4.tempdatchiki.security.SecurityUtils;
 import ru.psv4.tempdatchiki.ui.components.TempDatchikiCookieConsent;
-import ru.psv4.tempdatchiki.ui.views.storefront.StorefrontView;
+import ru.psv4.tempdatchiki.ui.views.recipients.RecipientsView;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
 @Route
@@ -48,7 +48,7 @@ public class LoginView extends VerticalLayout
 		if (SecurityUtils.isUserLoggedIn()) {
 			// Needed manually to change the URL because of https://github.com/vaadin/flow/issues/4189
 			UI.getCurrent().getPage().getHistory().replaceState(null, "");
-			event.rerouteTo(StorefrontView.class);
+			event.rerouteTo(RecipientsView.class);
 		}
 	}
 

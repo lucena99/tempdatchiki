@@ -1,14 +1,12 @@
 package ru.psv4.tempdatchiki.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -18,16 +16,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import org.springframework.stereotype.Component;
-import ru.psv4.tempdatchiki.beans.UserService;
-import ru.psv4.tempdatchiki.model.User;
+import ru.psv4.tempdatchiki.backend.service.UserService;
+import ru.psv4.tempdatchiki.backend.data.User;
 import ru.psv4.tempdatchiki.utils.TdConst;
-import springfox.documentation.builders.ApiInfoBuilder;
-import springfox.documentation.builders.RequestHandlerSelectors;
-import springfox.documentation.spi.DocumentationType;
-import springfox.documentation.spring.web.plugins.Docket;
-
-import static springfox.documentation.builders.PathSelectors.regex;
 
 /**
  * Configures spring security, doing the following:
@@ -43,7 +34,7 @@ public class SecurityConfiguration {
 	private static final String LOGIN_PROCESSING_URL = "/login";
 	private static final String LOGIN_FAILURE_URL = "/login?error";
 	private static final String LOGIN_URL = "/login";
-	private static final String LOGOUT_SUCCESS_URL = "/" + TdConst.PAGE_STOREFRONT;
+	private static final String LOGOUT_SUCCESS_URL = "/" + TdConst.PAGE_RECIPIENTS;
 
 	private final UserDetailsService userDetailsService;
 

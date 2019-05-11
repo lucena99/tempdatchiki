@@ -2,7 +2,6 @@
 <link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
 <link rel="import" href="../../bower_components/vaadin-icons/vaadin-icons.html">
 <link rel="import" href="../../bower_components/vaadin-button/src/vaadin-button.html">
-<link rel="import" href="../../bower_components/vaadin-checkbox/src/vaadin-checkbox.html">
 <link rel="import" href="../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
 
 <link rel="import" href="../../styles/shared-styles.html">
@@ -88,8 +87,6 @@
          theme="white">
         <iron-icon icon$="[[fieldIcon]]" slot="prefix"></iron-icon>
       </vaadin-text-field>
-      <vaadin-checkbox class="checkbox desktop" checked="{{checkboxChecked}}"
-        on-focus="_onFieldFocus" on-blur="_onFieldBlur">[[checkboxText]]</vaadin-checkbox>
       <vaadin-button id="clear" class="clear-btn" theme="tertiary">
         [[clearText]]
       </vaadin-button>
@@ -98,10 +95,6 @@
         [[buttonText]]
       </vaadin-button>
     </div>
-
-    <vaadin-checkbox class="checkbox mobile" checked="{{checkboxChecked}}"
-       on-focus="_onFieldFocus" on-blur="_onFieldBlur">[[checkboxText]]</vaadin-checkbox>
-
   </template>
 
   <script>
@@ -137,10 +130,6 @@
           checkboxText: {
             type: String
           },
-          checkboxChecked: {
-            type: Boolean,
-            notify: true
-          },
           clearText: {
             type: String,
             value: 'Clear search'
@@ -161,7 +150,7 @@
 
       static get observers() {
         return [
-          '_setShowExtraFilters(fieldValue, checkboxChecked, _focused)'
+          '_setShowExtraFilters(fieldValue, _focused)'
         ];
       }
 
@@ -172,12 +161,12 @@
         this.addEventListener('touchmove', e => e.preventDefault());
       }
 
-      _setShowExtraFilters(fieldValue, checkboxChecked, focused) {
+      _setShowExtraFilters(fieldValue, focused) {
         this._debouncer = Polymer.Debouncer.debounce(
           this._debouncer,
           // Set 1 millisecond wait to be able move from text field to checkbox with tab.
           Polymer.Async.timeOut.after(1), () => {
-            this.showExtraFilters = fieldValue || checkboxChecked || focused;
+            this.showExtraFilters = fieldValue || focused;
 
             // Safari has an issue with repainting shadow root element styles when a host attribute changes.
             // Need this workaround (toggle any inline css property on and off) until the issue gets fixed.

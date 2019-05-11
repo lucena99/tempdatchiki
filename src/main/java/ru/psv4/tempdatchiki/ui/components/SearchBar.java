@@ -15,12 +15,6 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 public class SearchBar extends PolymerTemplate<SearchBar.Model> {
 
 	public interface Model extends TemplateModel {
-		boolean isCheckboxChecked();
-
-		void setCheckboxChecked(boolean checkboxChecked);
-
-		void setCheckboxText(String checkboxText);
-
 		void setButtonText(String actionText);
 	}
 
@@ -39,18 +33,11 @@ public class SearchBar extends PolymerTemplate<SearchBar.Model> {
 				e -> fireEvent(new FilterChanged(this, false)));
 		clearButton.addClickListener(e -> {
 			textField.clear();
-			getModel().setCheckboxChecked(false);
 		});
-
-		getElement().addPropertyChangeListener("checkboxChecked", e -> fireEvent(new FilterChanged(this, false)));
 	}
 
 	public String getFilter() {
 		return textField.getValue();
-	}
-
-	public boolean isCheckboxChecked() {
-		return getModel().isCheckboxChecked();
 	}
 
 	public void setPlaceHolder(String placeHolder) {
@@ -59,10 +46,6 @@ public class SearchBar extends PolymerTemplate<SearchBar.Model> {
 
 	public void setActionText(String actionText) {
 		getModel().setButtonText(actionText);
-	}
-
-	public void setCheckboxText(String checkboxText) {
-		getModel().setCheckboxText(checkboxText);
 	}
 
 	public void addFilterChangeListener(ComponentEventListener<FilterChanged> listener) {

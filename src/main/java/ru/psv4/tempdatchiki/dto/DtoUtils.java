@@ -1,7 +1,5 @@
 package ru.psv4.tempdatchiki.dto;
 
-import ru.psv4.tempdatchiki.model.Reference;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;

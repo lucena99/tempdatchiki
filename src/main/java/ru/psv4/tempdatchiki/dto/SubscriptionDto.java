@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.annotations.ApiModelProperty;
-import ru.psv4.tempdatchiki.model.Subscription;
+import ru.psv4.tempdatchiki.backend.data.Subscription;
 
 import java.time.LocalDateTime;
 
