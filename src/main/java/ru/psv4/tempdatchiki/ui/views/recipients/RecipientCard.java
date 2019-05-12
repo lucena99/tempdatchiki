@@ -3,6 +3,7 @@ package ru.psv4.tempdatchiki.ui.views.recipients;
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.backend.data.Subscription;
+import ru.psv4.tempdatchiki.ui.views.RecipientUIUtil;
 
 import java.util.List;
 
@@ -44,7 +45,6 @@ public class RecipientCard {
 	}
 
 	public String getState() {
-		List<Subscription> list = r.getSubscriptions();
-		return list != null && !list.isEmpty() ? "active" : "inactive";
+		return RecipientUIUtil.getState(r.getSubscriptions());
 	}
 }

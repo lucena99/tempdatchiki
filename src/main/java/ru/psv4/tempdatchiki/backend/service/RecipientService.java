@@ -11,6 +11,7 @@ import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.backend.data.User;
 import ru.psv4.tempdatchiki.backend.repositories.RecipientRepository;
+import ru.psv4.tempdatchiki.utils.UIDUtils;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -58,6 +59,7 @@ public class RecipientService extends ReferenceService<Recipient> implements Cru
     @Transactional(propagation = Propagation.SUPPORTS)
     public Recipient createNew(User currentUser) {
         Recipient e = new Recipient();
+        e.setUid(UIDUtils.generate());
         e.setCreatedDatetime(LocalDateTime.now());
         return e;
     }

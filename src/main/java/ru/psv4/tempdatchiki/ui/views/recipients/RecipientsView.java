@@ -19,6 +19,8 @@ import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.SearchBar;
 import ru.psv4.tempdatchiki.ui.views.EntityView;
+import ru.psv4.tempdatchiki.ui.views.recipientedit.RecipientDetails;
+import ru.psv4.tempdatchiki.ui.views.recipientedit.RecipientEditor;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
 import java.util.stream.Stream;
@@ -40,19 +42,19 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 
 	@Id("dialog")
 	private Dialog dialog;
-//
+
 	private ConfirmDialog confirmation;
 
-//	private final RecipientEditor recipientEditor;
-//
-//	private final OrderDetails orderDetails = new OrderDetails();
-//
+	private final RecipientEditor recipientEditor;
+
+	private final RecipientDetails recipientDetails = new RecipientDetails();
+
 	private final RecipientPresenter presenter;
 
 	@Autowired
-	public RecipientsView(RecipientPresenter presenter/*, RecipientEditor recipientEditor*/) {
+	public RecipientsView(RecipientPresenter presenter, RecipientEditor recipientEditor) {
 		this.presenter = presenter;
-//		this.recipientEditor = recipientEditor;
+		this.recipientEditor = recipientEditor;
 
 		searchBar.setActionText("Новый слушатель");
 		searchBar.setPlaceHolder("Search");
@@ -73,28 +75,28 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 //		dialog.addDialogCloseActionListener(e -> presenter.cancel());
 	}
 
-	@Override
-	public ConfirmDialog getConfirmDialog() {
-		return confirmation;
-	}
-
-	@Override
-	public void setConfirmDialog(ConfirmDialog confirmDialog) {
-		this.confirmation = confirmDialog;
-	}
-
-//	void setOpened(boolean opened) {
-//		dialog.setOpened(opened);
+//	@Override
+//	public ConfirmDialog getConfirmDialog() {
+//		return confirmation;
 //	}
+//
+//	@Override
+//	public void setConfirmDialog(ConfirmDialog confirmDialog) {
+//		this.confirmation = confirmDialog;
+//	}
+
+	void setOpened(boolean opened) {
+		dialog.setOpened(opened);
+	}
 
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String recipientId) {
-//		boolean editView = event.getLocation().getPath().contains(TdConst.PAGE_RECIPIENT_EDIT);
-//		if (orderId != null) {
-//			presenter.onNavigation(orderId, editView);
-//		} else if (dialog.isOpened()) {
-//			presenter.closeSilently();
-//		}
+		boolean editView = event.getLocation().getPath().contains(TdConst.PAGE_RECIPIENT_EDIT);
+		if (recipientId != null) {
+			presenter.onNavigation(recipientId, editView);
+		} else if (dialog.isOpened()) {
+			presenter.closeSilently();
+		}
 	}
 
 	void navigateToMainView() {
@@ -103,29 +105,29 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 
 	@Override
 	public boolean isDirty() {
-		return false /*orderEditor.hasChanges() || orderDetails.isDirty()*/;
+		return recipientEditor.hasChanges() || recipientDetails.isDirty();
 	}
 
 	@Override
 	public void write(Recipient entity) throws ValidationException {
-//		orderEditor.write(entity);
+		recipientEditor.write(entity);
 	}
 
 	public Stream<HasValue<?, ?>> validate() {
-		return Stream.empty();//orderEditor.validate();
+		return recipientEditor.validate();
 	}
 
 	SearchBar getSearchBar() {
 		return searchBar;
 	}
 
-//	OrderEditor getOpenedOrderEditor() {
-//		return orderEditor;
-//	}
-//
-//	OrderDetails getOpenedOrderDetails() {
-//		return orderDetails;
-//	}
+	RecipientEditor getOpenedEditor() {
+		return recipientEditor;
+	}
+
+	RecipientDetails getOpenedDetails() {
+		return recipientDetails;
+	}
 
 	Grid<Recipient> getGrid() {
 		return grid;
@@ -133,14 +135,14 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 
 	@Override
 	public void clear() {
-//		orderDetails.setDirty(false);
-//		orderEditor.clear();
+		recipientDetails.setDirty(false);
+		recipientEditor.clear();
 	}
 
 	void setDialogElementsVisibility(boolean editing) {
-//		dialog.add(editing ? orderEditor : orderDetails);
-//		orderEditor.setVisible(editing);
-//		orderDetails.setVisible(!editing);
+		dialog.add(editing ? recipientEditor : recipientDetails);
+		recipientEditor.setVisible(editing);
+		recipientDetails.setVisible(!editing);
 	}
 
 	@Override

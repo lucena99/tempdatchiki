@@ -17,7 +17,7 @@ public class PresenterFactory {
 
 	@Bean
 	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-	public EntityPresenter<Recipient, RecipientsView> orderEntityPresenter(RecipientService crudService, CurrentUser currentUser) {
+	public EntityPresenter<Recipient, RecipientsView> recipientEntityPresenter(RecipientService crudService, CurrentUser currentUser) {
 		return new EntityPresenter<>(crudService, currentUser);
 	}
 

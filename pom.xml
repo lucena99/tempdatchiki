@@ -54,7 +54,7 @@
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <failOnMissingWebXml>false</failOnMissingWebXml>
     <!-- Dependencies -->
-    <vaadin.version>13.0.5</vaadin.version>
+    <vaadin.version>13.0.3</vaadin.version>
 
     <!-- Overrides the old version specified by the Spring Boot parent -->
     <selenium.version>3.11.0</selenium.version>
@@ -364,9 +364,9 @@
                       <files>
                         <file>src/views/recipients/recipients-view.html</file>
                         <file>src/views/recipients/order-status-badge.html</file>
-                        <file>src/views/orderedit/order-item-editor.html</file>
-                        <file>src/views/orderedit/order-editor.html</file>
-                        <file>src/views/orderedit/order-details.html</file>
+                        <file>src/views/recipientedit/subscription-editor.html</file>
+                        <file>src/views/recipientedit/recipient-editor.html</file>
+                        <file>src/views/recipientedit/recipient-details.html</file>
                         <file>src/views/errors/access-denied-view.html</file>
                         <file>src/components/amount-field.html</file>
                         <file>src/components/form-buttons-bar.html</file>

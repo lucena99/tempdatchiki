@@ -5,11 +5,9 @@
 <link rel="import" href="../../../bower_components/vaadin-form-layout/src/vaadin-form-layout.html">
 <link rel="import" href="../../../bower_components/vaadin-combo-box/src/vaadin-combo-box.html">
 
-<link rel="import" href="../../components/amount-field.html">
-
 <link rel="import" href="../../../styles/shared-styles.html">
 
-<dom-module id="order-item-editor">
+<dom-module id="subscription-editor">
   <template>
     <style include="shared-styles">
       .product {
@@ -40,16 +38,15 @@
 
     <vaadin-form-layout id="form1">
 
-      <vaadin-form-layout id="form2" colspan="16" class="product" style="flex: auto;">
-        <vaadin-combo-box id="products" colspan="8" index="[[index]]"></vaadin-combo-box>
-        <amount-field id="amount" colspan="4" index="[[index]]" class="self-start"
-          min="1" max="15" editable pattern="|1[0-5]?|[2-9]"></amount-field>
-        <div id="price" colspan="4" class="money">[[price]]</div>
-        <vaadin-text-field id="comment" colspan="12" placeholder="Details"
-          index="[[index]]"></vaadin-text-field>
+      <vaadin-form-layout id="form2" colspan="2" class="product" style="flex: auto;">
+        <vaadin-combo-box id="controllers" colspan="8" index="[[index]]"></vaadin-combo-box>
       </vaadin-form-layout>
 
-      <vaadin-button class="delete self-start" id="delete" colspan="2" index="[[index]]">
+      <vaadin-checkbox colspan="1" class="checkbox desktop" id="over">Интервал?</vaadin-checkbox>
+
+      <vaadin-checkbox colspan="1" class="checkbox desktop" id="error">Ошибка?</vaadin-checkbox>
+
+      <vaadin-button class="delete self-start" id="delete" colspan="1" index="[[index]]">
         <iron-icon icon="vaadin:close-small"></iron-icon>
       </vaadin-button>
 
@@ -58,9 +55,9 @@
   </template>
 
   <script>
-    class OrderItemEditor extends Polymer.Element {
+    class SubscriptionEditor extends Polymer.Element {
       static get is() {
-        return 'order-item-editor';
+        return 'subscription-editor';
       }
 
       ready() {
@@ -68,7 +65,7 @@
 
         // Not using attributes since Designer does not suppor single-quote attributes
         this.$.form1.responsiveSteps = [
-          {columns: 24}
+          {columns: 5}
         ];
         this.$.form2.responsiveSteps = [
           {columns: 8, labelsPosition: 'top'},
@@ -77,6 +74,6 @@
       }
     }
 
-    window.customElements.define(OrderItemEditor.is, OrderItemEditor);
+    window.customElements.define(SubscriptionEditor.is, SubscriptionEditor);
   </script>
 </dom-module>

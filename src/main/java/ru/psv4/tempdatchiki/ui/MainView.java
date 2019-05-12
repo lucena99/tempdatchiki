@@ -12,7 +12,6 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.server.PWA;
 import ru.psv4.tempdatchiki.security.SecurityUtils;
-import ru.psv4.tempdatchiki.ui.components.TempDatchikiCookieConsent;
 import ru.psv4.tempdatchiki.ui.views.HasConfirmation;
 
 import static ru.psv4.tempdatchiki.utils.TdConst.*;
@@ -26,16 +25,15 @@ import static ru.psv4.tempdatchiki.utils.TdConst.*;
 		offlineResources = {"images/offline-login-banner.jpg"})
 public class MainView extends AbstractAppRouterLayout {
 
-	private final ConfirmDialog confirmDialog;
+//	private final ConfirmDialog confirmDialog;
 
 	public MainView() {
-		this.confirmDialog = new ConfirmDialog();
-		confirmDialog.setCancelable(true);
-		confirmDialog.setConfirmButtonTheme("raised tertiary error");
-		confirmDialog.setCancelButtonTheme("raised tertiary");
+//		this.confirmDialog = new ConfirmDialog();
+//		confirmDialog.setCancelable(true);
+//		confirmDialog.setConfirmButtonTheme("raised tertiary error");
+//		confirmDialog.setCancelButtonTheme("raised tertiary");
 
-		getElement().appendChild(confirmDialog.getElement());
-		getElement().appendChild(new TempDatchikiCookieConsent().getElement());
+//		getElement().appendChild(confirmDialog.getElement());
 	}
 
 	@Override
@@ -74,9 +72,9 @@ public class MainView extends AbstractAppRouterLayout {
 	public void showRouterLayoutContent(HasElement content) {
 		super.showRouterLayoutContent(content);
 
-		this.confirmDialog.setOpened(false);
-		if (content instanceof HasConfirmation) {
-			((HasConfirmation) content).setConfirmDialog(this.confirmDialog);
-		}
+//		this.confirmDialog.setOpened(false);
+//		if (content instanceof HasConfirmation) {
+//			((HasConfirmation) content).setConfirmDialog(this.confirmDialog);
+//		}
 	}
 }

@@ -30,6 +30,6 @@ public class Reference extends TdEntity {
 
     @Override
     public String toString() {
-        return getUid() + " : " + name;
+        return name;
     }
 }

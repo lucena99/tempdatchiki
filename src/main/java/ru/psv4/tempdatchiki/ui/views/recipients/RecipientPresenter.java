@@ -41,14 +41,11 @@ public class RecipientPresenter {
 		this.entityPresenter.setView(view);
 		this.view = view;
 		view.getGrid().setDataProvider(dataProvider);
-//		view.getOpenedOrderEditor().setCurrentUser(currentUser.getUser());
-//		view.getOpenedOrderEditor().addCancelListener(e -> cancel());
-//		view.getOpenedOrderEditor().addReviewListener(e -> review());
-//		view.getOpenedOrderDetails().addSaveListenter(e -> save());
-//		view.getOpenedOrderDetails().addCancelListener(e -> cancel());
-//		view.getOpenedOrderDetails().addBackListener(e -> back());
-//		view.getOpenedOrderDetails().addEditListener(e -> edit());
-//		view.getOpenedOrderDetails().addCommentListener(e -> addComment(e.getMessage()));
+		view.getOpenedEditor().setCurrentUser(currentUser.getUser());
+		view.getOpenedEditor().addCancelListener(e -> cancel());
+		view.getOpenedEditor().addSaveListener(e -> save());
+		view.getOpenedDetails().addCancelListener(e -> cancel());
+		view.getOpenedDetails().addEditListener(e -> edit());
 	}
 
 	public void filterChanged(String filter) {
@@ -64,71 +61,54 @@ public class RecipientPresenter {
 	}
 
 	void cancel() {
-		/*entityPresenter.cancel(() -> close(), () -> view.setOpened(true));*/
+		entityPresenter.cancel(() -> close(), () -> view.setOpened(true));
 	}
 
 	void closeSilently() {
 		entityPresenter.close();
-//		view.setOpened(false);
+		view.setOpened(false);
 	}
 
 	void edit() {
 		UI.getCurrent().navigate(TdConst.PAGE_RECIPIENT_EDIT + "/" + entityPresenter.getEntity().getUid());
 	}
 
-	void back() {
-		view.setDialogElementsVisibility(true);
-	}
-
-	void review() {
+	void save() {
 		// Using collect instead of findFirst to assure all streams are
 		// traversed, and every validation updates its view
 		List<HasValue<?, ?>> fields = view.validate().collect(Collectors.toList());
 		if (fields.isEmpty()) {
 			if (entityPresenter.writeEntity()) {
-//				view.setDialogElementsVisibility(false);
-//				view.getOpenedOrderDetails().display(entityPresenter.getEntity(), true);
+				entityPresenter.save(e -> {
+					if (entityPresenter.isNew()) {
+						view.showCreatedNotification();
+						dataProvider.refreshAll();
+					} else {
+						view.showUpdatedNotification();
+						dataProvider.refreshItem(e);
+					}
+					close();
+				});
 			}
 		} else if (fields.get(0) instanceof Focusable) {
 			((Focusable<?>) fields.get(0)).focus();
 		}
 	}
 
-	void save() {
-		entityPresenter.save(e -> {
-			if (entityPresenter.isNew()) {
-				view.showCreatedNotification();
-				dataProvider.refreshAll();
-			} else {
-				view.showUpdatedNotification();
-				dataProvider.refreshItem(e);
-			}
-			close();
-		});
+	private void open(Recipient recipient, boolean edit) {
+		view.setDialogElementsVisibility(edit);
+		view.setOpened(true);
 
-	}
-
-	void addComment(String comment) {
-//		if (entityPresenter.executeUpdate(e -> orderService.addComment(currentUser.getUser(), e, comment))) {
-//			// You can only add comments when in view mode, so reopening in that state.
-//			open(entityPresenter.getEntity(), false);
-//		}
-	}
-
-	private void open(Recipient order, boolean edit) {
-//		view.setDialogElementsVisibility(edit);
-//		view.setOpened(true);
-//
-//		if (edit) {
-//			view.getOpenedOrderEditor().read(order, entityPresenter.isNew());
-//		} else {
-//			view.getOpenedOrderDetails().display(order, false);
-//		}
+		if (edit) {
+			view.getOpenedEditor().read(recipient, entityPresenter.isNew());
+		} else {
+			view.getOpenedDetails().display(recipient);
+		}
 	}
 
 	private void close() {
-//		view.getOpenedOrderEditor().close();
-//		view.setOpened(false);
+		view.getOpenedEditor().close();
+		view.setOpened(false);
 		view.navigateToMainView();
 		entityPresenter.close();
 	}

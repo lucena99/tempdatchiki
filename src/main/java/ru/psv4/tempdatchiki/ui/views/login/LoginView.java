@@ -9,7 +9,6 @@ import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import ru.psv4.tempdatchiki.security.SecurityUtils;
-import ru.psv4.tempdatchiki.ui.components.TempDatchikiCookieConsent;
 import ru.psv4.tempdatchiki.ui.views.recipients.RecipientsView;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
@@ -23,8 +22,7 @@ public class LoginView extends VerticalLayout
 	private LoginOverlay login = new LoginOverlay();
 
 	public LoginView() {
-		getElement().appendChild(
-			new TempDatchikiCookieConsent().getElement(), login.getElement());
+		getElement().appendChild(login.getElement());
 
 		LoginI18n i18n = LoginI18n.createDefault();
 		i18n.setHeader(new LoginI18n.Header());

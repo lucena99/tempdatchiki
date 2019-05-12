@@ -146,17 +146,18 @@ public class EntityPresenter<T extends TdEntity, V extends EntityView<T>>
 
 	private void showConfirmationRequest(
 		Message message, Runnable onOk, Runnable onCancel) {
-		view.getConfirmDialog().setText(message.getMessage());
-		view.getConfirmDialog().setHeader(message.getCaption());
-		view.getConfirmDialog().setCancelText(message.getCancelText());
-		view.getConfirmDialog().setConfirmText(message.getOkText());
-		view.getConfirmDialog().setOpened(true);
-
-		final Registration okRegistration =
-			view.getConfirmDialog().addConfirmListener(e -> onOk.run());
-		final Registration cancelRegistration =
-			view.getConfirmDialog().addCancelListener(e -> onCancel.run());
-		state.updateRegistration(okRegistration, cancelRegistration);
+		onOk.run();
+//		view.getConfirmDialog().setText(message.getMessage());
+//		view.getConfirmDialog().setHeader(message.getCaption());
+//		view.getConfirmDialog().setCancelText(message.getCancelText());
+//		view.getConfirmDialog().setConfirmText(message.getOkText());
+//		view.getConfirmDialog().setOpened(true);
+//
+//		final Registration okRegistration =
+//			view.getConfirmDialog().addConfirmListener(e -> onOk.run());
+//		final Registration cancelRegistration =
+//			view.getConfirmDialog().addCancelListener(e -> onCancel.run());
+//		state.updateRegistration(okRegistration, cancelRegistration);
 	}
 
 	public boolean loadEntity(String id, CrudOperationListener<T> onSuccess) {
