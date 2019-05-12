@@ -15,6 +15,7 @@ import ru.psv4.tempdatchiki.backend.repositories.ControllerRepository;
 import ru.psv4.tempdatchiki.utils.UIDUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -65,6 +66,7 @@ public class ControllerService extends ReferenceService<Controller> implements C
         Controller e = new Controller();
         e.setUid(UIDUtils.generate());
         e.setCreatedDatetime(LocalDateTime.now());
+        e.setSensors(new ArrayList<>());
         return e;
     }
 

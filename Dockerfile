@@ -20,7 +20,7 @@ CMD [ "java", \
     "-Dlog4j.configurationFile=file:/resources/log4j2.xml", \
     "-Dport=${PORT}", \
     "-Ddburl=${DATABASE_URL}", \
-    "-Xmx500m", \
+    "-Xmx256m", \
     "-DlogPath=/log", \
     "-jar", "/app/tempdatchiki.war"]
 
