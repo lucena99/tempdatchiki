@@ -88,7 +88,7 @@
       .goods > div {
         box-sizing: border-box;
         width: 18em;
-        flex: auto;
+       /* flex: auto;*/
         padding-right: var(--lumo-space-l);
       }
 
@@ -105,7 +105,8 @@
       }
 
       .goods-item > div {
-        flex: auto;
+        /*flex: auto;*/
+        padding-inline-end: 0.5em;
         word-break: break-all;
         /* Non standard for WebKit */
         word-break: break-word;
@@ -140,9 +141,9 @@
           <div class="goods">
             <template is="dom-repeat" items="[[recipientCard.subscriptions]]">
               <div class="goods-item">
+                <div>[[item.controller.name]]</div>
                 <span class="count">[[item.notifyOver]]</span>
                 <span class="count">[[item.notifyError]]</span>
-                <div>[[item.controller.name]]</div>
               </div>
             </template>
           </div>

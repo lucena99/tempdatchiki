@@ -85,7 +85,8 @@ public class RecipientEditor extends PolymerTemplate<RecipientEditor.Model> {
 		subcriptionsEditor.setRequiredIndicatorVisible(true);
 		binder.bind(subcriptionsEditor, "subscriptions");
 
-		subcriptionsEditor.addValueChangeListener(e -> { save.setEnabled(hasChanges());getModel().setState(calcState());});
+		subcriptionsEditor.addHasChangesListener(e -> { save.setEnabled(hasChanges());getModel().setState(calcState());});
+
 		binder.addValueChangeListener(e -> {
 			if (e.getOldValue() != null) {
 				save.setEnabled(hasChanges());

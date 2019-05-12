@@ -9,11 +9,13 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
+import ru.psv4.tempdatchiki.backend.data.Subscription;
 import ru.psv4.tempdatchiki.backend.data.User;
 import ru.psv4.tempdatchiki.backend.repositories.RecipientRepository;
 import ru.psv4.tempdatchiki.utils.UIDUtils;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,6 +63,7 @@ public class RecipientService extends ReferenceService<Recipient> implements Cru
         Recipient e = new Recipient();
         e.setUid(UIDUtils.generate());
         e.setCreatedDatetime(LocalDateTime.now());
+        e.setSubscriptions(new ArrayList<Subscription>());
         return e;
     }
 }

@@ -149,7 +149,6 @@
           <label slot="label">Подписки</label>
           <div class="table products">
             <template is="dom-repeat" items="[[item.subscriptions]]" as="item">
-              <template>
                 <div class="tr">
                   <div class="td product-name">
                     <div class="bold">[[item.controller.name]]</div>
@@ -161,7 +160,6 @@
                     <span class="count">[[item.notifyError]]</span>
                   </div>
                 </div>
-              </template>
             </template>
           </div>
         </vaadin-form-item>
@@ -169,7 +167,7 @@
     </div>
 
     <buttons-bar id="footer" no-scroll$="[[noScroll]]">
-      <vaadin-button slot="left" id="cancel">Отмена</vaadin-button>
+      <vaadin-button slot="right" id="cancel" theme="tertiary">Отмена</vaadin-button>
       <vaadin-button slot="right" id="edit" theme="primary" hidden="[[review]]">
         Редактировать
         <iron-icon icon="vaadin:edit" slot="suffix"></iron-icon>

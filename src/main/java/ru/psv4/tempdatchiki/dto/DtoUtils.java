@@ -1,5 +1,7 @@
 package ru.psv4.tempdatchiki.dto;
 
+import ru.psv4.tempdatchiki.utils.ReflectionUtils;
+
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +21,7 @@ public class DtoUtils {
         try {
             D dto = dClass.newInstance();
             Class<R> rClass = (Class<R>)dClass.getAnnotation(EntityClass.class).value();
-            for (Field f : getFields(dClass)) {
+            for (Field f : ReflectionUtils.getFields(dClass)) {
                 Class<EntityField> ef = EntityField.class;
                 if (f.isAnnotationPresent(ef)) {
                     f.setAccessible(true);
@@ -27,7 +29,7 @@ public class DtoUtils {
                     Class<?> oClass = rClass;
                     Object pValue = r;
                     for (String property : properties) {
-                        Field pField = getField(oClass, property);
+                        Field pField = ReflectionUtils.getField(oClass, property);
                         pField.setAccessible(true);
                         pValue = pField.get(pValue);
                         oClass = pField.getDeclaringClass();
@@ -39,19 +41,5 @@ public class DtoUtils {
         } catch (IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static <T> List<Field> getFields(Class<T> tClass) {
-        List<Field> fields = new ArrayList<>();
-        Class clazz = tClass;
-        while (clazz != Object.class) {
-            fields.addAll(Arrays.asList(clazz.getDeclaredFields()));
-            clazz = clazz.getSuperclass();
-        }
-        return fields;
-    }
-
-    private static <T> Field getField(Class<T> tClass, String name) {
-        return getFields(tClass).stream().filter(e -> e.getName().equals(name)).findFirst().get();
     }
 }

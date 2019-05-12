@@ -1,6 +1,7 @@
 package ru.psv4.tempdatchiki.ui.views.recipientedit;
 
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.HasValueAndElement;
 import com.vaadin.flow.component.html.Div;
@@ -12,7 +13,8 @@ import ru.psv4.tempdatchiki.backend.data.Subscription;
 import ru.psv4.tempdatchiki.backend.service.SubscribtionService;
 import ru.psv4.tempdatchiki.dataproviders.ControllerDataProvider;
 import ru.psv4.tempdatchiki.security.CurrentUser;
-import ru.psv4.tempdatchiki.ui.events.NewEditorEvent;
+import ru.psv4.tempdatchiki.ui.events.HasChangesEvent;
+import ru.psv4.tempdatchiki.ui.events.NotifyOverChangeEvent;
 
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +28,6 @@ public class SubscriptionsEditor extends Div implements HasValueAndElement<Compo
 	private ControllerDataProvider controllerDataProvider;
 	private SubscribtionService subscribtionService;
 	private CurrentUser currentUser;
-	private int totalPrice = 0;
 	private boolean hasChanges = false;
     private final AbstractFieldSupport<SubscriptionsEditor,List<Subscription>> fieldSupport;
     private Recipient recipient;
@@ -44,7 +45,6 @@ public class SubscriptionsEditor extends Div implements HasValueAndElement<Compo
 	public void setValue(List<Subscription> items) {
 		fieldSupport.setValue(items);
 		removeAll();
-		totalPrice = 0;
 		hasChanges = false;
 
 		if (items != null) {
@@ -67,6 +67,8 @@ public class SubscriptionsEditor extends Div implements HasValueAndElement<Compo
 				setHasChanges(true);
 			}
 		});
+		editor.addNotifyOverChangeListener(e -> setHasChanges(true));
+		editor.addNotifyErrorChangeListener(e -> setHasChanges(true));
 
 		editor.setValue(value);
 		return editor;
@@ -92,7 +94,6 @@ public class SubscriptionsEditor extends Div implements HasValueAndElement<Compo
 			s.setRecipient(recipient);
 			item.setValue(s);
 			setValue(Stream.concat(getValue().stream(), Stream.of(s)).collect(Collectors.toList()));
-			fireEvent(new NewEditorEvent(this));
 		}
 	}
 
@@ -107,7 +108,7 @@ public class SubscriptionsEditor extends Div implements HasValueAndElement<Compo
 	private void setHasChanges(boolean hasChanges) {
 		this.hasChanges = hasChanges;
 		if (hasChanges) {
-			fireEvent(new ru.psv4.tempdatchiki.ui.events.ValueChangeEvent(this));
+			fireEvent(new HasChangesEvent(this, hasChanges));
 		}
 	}
 
@@ -121,6 +122,10 @@ public class SubscriptionsEditor extends Div implements HasValueAndElement<Compo
 	public Registration addValueChangeListener(
 			ValueChangeListener<? super ComponentValueChangeEvent<SubscriptionsEditor, List<Subscription>>> listener) {
 		return fieldSupport.addValueChangeListener(listener);
+	}
+
+	public Registration addHasChangesListener(ComponentEventListener<HasChangesEvent> listener) {
+		return addListener(HasChangesEvent.class, listener);
 	}
 
 	public void setRecipient(Recipient recipient) {

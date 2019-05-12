@@ -1,20 +1,14 @@
 package ru.psv4.tempdatchiki.backend.data;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.vaadin.flow.component.JsonSerializable;
-import com.vaadin.flow.internal.JsonSerializer;
-import elemental.json.Json;
 import elemental.json.JsonObject;
+import ru.psv4.tempdatchiki.vaadin_json.JsonSerializerUtils;
+import ru.psv4.tempdatchiki.vaadin_json.TdJsonIgnore;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import java.beans.BeanInfo;
-import java.beans.Introspector;
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 
 @Entity
@@ -24,8 +18,7 @@ public class Subscription extends TdEntity implements IReg<Subscription>, JsonSe
     private LocalDateTime createdDatetime;
 
     @ManyToOne @JoinColumn(name = "recipient_uid", nullable = false)
-    @JsonBackReference
-    @JsonIgnore
+    @TdJsonIgnore
     private Recipient recipient;
 
     @ManyToOne @JoinColumn(name = "controller_uid", nullable = false)
@@ -43,7 +36,6 @@ public class Subscription extends TdEntity implements IReg<Subscription>, JsonSe
 
     public void setCreatedDatetime(LocalDateTime createdDatetime) { this.createdDatetime = createdDatetime; }
 
-    @JsonIgnore
     public Recipient getRecipient() {
         return recipient;
     }
@@ -82,32 +74,10 @@ public class Subscription extends TdEntity implements IReg<Subscription>, JsonSe
     }
 
     @Override
-    public JsonObject toJson() {
-        try {
-            JsonObject json = Json.createObject();
-            BeanInfo info = Introspector.getBeanInfo(getClass());
-            for (PropertyDescriptor pd : info.getPropertyDescriptors()) {
-                if ("class".equals(pd.getName()) ||
-                    pd.getName().equals("recipient")) {
-                    continue;
-                }
-                Method reader = pd.getReadMethod();
-                if (reader != null) {
-                    json.put(pd.getName(), JsonSerializer.toJson(reader.invoke(this)));
-                }
-            }
-
-            return json;
-        } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    "Could not serialize object of type " + this.getClass()
-                            + " to JsonValue",
-                    e);
-        }
-    }
+    public JsonObject toJson() { return JsonSerializerUtils.toJson(this); }
 
     @Override
     public JsonSerializable readJson(JsonObject value) {
-        return JsonSerializer.toObject(Subscription.class, value);
+        return JsonSerializerUtils.readJson(value);
     }
 }

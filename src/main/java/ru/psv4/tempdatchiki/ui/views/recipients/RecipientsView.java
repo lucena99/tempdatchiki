@@ -65,14 +65,14 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 				.withProperty("recipientCard", RecipientCard::create)
 				.withEventHandler("cardClick",
 						r -> UI.getCurrent().navigate(TdConst.PAGE_RECIPIENTS + "/" + r.getUid())));
-//
-//		getSearchBar().addFilterChangeListener(
-//				e -> presenter.filterChanged(getSearchBar().getFilter(), getSearchBar().isCheckboxChecked()));
-//		getSearchBar().addActionClickListener(e -> presenter.createNewOrder());
+
+		getSearchBar().addFilterChangeListener(
+				e -> presenter.filterChanged(getSearchBar().getFilter()));
+		getSearchBar().addActionClickListener(e -> presenter.createNewRecipient());
 //
 		presenter.init(this);
 //
-//		dialog.addDialogCloseActionListener(e -> presenter.cancel());
+		dialog.addDialogCloseActionListener(e -> presenter.cancel());
 	}
 
 //	@Override

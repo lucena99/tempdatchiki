@@ -21,6 +21,8 @@ import ru.psv4.tempdatchiki.backend.data.Subscription;
 import ru.psv4.tempdatchiki.dataproviders.ControllerDataProvider;
 import ru.psv4.tempdatchiki.ui.events.ControllerChangeEvent;
 import ru.psv4.tempdatchiki.ui.events.DeleteEvent;
+import ru.psv4.tempdatchiki.ui.events.NotifyErrorChangeEvent;
+import ru.psv4.tempdatchiki.ui.events.NotifyOverChangeEvent;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -53,6 +55,10 @@ public class SubscriptionEditor extends PolymerTemplate<TemplateModel> implement
 			fireEvent(new ControllerChangeEvent(this, e.getValue()));
 		});
 
+		over.addValueChangeListener(e -> fireEvent(new NotifyOverChangeEvent(this, e.getValue())));
+
+		error.addValueChangeListener(e -> fireEvent(new NotifyErrorChangeEvent(this, e.getValue())));
+
 		binder.forField(controllers).bind("controller");
 		binder.forField(over).bind("notifyOver");
 		binder.forField(error).bind("notifyError");
@@ -82,6 +88,14 @@ public class SubscriptionEditor extends PolymerTemplate<TemplateModel> implement
 		return addListener(ControllerChangeEvent.class, listener);
 	}
 
+	public Registration addNotifyOverChangeListener(ComponentEventListener<NotifyOverChangeEvent> listener) {
+		return addListener(NotifyOverChangeEvent.class, listener);
+	}
+
+	public Registration addNotifyErrorChangeListener(ComponentEventListener<NotifyErrorChangeEvent> listener) {
+		return addListener(NotifyErrorChangeEvent.class, listener);
+	}
+
 	public Registration addDeleteListener(ComponentEventListener<DeleteEvent> listener) {
 		return addListener(DeleteEvent.class, listener);
 	}
@@ -91,12 +105,4 @@ public class SubscriptionEditor extends PolymerTemplate<TemplateModel> implement
 			ValueChangeListener<? super ComponentValueChangeEvent<SubscriptionEditor, Subscription>> listener) {
 		return fieldSupport.addValueChangeListener(listener);
 	}
-
-	public interface Model extends TemplateModel {
-		public boolean isNotifyOver();
-		public void setNotifyOver(boolean value);
-		public boolean isNotifyError();
-		public void setNotifyError(boolean value);
-	}
-
 }
