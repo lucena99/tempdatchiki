@@ -11,6 +11,7 @@ public class TdConst {
     public static final String PAGE_RECIPIENTS = "recipients";
     public static final String PAGE_RECIPIENT_EDIT = "recipients/edit";
     public static final String PAGE_CONTROLLERS = "controllers";
+    public static final String PAGE_CONTROLLERS_EDIT = "controllers/edit";
     public static final String PAGE_USERS = "users";
     public static final String PAGE_PRODUCTS = "products";
 
@@ -22,7 +23,7 @@ public class TdConst {
     public static final String TITLE_NOT_FOUND = "Page was not found";
     public static final String TITLE_ACCESS_DENIED = "Access denied";
 
-    public static final String[] ORDER_SORT_FIELDS = {"createdDatetime"};
+    public static final String[] REFERENCE_SORT_FIELDS = {"createdDatetime"};
     public static final Sort.Direction DEFAULT_SORT_DIRECTION = Sort.Direction.DESC;
 
     public static final String VIEWPORT = "width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes";

@@ -7,9 +7,12 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
+import ru.psv4.tempdatchiki.backend.service.ControllerService;
 import ru.psv4.tempdatchiki.backend.service.RecipientService;
 import ru.psv4.tempdatchiki.security.CurrentUser;
+import ru.psv4.tempdatchiki.ui.views.controllers.ControllersView;
 import ru.psv4.tempdatchiki.ui.views.recipients.RecipientsView;
 
 @Configuration
@@ -21,4 +24,9 @@ public class PresenterFactory {
 		return new EntityPresenter<>(crudService, currentUser);
 	}
 
+	@Bean
+	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+	public EntityPresenter<Controller, ControllersView> controllerEntityPresenter(ControllerService crudService, CurrentUser currentUser) {
+		return new EntityPresenter<>(crudService, currentUser);
+	}
 }

@@ -26,7 +26,11 @@ public class JsonSerializerUtils {
                 }
                 Method reader = pd.getReadMethod();
                 if (reader != null) {
-                    json.put(pd.getName(), JsonSerializer.toJson(reader.invoke(object)));
+                    try {
+                        json.put(pd.getName(), JsonSerializer.toJson(reader.invoke(object)));
+                    } catch (org.hibernate.LazyInitializationException e) {
+                        //continue;
+                    }
                 }
             }
 

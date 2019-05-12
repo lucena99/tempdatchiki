@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ControllerService extends ReferenceService<Controller> implements FilterableCrudService<Controller> {
+public class ControllerService extends ReferenceService<Controller> implements CrudService<Controller> {
 
     @Autowired
     private ControllerRepository controllerRepository;
@@ -35,28 +35,24 @@ public class ControllerService extends ReferenceService<Controller> implements F
                 .setParameter("controller", controller).getResultList();
     }
 
-    @Override
-    public Page<Controller> findAnyMatching(Optional<String> filter, Pageable pageable) {
-        if (filter.isPresent()) {
-            String repositoryFilter = "%" + filter.get() + "%";
-            return controllerRepository.findByNameLikeIgnoreCase(repositoryFilter, pageable);
+    public Page<Controller> findAnyMatching(Optional<String> optionalFilter, Pageable pageable) {
+        if (optionalFilter.isPresent() && !optionalFilter.get().isEmpty()) {
+            return controllerRepository.findByNameContainingIgnoreCase(optionalFilter.get(), pageable);
         } else {
-            return find(pageable);
+            return controllerRepository.findAll(pageable);
         }
     }
 
-    @Override
-    public long countAnyMatching(Optional<String> filter) {
-        if (filter.isPresent()) {
-            String repositoryFilter = "%" + filter.get() + "%";
-            return controllerRepository.countByNameLikeIgnoreCase(repositoryFilter);
+    public long countAnyMatching(Optional<String> optionalFilter) {
+        if (optionalFilter.isPresent() && !optionalFilter.get().isEmpty()) {
+            return controllerRepository.countByNameContainingIgnoreCase(optionalFilter.get());
         } else {
-            return count();
+            return controllerRepository.count();
         }
     }
 
     public Page<Controller> find(Pageable pageable) {
-        return controllerRepository.findBy(pageable);
+        return controllerRepository.findAll(pageable);
     }
 
     @Override
@@ -75,7 +71,7 @@ public class ControllerService extends ReferenceService<Controller> implements F
     @Override
     public Controller save(User currentUser, Controller entity) {
         try {
-            return FilterableCrudService.super.save(currentUser, entity);
+            return CrudService.super.save(currentUser, entity);
         } catch (DataIntegrityViolationException e) {
             throw new UserFriendlyDataException(
                     "There is already a controller with that name. Please select a unique name for the controller.");

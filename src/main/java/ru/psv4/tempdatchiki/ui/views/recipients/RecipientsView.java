@@ -43,7 +43,7 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 	@Id("dialog")
 	private Dialog dialog;
 
-	private ConfirmDialog confirmation;
+	//private ConfirmDialog confirmation;
 
 	private final RecipientEditor recipientEditor;
 

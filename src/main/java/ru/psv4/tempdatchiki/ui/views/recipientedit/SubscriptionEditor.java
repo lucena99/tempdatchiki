@@ -18,7 +18,7 @@ import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.Subscription;
-import ru.psv4.tempdatchiki.dataproviders.ControllerDataProvider;
+import ru.psv4.tempdatchiki.dataproviders.ControllerGridDataProvider;
 import ru.psv4.tempdatchiki.ui.events.ControllerChangeEvent;
 import ru.psv4.tempdatchiki.ui.events.DeleteEvent;
 import ru.psv4.tempdatchiki.ui.events.NotifyErrorChangeEvent;
@@ -47,7 +47,7 @@ public class SubscriptionEditor extends PolymerTemplate<TemplateModel> implement
 
 	private BeanValidationBinder<Subscription> binder = new BeanValidationBinder<>(Subscription.class);
 
-	public SubscriptionEditor(ControllerDataProvider controllerSource) {
+	public SubscriptionEditor(ControllerGridDataProvider controllerSource) {
 		this.fieldSupport =  new AbstractFieldSupport<>(this, null,
 				Objects::equals, c ->  {});
 		controllers.setDataProvider(controllerSource);

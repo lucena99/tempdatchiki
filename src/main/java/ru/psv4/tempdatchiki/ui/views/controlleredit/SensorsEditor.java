@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.ui.views.recipientedit;
+package ru.psv4.tempdatchiki.ui.views.controlleredit;
 
 import com.vaadin.flow.component.AbstractField.ComponentValueChangeEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -8,9 +8,8 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.shared.Registration;
 import ru.psv4.tempdatchiki.backend.data.Controller;
-import ru.psv4.tempdatchiki.backend.data.Recipient;
-import ru.psv4.tempdatchiki.backend.data.Subscription;
-import ru.psv4.tempdatchiki.backend.service.SubscribtionService;
+import ru.psv4.tempdatchiki.backend.data.Sensor;
+import ru.psv4.tempdatchiki.backend.service.SensorService;
 import ru.psv4.tempdatchiki.dataproviders.ControllerGridDataProvider;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.events.HasChangesEvent;
@@ -21,27 +20,27 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class SubscriptionsEditor extends Div implements HasValueAndElement<ComponentValueChangeEvent<SubscriptionsEditor,List<Subscription>>, List<Subscription>> {
+public class SensorsEditor extends Div implements HasValueAndElement<ComponentValueChangeEvent<SensorsEditor,List<Sensor>>, List<Sensor>> {
 
-	private SubscriptionEditor empty;
+	private SensorEditor empty;
 	private ControllerGridDataProvider controllerDataProvider;
-	private SubscribtionService subscribtionService;
+	private SensorService service;
 	private CurrentUser currentUser;
 	private boolean hasChanges = false;
-    private final AbstractFieldSupport<SubscriptionsEditor,List<Subscription>> fieldSupport;
-    private Recipient recipient;
-	
-	public SubscriptionsEditor(ControllerGridDataProvider controllerDataProvider,
-							   SubscribtionService subscribtionService, CurrentUser currentUser) {
+    private final AbstractFieldSupport<SensorsEditor, List<Sensor>> fieldSupport;
+    private Controller controller;
+
+	public SensorsEditor(ControllerGridDataProvider controllerDataProvider,
+						 SensorService service, CurrentUser currentUser) {
 		this.controllerDataProvider = controllerDataProvider;
-		this.subscribtionService = subscribtionService;
+		this.service = service;
 		this.currentUser = currentUser;
 		this.fieldSupport = new AbstractFieldSupport<>(this, Collections.emptyList(),
-				Objects::equals, c ->  {}); 
+				Objects::equals, c ->  {});
 	}
 
 	@Override
-	public void setValue(List<Subscription> items) {
+	public void setValue(List<Sensor> items) {
 		fieldSupport.setValue(items);
 		removeAll();
 		hasChanges = false;
@@ -53,21 +52,19 @@ public class SubscriptionsEditor extends Div implements HasValueAndElement<Compo
 		setHasChanges(false);
 	}
 
-	private SubscriptionEditor createEditor(Subscription value) {
-		SubscriptionEditor editor = new SubscriptionEditor(controllerDataProvider);
+	private SensorEditor createEditor(Sensor value) {
+		SensorEditor editor = new SensorEditor();
 		getElement().appendChild(editor.getElement());
-		editor.addControllerChangeListener(e -> controllerChanged(e.getSource(), e.getController()));
+		editor.addNameChangeListener(e -> nameChanged((SensorEditor)e.getSource(), e.getName()));
 		editor.addDeleteListener(e -> {
-			SubscriptionEditor subscriptionEditor = (SubscriptionEditor)e.getSource();
-			if (subscriptionEditor != empty) {
-				remove(subscriptionEditor);
-				Subscription subscription = subscriptionEditor.getValue();
-				setValue(getValue().stream().filter(element -> element != subscription).collect(Collectors.toList()));
+			SensorEditor sourceEditor = (SensorEditor)e.getSource();
+			if (sourceEditor != empty) {
+				remove(sourceEditor);
+				Sensor sensor = sourceEditor.getValue();
+				setValue(getValue().stream().filter(element -> element != sensor).collect(Collectors.toList()));
 				setHasChanges(true);
 			}
 		});
-		editor.addNotifyOverChangeListener(e -> setHasChanges(true));
-		editor.addNotifyErrorChangeListener(e -> setHasChanges(true));
 
 		editor.setValue(value);
 		return editor;
@@ -76,21 +73,21 @@ public class SubscriptionsEditor extends Div implements HasValueAndElement<Compo
 	@Override
 	public void setReadOnly(boolean readOnly) {
 		HasValueAndElement.super.setReadOnly(readOnly);
-		getChildren().forEach(e -> ((SubscriptionEditor) e).setReadOnly(readOnly));
+		getChildren().forEach(e -> ((SensorEditor) e).setReadOnly(readOnly));
 	}
 
 	@Override
-	public List<Subscription> getValue() {
+	public List<Sensor> getValue() {
 		return fieldSupport.getValue();
 	}
 
-	private void controllerChanged(SubscriptionEditor item, Controller controller) {
+	private void nameChanged(SensorEditor item, String name) {
 		setHasChanges(true);
 		if (empty == item) {
 			createEmptyElement();
-			Subscription s = subscribtionService.createNew(currentUser.getUser());
+			Sensor s = service.createNew(currentUser.getUser());
+			s.setName(name);
 			s.setController(controller);
-			s.setRecipient(recipient);
 			item.setValue(s);
 			setValue(Stream.concat(getValue().stream(), Stream.of(s)).collect(Collectors.toList()));
 		}
@@ -114,12 +111,12 @@ public class SubscriptionsEditor extends Div implements HasValueAndElement<Compo
 	public Stream<HasValue<?, ?>> validate() {
 		return getChildren()
 				.filter(component -> fieldSupport.getValue().size() == 0 || !component.equals(empty))
-				.map(editor -> ((SubscriptionEditor) editor).validate()).flatMap(stream -> stream);
+				.map(editor -> ((SensorEditor) editor).validate()).flatMap(stream -> stream);
 	}
 
 	@Override
 	public Registration addValueChangeListener(
-			ValueChangeListener<? super ComponentValueChangeEvent<SubscriptionsEditor, List<Subscription>>> listener) {
+			ValueChangeListener<? super ComponentValueChangeEvent<SensorsEditor, List<Sensor>>> listener) {
 		return fieldSupport.addValueChangeListener(listener);
 	}
 
@@ -127,7 +124,7 @@ public class SubscriptionsEditor extends Div implements HasValueAndElement<Compo
 		return addListener(HasChangesEvent.class, listener);
 	}
 
-	public void setRecipient(Recipient recipient) {
-		this.recipient = recipient;
+	public void setController(Controller controller) {
+		this.controller = controller;
 	}
 }

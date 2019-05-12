@@ -10,8 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.vaadin.artur.spring.dataprovider.FilterablePageableDataProvider;
-import ru.psv4.tempdatchiki.backend.data.Recipient;
-import ru.psv4.tempdatchiki.backend.service.RecipientService;
+import ru.psv4.tempdatchiki.backend.data.Controller;
+import ru.psv4.tempdatchiki.backend.service.ControllerService;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
 import java.util.List;
@@ -22,13 +22,13 @@ import java.util.Optional;
  */
 @SpringComponent
 @UIScope
-public class RecipientGridDataProvider extends FilterablePageableDataProvider<Recipient, String> {
+public class ControllerGridDataProvider extends FilterablePageableDataProvider<Controller, String> {
 
 	@Autowired
-	private RecipientService recipientService;
+	private ControllerService controllerService;
 	private List<QuerySortOrder> defaultSortOrders;
 
-	public RecipientGridDataProvider() {
+	public ControllerGridDataProvider() {
 		setSortOrders(TdConst.DEFAULT_SORT_DIRECTION, TdConst.REFERENCE_SORT_FIELDS);
 	}
 
@@ -45,9 +45,9 @@ public class RecipientGridDataProvider extends FilterablePageableDataProvider<Re
 	}
 
 	@Override
-	protected Page<Recipient> fetchFromBackEnd(Query<Recipient, String> query, Pageable pageable) {
+	protected Page<Controller> fetchFromBackEnd(Query<Controller, String> query, Pageable pageable) {
 		String filter = query.getFilter().orElse("");
-		return recipientService.findAnyMatching(Optional.ofNullable(filter), pageable);
+		return controllerService.findAnyMatching(Optional.ofNullable(filter), pageable);
 	}
 
 	@Override
@@ -56,13 +56,13 @@ public class RecipientGridDataProvider extends FilterablePageableDataProvider<Re
 	}
 
 	@Override
-	protected int sizeInBackEnd(Query<Recipient, String> query) {
+	protected int sizeInBackEnd(Query<Controller, String> query) {
 		String filter = query.getFilter().orElse("");
-		return (int) recipientService.countAnyMatching(Optional.ofNullable(filter));
+		return (int) controllerService.countAnyMatching(Optional.ofNullable(filter));
 	}
 
 	@Override
-	public Object getId(Recipient item) {
+	public Object getId(Controller item) {
 		return item.getUid();
 	}
 }

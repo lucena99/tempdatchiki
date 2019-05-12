@@ -56,10 +56,4 @@ public class LoginView extends VerticalLayout
 			event.getLocation().getQueryParameters().getParameters().containsKey(
 				"error"));
 	}
-
-	public interface Model extends TemplateModel {
-
-		void setError(boolean error);
-	}
-
 }

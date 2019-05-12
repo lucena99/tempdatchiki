@@ -117,78 +117,20 @@
       <scope>test</scope>
     </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
-    <dependency>
-      <groupId>org.apache.commons</groupId>
-      <artifactId>commons-compress</artifactId>
-      <version>1.18</version>
-    </dependency>
+<!--    &lt;!&ndash; https://mvnrepository.com/artifact/org.apache.commons/commons-compress &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.apache.commons</groupId>-->
+<!--      <artifactId>commons-compress</artifactId>-->
+<!--      <version>1.18</version>-->
+<!--    </dependency>-->
 
-    <!-- https://mvnrepository.com/artifact/commons-net/commons-net -->
-    <dependency>
-      <groupId>commons-net</groupId>
-      <artifactId>commons-net</artifactId>
-      <version>3.6</version>
-    </dependency>
+<!--    &lt;!&ndash; https://mvnrepository.com/artifact/commons-net/commons-net &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>commons-net</groupId>-->
+<!--      <artifactId>commons-net</artifactId>-->
+<!--      <version>3.6</version>-->
+<!--    </dependency>-->
 
-    <!-- https://mvnrepository.com/artifact/org.apache.poi/poi -->
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi</artifactId>
-      <version>3.16</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.poi</groupId>
-      <artifactId>poi-ooxml</artifactId>
-      <version>3.16</version>
-    </dependency>
-
-    <!--jsp needed-->
-    <!-- Tomcat embedded container-->
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-tomcat</artifactId>
-    </dependency>
-
-    <!-- JSTL for JSP -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>jstl</artifactId>
-    </dependency>
-
-    <!-- Need this to compile JSP -->
-    <dependency>
-      <groupId>org.apache.tomcat.embed</groupId>
-      <artifactId>tomcat-embed-jasper</artifactId>
-    </dependency>
-
-    <!-- Need this to compile JSP,
-        tomcat-embed-jasper version is not working, no idea why -->
-    <dependency>
-      <groupId>org.eclipse.jdt.core.compiler</groupId>
-      <artifactId>ecj</artifactId>
-      <version>4.6.1</version>
-    </dependency>
-
-    <!-- Optional, test for static content, bootstrap CSS-->
-    <dependency>
-      <groupId>org.webjars</groupId>
-      <artifactId>jquery</artifactId>
-      <version>1.9.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.webjars</groupId>
-      <artifactId>bootstrap</artifactId>
-      <version>3.3.7</version>
-    </dependency>
-
-    <dependency>
-      <groupId>org.webjars</groupId>
-      <artifactId>bootstrap-datepicker</artifactId>
-      <version>1.0.1</version>
-    </dependency>
     <!---->
 
     <!-- https://mvnrepository.com/artifact/org.firebirdsql.jdbc/jaybird-jdk18 -->
@@ -202,18 +144,6 @@
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
       <version>42.2.1</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger2</artifactId>
-      <version>2.9.2</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.springfox</groupId>
-      <artifactId>springfox-swagger-ui</artifactId>
-      <version>2.9.2</version>
     </dependency>
 
     <!-- Vaadin -->
@@ -255,6 +185,63 @@
       <artifactId>iron-ajax</artifactId>
       <version>2.1.3</version>
     </dependency>
+
+    <!--jsp needed-->
+    <!-- Tomcat embedded container-->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-tomcat</artifactId>
+    </dependency>
+
+<!--    &lt;!&ndash; JSTL for JSP &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>javax.servlet</groupId>-->
+<!--      <artifactId>jstl</artifactId>-->
+<!--    </dependency>-->
+
+<!--    &lt;!&ndash; Need this to compile JSP &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.apache.tomcat.embed</groupId>-->
+<!--      <artifactId>tomcat-embed-jasper</artifactId>-->
+<!--    </dependency>-->
+
+<!--    &lt;!&ndash; Need this to compile JSP,-->
+<!--        tomcat-embed-jasper version is not working, no idea why &ndash;&gt;-->
+<!--    <dependency>-->
+<!--      <groupId>org.eclipse.jdt.core.compiler</groupId>-->
+<!--      <artifactId>ecj</artifactId>-->
+<!--      <version>4.6.1</version>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.webjars</groupId>-->
+<!--      <artifactId>jquery</artifactId>-->
+<!--      <version>1.9.1</version>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.webjars</groupId>-->
+<!--      <artifactId>bootstrap</artifactId>-->
+<!--      <version>3.3.7</version>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.webjars</groupId>-->
+<!--      <artifactId>bootstrap-datepicker</artifactId>-->
+<!--      <version>1.0.1</version>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>io.springfox</groupId>-->
+<!--      <artifactId>springfox-swagger-ui</artifactId>-->
+<!--      <version>2.9.2</version>-->
+<!--    </dependency>-->
+
+        <dependency>
+          <groupId>io.springfox</groupId>
+          <artifactId>springfox-swagger2</artifactId>
+          <version>2.9.2</version>
+        </dependency>
 
   </dependencies>
 
@@ -360,13 +347,27 @@
                       </files>
                     </fragment>
                     <fragment>
-                      <name>main-fragment</name>
+                      <name>recipient-fragment</name>
                       <files>
                         <file>src/views/recipients/recipients-view.html</file>
                         <file>src/views/recipients/order-status-badge.html</file>
                         <file>src/views/recipientedit/subscription-editor.html</file>
                         <file>src/views/recipientedit/recipient-editor.html</file>
                         <file>src/views/recipientedit/recipient-details.html</file>
+                        <file>src/views/errors/access-denied-view.html</file>
+                        <file>src/components/amount-field.html</file>
+                        <file>src/components/form-buttons-bar.html</file>
+                        <file>src/components/search-bar.html</file>
+                        <file>src/components/utils-mixin.html</file>
+                      </files>
+                    </fragment>
+                    <fragment>
+                      <name>controller-fragment</name>
+                      <files>
+                        <file>src/views/controllers/controllers-view.html</file>
+                        <file>src/views/controlleredit/sensor-editor.html</file>
+                        <file>src/views/controlleredit/controller-editor.html</file>
+                        <file>src/views/controlleredit/controller-details.html</file>
                         <file>src/views/errors/access-denied-view.html</file>
                         <file>src/components/amount-field.html</file>
                         <file>src/components/form-buttons-bar.html</file>

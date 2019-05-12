@@ -1,15 +1,25 @@
 package ru.psv4.tempdatchiki.backend.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.Sensor;
+import ru.psv4.tempdatchiki.backend.data.User;
+import ru.psv4.tempdatchiki.backend.repositories.SensorRepository;
+import ru.psv4.tempdatchiki.utils.UIDUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class SensorService extends ReferenceService<Sensor> {
+public class SensorService extends ReferenceService<Sensor> implements CrudService<Sensor> {
+
+    @Autowired
+    private SensorRepository sensorRepository;
+
     public SensorService() {
         super(Sensor.class);
     }
@@ -21,5 +31,19 @@ public class SensorService extends ReferenceService<Sensor> {
                 .setParameter("name", name)
                 .setParameter("controller", c)
                 .getResultList();
+    }
+
+    @Override
+    public JpaRepository<Sensor, String> getRepository() {
+        return sensorRepository;
+    }
+
+    @Transactional
+    @Override
+    public Sensor createNew(User currentUser) {
+        Sensor e = new Sensor();
+        e.setUid(UIDUtils.generate());
+        e.setCreatedDatetime(LocalDateTime.now());
+        return e;
     }
 }

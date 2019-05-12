@@ -11,12 +11,11 @@
 
 <link rel="import" href="../../components/buttons-bar.html">
 <link rel="import" href="../../components/utils-mixin.html">
-<link rel="import" href="subscription-editor.html">
-<link rel="import" href="../recipients/order-status-badge.html">
+<link rel="import" href="sensor-editor.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
 
-<dom-module id="recipient-editor">
+<dom-module id="controller-editor">
   <template>
     <style include="shared-styles">
       :host {
@@ -48,24 +47,20 @@
     </style>
 
     <div class="scrollable flex1" id="main">
-      <h2 id="title">New recipient</h2>
-
-      <div class="meta-row" id="metaContainer">
-        <order-status-badge class="badge" status="[[state]]"></order-status-badge>
-      </div>
+      <h2 id="title">New controller</h2>
 
       <vaadin-form-layout id="form1">
-        <vaadin-text-field id="recipientName" label="Recipient">
-          <iron-icon slot="prefix" icon="vaadin:user"></iron-icon>
+        <vaadin-text-field id="controllerName" label="Controller">
+          <iron-icon slot="prefix" icon="vaadin:text-input"></iron-icon>
         </vaadin-text-field>
 
-        <vaadin-text-field  id="recipientUid" label="UID">
+        <vaadin-text-field  id="controllerUid" label="UID">
         </vaadin-text-field>
 
         <vaadin-form-item>
-          <label slot="label">Подписки</label>
+          <label slot="label">Датчики</label>
         </vaadin-form-item>
-        <div id="subscriptionsContainer"/>
+        <div id="sensorsContainer"/>
       </vaadin-form-layout>
     </div>
 
@@ -79,10 +74,10 @@
   </template>
 
   <script>
-    class RecipientEditor extends window.ScrollShadowMixin(Polymer.Element) {
+    class ControllerEditor extends window.ScrollShadowMixin(Polymer.Element) {
 
       static get is() {
-        return 'recipient-editor';
+        return 'controller-editor';
       }
 
       ready() {
@@ -96,6 +91,6 @@
       }
     }
 
-    window.customElements.define(RecipientEditor.is, RecipientEditor);
+    window.customElements.define(ControllerEditor.is, ControllerEditor);
   </script>
 </dom-module>
