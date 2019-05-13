@@ -41,11 +41,11 @@ public class RecipientPresenter {
 		this.entityPresenter.setView(view);
 		this.view = view;
 		view.getGrid().setDataProvider(dataProvider);
-		view.getOpenedEditor().setCurrentUser(currentUser.getUser());
-		view.getOpenedEditor().addCancelListener(e -> cancel());
-		view.getOpenedEditor().addSaveListener(e -> save());
-		view.getOpenedDetails().addCancelListener(e -> cancel());
-		view.getOpenedDetails().addEditListener(e -> edit());
+		view.getEditor().setCurrentUser(currentUser.getUser());
+		view.getEditor().addCancelListener(e -> cancel());
+		view.getEditor().addSaveListener(e -> save());
+		view.getDetails().addCancelListener(e -> cancel());
+		view.getDetails().addEditListener(e -> edit());
 	}
 
 	public void filterChanged(String filter) {
@@ -56,7 +56,7 @@ public class RecipientPresenter {
 		entityPresenter.loadEntity(id, e -> open(e, edit));
 	}
 
-	void createNewRecipient() {
+	void createNew() {
 		open(entityPresenter.createNew(), true);
 	}
 
@@ -100,16 +100,16 @@ public class RecipientPresenter {
 		view.setOpened(true);
 
 		if (edit) {
-			view.getOpenedEditor().read(recipient, entityPresenter.isNew());
+			view.getEditor().read(recipient, entityPresenter.isNew());
 		} else {
-			view.getOpenedDetails().display(recipient);
+			view.getDetails().display(recipient);
 		}
 	}
 
 	private void close() {
-		view.getOpenedEditor().close();
+		view.getEditor().close();
 		view.setOpened(false);
-		view.navigateToMainView();
-		entityPresenter.close();
+//		view.navigateToMainView();
+//		entityPresenter.close();
 	}
 }

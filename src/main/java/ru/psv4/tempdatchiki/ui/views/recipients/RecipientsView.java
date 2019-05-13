@@ -3,7 +3,6 @@ package ru.psv4.tempdatchiki.ui.views.recipients;
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
-import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -45,16 +44,16 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 
 	//private ConfirmDialog confirmation;
 
-	private final RecipientEditor recipientEditor;
+	private final RecipientEditor editor;
 
-	private final RecipientDetails recipientDetails = new RecipientDetails();
+	private final RecipientDetails details = new RecipientDetails();
 
 	private final RecipientPresenter presenter;
 
 	@Autowired
-	public RecipientsView(RecipientPresenter presenter, RecipientEditor recipientEditor) {
+	public RecipientsView(RecipientPresenter presenter, RecipientEditor editor) {
 		this.presenter = presenter;
-		this.recipientEditor = recipientEditor;
+		this.editor = editor;
 
 		searchBar.setActionText("Новый слушатель");
 		searchBar.setPlaceHolder("Search");
@@ -68,7 +67,7 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 
 		getSearchBar().addFilterChangeListener(
 				e -> presenter.filterChanged(getSearchBar().getFilter()));
-		getSearchBar().addActionClickListener(e -> presenter.createNewRecipient());
+		getSearchBar().addActionClickListener(e -> presenter.createNew());
 //
 		presenter.init(this);
 //
@@ -90,10 +89,10 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 	}
 
 	@Override
-	public void setParameter(BeforeEvent event, @OptionalParameter String recipientId) {
+	public void setParameter(BeforeEvent event, @OptionalParameter String uid) {
 		boolean editView = event.getLocation().getPath().contains(TdConst.PAGE_RECIPIENT_EDIT);
-		if (recipientId != null) {
-			presenter.onNavigation(recipientId, editView);
+		if (uid != null) {
+			presenter.onNavigation(uid, editView);
 		} else if (dialog.isOpened()) {
 			presenter.closeSilently();
 		}
@@ -105,28 +104,28 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 
 	@Override
 	public boolean isDirty() {
-		return recipientEditor.hasChanges() || recipientDetails.isDirty();
+		return editor.hasChanges() || details.isDirty();
 	}
 
 	@Override
 	public void write(Recipient entity) throws ValidationException {
-		recipientEditor.write(entity);
+		editor.write(entity);
 	}
 
 	public Stream<HasValue<?, ?>> validate() {
-		return recipientEditor.validate();
+		return editor.validate();
 	}
 
 	SearchBar getSearchBar() {
 		return searchBar;
 	}
 
-	RecipientEditor getOpenedEditor() {
-		return recipientEditor;
+	RecipientEditor getEditor() {
+		return editor;
 	}
 
-	RecipientDetails getOpenedDetails() {
-		return recipientDetails;
+	RecipientDetails getDetails() {
+		return details;
 	}
 
 	Grid<Recipient> getGrid() {
@@ -135,14 +134,14 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 
 	@Override
 	public void clear() {
-		recipientDetails.setDirty(false);
-		recipientEditor.clear();
+		details.setDirty(false);
+		editor.clear();
 	}
 
 	void setDialogElementsVisibility(boolean editing) {
-		dialog.add(editing ? recipientEditor : recipientDetails);
-		recipientEditor.setVisible(editing);
-		recipientDetails.setVisible(!editing);
+		dialog.add(editing ? editor : details);
+		editor.setVisible(editing);
+		details.setVisible(!editing);
 	}
 
 	@Override
