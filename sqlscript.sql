@@ -123,6 +123,6 @@ update "user" set role = 'restapi' where name = 'restapi';
 
 alter table controller add column url text;
 
-update "controller" set url = '';
+update "controller" set url = 'http://anyherson42.asuscomm.com:41337/tiny.htm';
 
 ALTER TABLE "controller" ALTER COLUMN url SET NOT NULL;
