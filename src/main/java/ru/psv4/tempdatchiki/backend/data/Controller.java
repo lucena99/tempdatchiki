@@ -5,6 +5,7 @@ import elemental.json.JsonObject;
 import ru.psv4.tempdatchiki.vaadin_json.JsonSerializerUtils;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -15,8 +16,15 @@ public class Controller extends Reference implements JsonSerializable {
 
     public static final String ENTITY_GRAPTH_FULL = "Controller.full";
 
+    @NotNull
+    private String url;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "controller")
     private List<Sensor> sensors;
+
+    public String getUrl() { return url; }
+
+    public void setUrl(String url) { this.url = url; }
 
     public List<Sensor> getSensors() {
         return sensors;

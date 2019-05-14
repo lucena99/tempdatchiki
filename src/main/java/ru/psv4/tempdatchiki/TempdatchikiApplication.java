@@ -13,11 +13,13 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.env.Environment;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 @SpringBootApplication(exclude = ErrorMvcAutoConfiguration.class)
+@EnableScheduling
 public class TempdatchikiApplication extends SpringBootServletInitializer {
 
     private static final Logger log = LogManager.getLogger(TempdatchikiApplication.class);

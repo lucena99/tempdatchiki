@@ -55,8 +55,8 @@ public class ControllerDetails extends PolymerTemplate<ControllerDetails.Model> 
 	}
 
 	public interface Model extends TemplateModel {
-		@Include({ "uid",
-			"name", "sensors.name" })
+		@Include({ "name",
+			"url", "sensors.name" })
 		void setItem(Controller r);
 	}
 

@@ -41,8 +41,8 @@ public class ControllerEditor extends PolymerTemplate<TemplateModel> {
 	@Id("controllerName")
 	private TextField controllerName;
 
-	@Id("controllerUid")
-	private TextField controllerUid;
+	@Id("controllerURL")
+	private TextField controllerURL;
 
 	@Id("cancel")
 	private Button cancel;
@@ -71,8 +71,8 @@ public class ControllerEditor extends PolymerTemplate<TemplateModel> {
 		controllerName.setRequired(true);
 		binder.bind(controllerName, "name");
 
-		controllerUid.setRequired(true);
-		binder.bind(controllerUid, "uid");
+		controllerURL.setRequired(true);
+		binder.bind(controllerURL, "url");
 
 		sensorsEditor.setRequiredIndicatorVisible(true);
 		binder.bind(sensorsEditor, "sensors");

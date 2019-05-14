@@ -121,4 +121,8 @@ now());
 
 update "user" set role = 'restapi' where name = 'restapi';
 
-select * from recipient
+alter table controller add column url text;
+
+update "controller" set url = '';
+
+ALTER TABLE "controller" ALTER COLUMN url SET NOT NULL;
