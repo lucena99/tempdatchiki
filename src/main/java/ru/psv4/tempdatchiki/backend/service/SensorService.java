@@ -34,7 +34,7 @@ public class SensorService extends ReferenceService<Sensor> implements CrudServi
     }
 
     @Override
-    public JpaRepository<Sensor, String> getRepository() {
+    public SensorRepository getRepository() {
         return sensorRepository;
     }
 

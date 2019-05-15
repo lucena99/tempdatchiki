@@ -63,7 +63,7 @@ public class SubscribtionService extends TdEntityService<Subscription> implement
     }
 
     @Override
-    public JpaRepository<Subscription, String> getRepository() {
+    public SubscriptionRepository getRepository() {
         return subscriptionRepository;
     }
 }

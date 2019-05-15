@@ -126,3 +126,12 @@ alter table controller add column url text;
 update "controller" set url = 'http://anyherson42.asuscomm.com:41337/tiny.htm';
 
 ALTER TABLE "controller" ALTER COLUMN url SET NOT NULL;
+
+alter table sensor add column minvalue numeric(3,2);
+alter table sensor add column maxvalue numeric(3,2);
+alter table sensor add column num smallint;
+
+update sensor set num = 0 where name = 'Первый датчик';
+update sensor set num = 1 where name = 'Второй датчик';
+update sensor set num = cast(substring(name, 12, 13) as int) where controller_uid = 'a28c07b1-a0a1-4de8-897c-0550db98b666';
+select * from sensor
