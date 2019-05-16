@@ -3,9 +3,20 @@ package ru.psv4.tempdatchiki.backend.schedulers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.http.HttpHeaders;
+import org.apache.http.HttpStatus;
+import org.apache.http.StatusLine;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -21,6 +32,7 @@ import ru.psv4.tempdatchiki.utils.Lazy;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -43,7 +55,10 @@ public class TempReadScheduler {
     @Autowired
     private SubscribtionService subscribtionService;
 
-    private static Logger log = LogManager.getLogger(TempReadScheduler.class);
+    @Value("${events.hub.url}")
+    private String eventHubURL;
+
+    private static Logger log = LoggerFactory.getLogger(TempReadScheduler.class);
 
     @Scheduled(fixedRate = 1000)
     public void tempRead() {
@@ -58,7 +73,7 @@ public class TempReadScheduler {
         Map<Integer, Float> tempMap = null;
         try {
             tempMap = getTemp(controller.getUrl());
-            tempMap.entrySet().stream().forEach(e -> log.trace(e));
+            tempMap.entrySet().stream().forEach(e -> log.trace(e.toString()));
 
             Optional<List<Event>> opEvents = generateEventsIfNeed(controller, tempMap);
             if (opEvents.isPresent()) {
@@ -135,7 +150,9 @@ public class TempReadScheduler {
                 Recipient recipient = subscription.getRecipient();
                 for (Event event : events) {
                     try {
-                        log.info(createJsonString(recipient, event));
+                        String jsonString = createJsonString(recipient, event);
+                        log.trace(jsonString);
+                        sendEvent(jsonString);
                     } catch (JsonProcessingException e) {
                         log.error("Error", e);
                     }
@@ -144,11 +161,42 @@ public class TempReadScheduler {
         }
     }
 
+    private void sendEvent(String jsonString) {
+        RequestConfig requestConfig = RequestConfig.custom()
+                .setConnectTimeout(3000)
+                .setSocketTimeout(3000)
+                .build();
+
+        HttpPost http = new HttpPost(eventHubURL);
+        http.setConfig(requestConfig);
+        http.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+        http.setHeader(HttpHeaders.AUTHORIZATION, "key=AAAAWa_hJDY:APA91bFpC7NkOPtJwAOX4dq-W3bjYJSXzcixHolAncqMp9Ic" +
+                "NAkJ7QXdOnKhVXF3icmoGGUeGDs7FbOW2_uXFjXBd2m1M7xg4zeEPVCO-0WZkW6VHqvIHVhIAw2CWqwHGbf7HVovSMVu");
+        http.setEntity(new StringEntity(jsonString, "UTF-8"));
+
+        try (CloseableHttpClient httpClient = HttpClientBuilder.create()
+                    .setConnectionManager(new BasicHttpClientConnectionManager())
+                    .build()) {
+            try (CloseableHttpResponse response = httpClient.execute(http)) {
+                StatusLine statusLine = response.getStatusLine();
+                int status = statusLine.getStatusCode();
+                if (status == HttpStatus.SC_OK) {
+                    log.trace("http {}; response: {}", http, statusLine);
+                } else {
+                    log.error("http {}; response: {}", http, statusLine);
+                }
+            }
+        } catch (IOException e) {
+            log.error("http {}; {}", http, e.toString());
+        }
+    }
+
     private ObjectMapper mapper = new ObjectMapper();
 
     private String createJsonString(Recipient recipient, Event event) throws JsonProcessingException {
         ObjectNode rootNode = mapper.createObjectNode();
-        rootNode.put("to", recipient.getUid());
+        rootNode.put("to", "dTCzAHOae-Q:APA91bFrvlWe8upbXM1SkEs-_wISiZL706r9My6C1OjPk3ILySPmLfPSGrVWLNp" +
+                "6b_vcxH5BH_05esouYDi3ZcWOcBl4vIL8hiDJnMm1t0h0aQ8Xp1ckFPlDJi1UA89H8wiVcVnpcNTi");
         ObjectNode notificationNode = mapper.createObjectNode();
         notificationNode.put("title", "Датчик температуры");
         notificationNode.put("body", event.toString());
