@@ -41,7 +41,7 @@
     <vaadin-form-layout id="form1">
 
       <amount-field id="num" colspan="1" index="[[index]]" class="self-start"
-                    min="0" max="99" editable></amount-field>
+                    min="0" max="99" editable pattern="[0-9]+"></amount-field>
 
       <vaadin-form-layout id="form2" colspan="3" class="product" style="flex: auto;">
         <vaadin-text-field id="name" colspan="8" index="[[index]]">
