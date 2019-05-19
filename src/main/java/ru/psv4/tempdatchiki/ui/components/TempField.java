@@ -4,11 +4,11 @@ import com.vaadin.flow.component.AbstractSinglePropertyField;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.HtmlImport;
 
-@Tag("amount-field")
-@HtmlImport("src/components/amount-field.html")
-public class AmountField extends AbstractSinglePropertyField<AmountField, Integer> {
+@Tag("temp-field")
+@HtmlImport("src/components/temp-field.html")
+public class TempField extends AbstractSinglePropertyField<TempField, Double> {
 
-	public AmountField() {
+	public TempField() {
         super("value", null, true);
 	}
 
@@ -16,11 +16,11 @@ public class AmountField extends AbstractSinglePropertyField<AmountField, Intege
 		getElement().setProperty("disabled", !enabled);
 	}
 
-	public void setMin(int value) {
+	public void setMin(double value) {
 		getElement().setProperty("min", value);
 	}
 
-	public void setMax(int value) {
+	public void setMax(double value) {
 		getElement().setProperty("max", value);
 	}
 

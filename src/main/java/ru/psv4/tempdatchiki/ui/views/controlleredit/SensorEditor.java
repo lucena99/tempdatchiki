@@ -10,14 +10,14 @@ import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
-import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import ru.psv4.tempdatchiki.backend.data.Sensor;
-import ru.psv4.tempdatchiki.ui.components.AmountField;
+import ru.psv4.tempdatchiki.ui.components.NumField;
+import ru.psv4.tempdatchiki.ui.components.TempField;
 import ru.psv4.tempdatchiki.ui.events.DeleteEvent;
 import ru.psv4.tempdatchiki.ui.events.NameChangeEvent;
 
@@ -29,13 +29,19 @@ import java.util.stream.Stream;
 public class SensorEditor extends PolymerTemplate<TemplateModel> implements HasValueAndElement<ComponentValueChangeEvent<SensorEditor, Sensor>, Sensor> {
 
 	@Id("num")
-	private AmountField num;
+	private NumField num;
 
 	@Id("name")
 	private TextField name;
 
 	@Id("delete")
 	private Button delete;
+
+	@Id("minValue")
+	private TempField minValue;
+
+	@Id("maxValue")
+	private TempField maxValue;
 
     private final AbstractFieldSupport<SensorEditor, Sensor> fieldSupport;
 

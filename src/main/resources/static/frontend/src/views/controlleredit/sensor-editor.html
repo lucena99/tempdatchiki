@@ -7,7 +7,8 @@
 
 <link rel="import" href="../../../styles/shared-styles.html">
 
-<link rel="import" href="../../components/amount-field.html">
+<link rel="import" href="../../components/num-field.html">
+<link rel="import" href="../../components/temp-field.html">
 
 <dom-module id="sensor-editor">
   <template>
@@ -40,8 +41,8 @@
 
     <vaadin-form-layout id="form1">
 
-      <amount-field id="num" colspan="1" index="[[index]]" class="self-start"
-                    min="0" max="99" editable pattern="[0-9]+"></amount-field>
+      <num-field id="num" colspan="1" index="[[index]]" class="self-start"
+                    min="0" max="99" editable pattern="[0-9]+"></num-field>
 
       <vaadin-form-layout id="form2" colspan="3" class="product" style="flex: auto;">
         <vaadin-text-field id="name" colspan="8" index="[[index]]">
@@ -52,6 +53,12 @@
       <vaadin-button class="delete self-start" id="delete" colspan="1" index="[[index]]">
         <iron-icon icon="vaadin:close-small"></iron-icon>
       </vaadin-button>
+
+      <temp-field id="minValue" colspan="2" index="[[index]]" class="self-start"
+                 min="0" max="99" editable></temp-field>
+
+      <temp-field id="maxValue" colspan="2" index="[[index]]" class="self-start"
+                 min="0" max="99" editable></temp-field>
 
     </vaadin-form-layout>
 

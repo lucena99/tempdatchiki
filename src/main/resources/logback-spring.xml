@@ -38,10 +38,18 @@
         <appender-ref ref="Console" />
     </root>
 
-    <!-- LOG "com.baeldung*" at TRACE level -->
-    <logger name="ru.psv4.tempdatchiki" level="trace" additivity="false">
-        <appender-ref ref="RollingFile" />
-        <appender-ref ref="Console" />
-    </logger>
+    <springProfile name="dev">
+        <logger name="ru.psv4.tempdatchiki" level="trace" additivity="false">
+            <appender-ref ref="RollingFile" />
+            <appender-ref ref="Console" />
+        </logger>
+    </springProfile>
+
+    <springProfile name="prod">
+        <logger name="ru.psv4.tempdatchiki" level="info" additivity="false">
+            <appender-ref ref="RollingFile" />
+            <appender-ref ref="Console" />
+        </logger>
+    </springProfile>
 
 </configuration>

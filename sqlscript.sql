@@ -153,3 +153,5 @@ select * from setting;
 
 ALTER TABLE recipient ADD COLUMN fcp_token text;
 ALTER TABLE recipient RENAME COLUMN fcp_token TO fcm_token;
+select * from recipient;
+update recipient set fcm_token = 'dTCzAHOae-Q:APA91bFrvlWe8upbXM1SkEs-_wISiZL706r9My6C1OjPk3ILySPmLfPSGrVWLNp6b_vcxH5BH_05esouYDi3ZcWOcBl4vIL8hiDJnMm1t0h0aQ8Xp1ckFPlDJi1UA89H8wiVcVnpcNTi';

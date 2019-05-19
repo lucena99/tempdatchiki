@@ -7,9 +7,6 @@ RUN ln -sf /usr/share/zoneinfo/Europe/Moscow /etc/localtime && echo "Europe/Mosc
 RUN mkdir -p /app
 COPY target/tempdatchiki.war /app/
 
-RUN mkdir -p /resources
-COPY src/main/resources/log4j2.xml /resources/
-
 RUN mkdir -p /log
 
 WORKDIR /app
@@ -17,7 +14,7 @@ WORKDIR /app
 EXPOSE 8181
 
 CMD [ "java", \
-    "-Dlog4j.configurationFile=file:/resources/log4j2.xml", \
+    "-Dspring.profiles.active=prod", \
     "-Dport=${PORT}", \
     "-Ddburl=${DATABASE_URL}", \
     "-Xmx256m", \

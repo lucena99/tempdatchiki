@@ -194,8 +194,7 @@ public class TempReadScheduler {
 
     private String createJsonString(Recipient recipient, Event event) throws JsonProcessingException {
         ObjectNode rootNode = mapper.createObjectNode();
-        rootNode.put("to", "dTCzAHOae-Q:APA91bFrvlWe8upbXM1SkEs-_wISiZL706r9My6C1OjPk3ILySPmLfPSGrVWLNp" +
-                "6b_vcxH5BH_05esouYDi3ZcWOcBl4vIL8hiDJnMm1t0h0aQ8Xp1ckFPlDJi1UA89H8wiVcVnpcNTi");
+        rootNode.put("to", recipient.getFcmToken());
         ObjectNode notificationNode = mapper.createObjectNode();
         notificationNode.put("title", "Датчик температуры");
         notificationNode.put("body", event.toString());
