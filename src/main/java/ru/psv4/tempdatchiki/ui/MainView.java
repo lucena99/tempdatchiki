@@ -13,6 +13,7 @@ import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.server.PWA;
 import ru.psv4.tempdatchiki.security.SecurityUtils;
 import ru.psv4.tempdatchiki.ui.views.HasConfirmation;
+import ru.psv4.tempdatchiki.ui.views.settingsview.SettingsView;
 
 import static ru.psv4.tempdatchiki.utils.TdConst.*;
 
@@ -43,6 +44,9 @@ public class MainView extends AbstractAppRouterLayout {
 		if (SecurityUtils.isUserLoggedIn()) {
 			setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.EDIT.create(), TITLE_RECIPIENTS, PAGE_RECIPIENTS));
 			setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.CLOCK.create(), TITLE_CONTROLLERS, PAGE_CONTROLLERS));
+			if (SecurityUtils.isAccessGranted(SettingsView.class)) {
+				setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.VAADIN_H.create(), TITLE_SETTINGS, PAGE_SETTINGS));
+			}
 
 //			if (SecurityUtils.isAccessGranted(UsersView.class)) {
 //				setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.USER.create(), TITLE_USERS, PAGE_USERS));

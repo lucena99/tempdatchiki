@@ -12,13 +12,12 @@ public class TdConst {
     public static final String PAGE_RECIPIENT_EDIT = "recipients/edit";
     public static final String PAGE_CONTROLLERS = "controllers";
     public static final String PAGE_CONTROLLERS_EDIT = "controllers/edit";
-    public static final String PAGE_USERS = "users";
-    public static final String PAGE_PRODUCTS = "products";
+    public static final String PAGE_SETTINGS = "settings";
+    public static final String PAGE_SETTINGS_EDIT = "settings/edit";
 
     public static final String TITLE_RECIPIENTS = "Слушатели";
     public static final String TITLE_CONTROLLERS = "Контроллеры";
-    public static final String TITLE_USERS = "Users";
-    public static final String TITLE_PRODUCTS = "Products";
+    public static final String TITLE_SETTINGS = "Настройки";
     public static final String TITLE_LOGOUT = "Выйти";
     public static final String TITLE_NOT_FOUND = "Page was not found";
     public static final String TITLE_ACCESS_DENIED = "Access denied";

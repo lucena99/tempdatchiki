@@ -20,12 +20,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import ru.psv4.tempdatchiki.backend.data.Controller;
-import ru.psv4.tempdatchiki.backend.data.Recipient;
-import ru.psv4.tempdatchiki.backend.data.Sensor;
-import ru.psv4.tempdatchiki.backend.data.Subscription;
+import ru.psv4.tempdatchiki.backend.data.*;
 import ru.psv4.tempdatchiki.backend.service.ControllerService;
 import ru.psv4.tempdatchiki.backend.service.SensorService;
+import ru.psv4.tempdatchiki.backend.service.SettingService;
 import ru.psv4.tempdatchiki.backend.service.SubscribtionService;
 import ru.psv4.tempdatchiki.utils.Lazy;
 
@@ -55,17 +53,22 @@ public class TempReadScheduler {
     @Autowired
     private SubscribtionService subscribtionService;
 
-    @Value("${events.hub.url}")
-    private String eventHubURL;
+    @Autowired
+    private SettingService settingService;
+
+    @Value("${temp.scheduler.active}")
+    private boolean active;
 
     private static Logger log = LoggerFactory.getLogger(TempReadScheduler.class);
 
     @Scheduled(fixedRate = 1000)
     public void tempRead() {
-        LocalTime now = LocalTime.now();
-        log.info(String.format("Temp read scheduler time = %s", now));
-        List<Controller> controllers = controllerService.getList();
-        controllers.stream().forEach(c -> tempReadAndNotifyRecipientsIfNeed(c));
+        if (active) {
+            LocalTime now = LocalTime.now();
+            log.info(String.format("Temp read scheduler time = %s", now));
+            List<Controller> controllers = controllerService.getList();
+            controllers.stream().forEach(c -> tempReadAndNotifyRecipientsIfNeed(c));
+        }
     }
 
     private void tempReadAndNotifyRecipientsIfNeed(Controller controller) {
@@ -120,12 +123,6 @@ public class TempReadScheduler {
         }
     }
 
-    ;
-
-    private enum EventType {
-        OverDown, OverUp, Error;
-    }
-
     private Optional<List<Event>> generateEventsIfNeed(Controller controller, Map<Integer, Float> tempMap) {
         Lazy<List<Event>> events = new Lazy<>(() -> new ArrayList<>());
         List<Sensor> sensors = sensorService.getRepository().findByController(controller);
@@ -152,7 +149,7 @@ public class TempReadScheduler {
                     try {
                         String jsonString = createJsonString(recipient, event);
                         log.trace(jsonString);
-                        sendEvent(jsonString);
+                        //sendEvent(jsonString);
                     } catch (JsonProcessingException e) {
                         log.error("Error", e);
                     }
@@ -162,16 +159,18 @@ public class TempReadScheduler {
     }
 
     private void sendEvent(String jsonString) {
+        final String authKey = settingService.getRepository().findByName(Setting.EVENT_HUB_AUTHORIZATION_KEY).get().getValue();
+        final String hubURL = settingService.getRepository().findByName(Setting.EVENT_HUB_URL).get().getValue();
+
         RequestConfig requestConfig = RequestConfig.custom()
                 .setConnectTimeout(3000)
                 .setSocketTimeout(3000)
                 .build();
 
-        HttpPost http = new HttpPost(eventHubURL);
+        HttpPost http = new HttpPost(hubURL);
         http.setConfig(requestConfig);
         http.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-        http.setHeader(HttpHeaders.AUTHORIZATION, "key=AAAAWa_hJDY:APA91bFpC7NkOPtJwAOX4dq-W3bjYJSXzcixHolAncqMp9Ic" +
-                "NAkJ7QXdOnKhVXF3icmoGGUeGDs7FbOW2_uXFjXBd2m1M7xg4zeEPVCO-0WZkW6VHqvIHVhIAw2CWqwHGbf7HVovSMVu");
+        http.setHeader(HttpHeaders.AUTHORIZATION, authKey);
         http.setEntity(new StringEntity(jsonString, "UTF-8"));
 
         try (CloseableHttpClient httpClient = HttpClientBuilder.create()
@@ -206,7 +205,6 @@ public class TempReadScheduler {
 
     private Pattern pattern = Pattern.compile("(?<num>[\\d\\s]+)#(?<val>-?[\\d\\s]+\\.?[\\d\\s]*)");
     private DecimalFormat floatFormat;
-
     {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');

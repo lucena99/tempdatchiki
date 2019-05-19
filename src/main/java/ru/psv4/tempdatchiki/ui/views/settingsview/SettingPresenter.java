@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.ui.views.controllers;
+package ru.psv4.tempdatchiki.ui.views.settingsview;
 
 import com.vaadin.flow.component.Focusable;
 import com.vaadin.flow.component.HasValue;
@@ -7,10 +7,10 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import ru.psv4.tempdatchiki.backend.data.Controller;
-import ru.psv4.tempdatchiki.backend.service.ControllerService;
+import ru.psv4.tempdatchiki.backend.data.Setting;
+import ru.psv4.tempdatchiki.backend.service.SettingService;
 import ru.psv4.tempdatchiki.crud.EntityPresenter;
-import ru.psv4.tempdatchiki.dataproviders.ControllerGridDataProvider;
+import ru.psv4.tempdatchiki.dataproviders.SettingGridDataProvider;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
@@ -19,25 +19,25 @@ import java.util.stream.Collectors;
 
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class ControllerPresenter {
+public class SettingPresenter {
 
-	private ControllersView view;
+	private SettingsView view;
 
-	private final EntityPresenter<Controller, ControllersView> entityPresenter;
-	private final ControllerGridDataProvider dataProvider;
+	private final EntityPresenter<Setting, SettingsView> entityPresenter;
+	private final SettingGridDataProvider dataProvider;
 	private final CurrentUser currentUser;
-	private final ControllerService service;
+	private final SettingService eService;
 
 	@Autowired
-	ControllerPresenter(ControllerService service, ControllerGridDataProvider dataProvider,
-						EntityPresenter<Controller, ControllersView> entityPresenter, CurrentUser currentUser) {
-		this.service = service;
+	SettingPresenter(SettingService eService, SettingGridDataProvider dataProvider,
+					 EntityPresenter<Setting, SettingsView> entityPresenter, CurrentUser currentUser) {
+		this.eService = eService;
 		this.entityPresenter = entityPresenter;
 		this.dataProvider = dataProvider;
 		this.currentUser = currentUser;
 	}
 
-	void init(ControllersView view) {
+	void init(SettingsView view) {
 		this.entityPresenter.setView(view);
 		this.view = view;
 		view.getGrid().setDataProvider(dataProvider);
@@ -70,7 +70,7 @@ public class ControllerPresenter {
 	}
 
 	void edit() {
-		UI.getCurrent().navigate(TdConst.PAGE_CONTROLLERS_EDIT + "/" + entityPresenter.getEntity().getUid());
+		UI.getCurrent().navigate(TdConst.PAGE_SETTINGS_EDIT + "/" + entityPresenter.getEntity().getUid());
 	}
 
 	void save() {
@@ -95,7 +95,7 @@ public class ControllerPresenter {
 		}
 	}
 
-	private void open(Controller e, boolean edit) {
+	private void open(Setting e, boolean edit) {
 		view.setDialogElementsVisibility(edit);
 		view.setOpened(true);
 
@@ -109,7 +109,7 @@ public class ControllerPresenter {
 	private void close() {
 		view.getEditor().close();
 		view.setOpened(false);
-		view.navigateToMainView();
-		entityPresenter.close();
+//		view.navigateToMainView();
+//		entityPresenter.close();
 	}
 }

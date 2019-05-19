@@ -134,4 +134,22 @@ alter table sensor add column num smallint;
 update sensor set num = 0 where name = 'Первый датчик';
 update sensor set num = 1 where name = 'Второй датчик';
 update sensor set num = cast(substring(name, 12, 13) as int) where controller_uid = 'a28c07b1-a0a1-4de8-897c-0550db98b666';
-select * from sensor
+select * from sensor;
+
+CREATE TABLE "setting"
+(
+    uid VARCHAR(36) NOT NULL,
+    name VARCHAR(256) NOT NULL,        
+    value text NULL,
+    PRIMARY KEY (uid)
+);
+CREATE UNIQUE INDEX idx_unique_setting_name on "setting" (LOWER(name));
+ALTER TABLE setting ADD COLUMN created_datetime timestamp;
+ALTER TABLE "setting" ALTER COLUMN created_datetime SET NOT NULL;
+
+update setting set value = 'key=AAAAWa_hJDY:APA91bFpC7NkOPtJwAOX4dq-W3bjYJSXzcixHolAncqMp9IcNAkJ7QXdOnKhVXF3icmoGGUeGDs7FbOW2_uXFjXBd2m1M7xg4zeEPVCO-0WZkW6VHqvIHVhIAw2CWqwHGbf7HVovSMVu' where name = 'eventHubAuthorizationKey';
+update setting set value = 'https://fcm.googleapis.com/fcm/send' where name = 'eventHubURL';
+select * from setting;
+
+ALTER TABLE recipient ADD COLUMN fcp_token text;
+ALTER TABLE recipient RENAME COLUMN fcp_token TO fcm_token;

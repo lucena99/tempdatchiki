@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.ui.views.recipients;
+package ru.psv4.tempdatchiki.ui.views.settingsview;
 
 import com.vaadin.flow.component.HasValue;
 import com.vaadin.flow.component.Tag;
@@ -14,55 +14,54 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.psv4.tempdatchiki.HasLogger;
 import ru.psv4.tempdatchiki.backend.data.EntityUtil;
-import ru.psv4.tempdatchiki.backend.data.Recipient;
+import ru.psv4.tempdatchiki.backend.data.Setting;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.SearchBar;
 import ru.psv4.tempdatchiki.ui.views.EntityView;
-import ru.psv4.tempdatchiki.ui.views.recipientedit.*;
+import ru.psv4.tempdatchiki.ui.views.settingedit.SettingDetails;
+import ru.psv4.tempdatchiki.ui.views.settingedit.SettingEditor;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
 import java.util.stream.Stream;
 
-@Tag("recipients-view")
-@HtmlImport("src/views/recipients/recipients-view.html")
-@Route(value = TdConst.PAGE_RECIPIENTS, layout = MainView.class)
-@RouteAlias(value = TdConst.PAGE_RECIPIENT_EDIT, layout = MainView.class)
-@RouteAlias(value = TdConst.PAGE_ROOT, layout = MainView.class)
-@PageTitle(TdConst.TITLE_RECIPIENTS)
-public class RecipientsView extends PolymerTemplate<TemplateModel>
-		implements HasLogger, HasUrlParameter<String>, EntityView<Recipient> {
+@Tag("settings-view")
+@HtmlImport("src/views/settings/settings-view.html")
+@Route(value = TdConst.PAGE_SETTINGS, layout = MainView.class)
+@RouteAlias(value = TdConst.PAGE_SETTINGS_EDIT, layout = MainView.class)
+@PageTitle(TdConst.TITLE_SETTINGS)
+public class SettingsView extends PolymerTemplate<TemplateModel>
+		implements HasLogger, HasUrlParameter<String>, EntityView<Setting> {
 
 	@Id("search")
 	private SearchBar searchBar;
 
 	@Id("grid")
-	private Grid<Recipient> grid;
+	private Grid<Setting> grid;
 
 	@Id("dialog")
 	private Dialog dialog;
 
 	//private ConfirmDialog confirmation;
 
-	private final RecipientEditor editor;
+	private final SettingEditor editor;
 
-	private final RecipientDetails details = new RecipientDetails();
+	private final SettingDetails details = new SettingDetails();
 
-	private final RecipientPresenter presenter;
+	private final SettingPresenter presenter;
 
 	@Autowired
-	public RecipientsView(RecipientPresenter presenter, RecipientEditor editor) {
+	public SettingsView(SettingPresenter presenter, SettingEditor editor) {
 		this.presenter = presenter;
 		this.editor = editor;
 
-		searchBar.setActionText("Новый слушатель");
 		searchBar.setPlaceHolder("Search");
 
 		grid.setSelectionMode(Grid.SelectionMode.NONE);
 
-		grid.addColumn(RecipientCard.getTemplate()
-				.withProperty("recipientCard", RecipientCard::create)
+		grid.addColumn(SettingCard.getTemplate()
+				.withProperty("settingCard", SettingCard::create)
 				.withEventHandler("cardClick",
-						r -> UI.getCurrent().navigate(TdConst.PAGE_RECIPIENTS + "/" + r.getUid())));
+						r -> UI.getCurrent().navigate(TdConst.PAGE_SETTINGS + "/" + r.getUid())));
 
 		getSearchBar().addFilterChangeListener(
 				e -> presenter.filterChanged(getSearchBar().getFilter()));
@@ -89,7 +88,7 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String uid) {
-		boolean editView = event.getLocation().getPath().contains(TdConst.PAGE_RECIPIENT_EDIT);
+		boolean editView = event.getLocation().getPath().contains(TdConst.PAGE_SETTINGS_EDIT);
 		if (uid != null) {
 			presenter.onNavigation(uid, editView);
 		} else if (dialog.isOpened()) {
@@ -98,7 +97,7 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 	}
 
 	void navigateToMainView() {
-		getUI().ifPresent(ui -> ui.navigate(TdConst.PAGE_RECIPIENTS));
+		getUI().ifPresent(ui -> ui.navigate(TdConst.PAGE_SETTINGS));
 	}
 
 	@Override
@@ -107,7 +106,7 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 	}
 
 	@Override
-	public void write(Recipient entity) throws ValidationException {
+	public void write(Setting entity) throws ValidationException {
 		editor.write(entity);
 	}
 
@@ -119,15 +118,15 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 		return searchBar;
 	}
 
-	RecipientEditor getEditor() {
+	SettingEditor getEditor() {
 		return editor;
 	}
 
-	RecipientDetails getDetails() {
+	SettingDetails getDetails() {
 		return details;
 	}
 
-	Grid<Recipient> getGrid() {
+	Grid<Setting> getGrid() {
 		return grid;
 	}
 
@@ -145,6 +144,6 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 
 	@Override
 	public String getEntityName() {
-		return EntityUtil.getName(Recipient.class);
+		return EntityUtil.getName(Setting.class);
 	}
 }

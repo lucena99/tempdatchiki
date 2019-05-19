@@ -15,17 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ru.psv4.tempdatchiki.HasLogger;
 import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.EntityUtil;
-import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.SearchBar;
 import ru.psv4.tempdatchiki.ui.views.EntityView;
 import ru.psv4.tempdatchiki.ui.views.controlleredit.ControllerDetails;
 import ru.psv4.tempdatchiki.ui.views.controlleredit.ControllerEditor;
-import ru.psv4.tempdatchiki.ui.views.controlleredit.SensorEditor;
-import ru.psv4.tempdatchiki.ui.views.recipientedit.RecipientDetails;
-import ru.psv4.tempdatchiki.ui.views.recipientedit.RecipientEditor;
-import ru.psv4.tempdatchiki.ui.views.recipients.RecipientCard;
-import ru.psv4.tempdatchiki.ui.views.recipients.RecipientPresenter;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
 import java.util.stream.Stream;
@@ -122,11 +116,11 @@ public class ControllersView  extends PolymerTemplate<TemplateModel>
         return searchBar;
     }
 
-    ControllerEditor getOpenedEditor() {
+    ControllerEditor getEditor() {
         return editor;
     }
 
-    ControllerDetails getOpenedDetails() {
+    ControllerDetails getDetails() {
         return details;
     }
 

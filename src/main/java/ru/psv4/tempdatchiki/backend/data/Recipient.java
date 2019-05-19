@@ -11,8 +11,19 @@ public class Recipient extends Reference {
 
     public static final String ENTITY_GRAPTH_FULL = "Recipient.full";
 
+    @Column(name = "fcm_token")
+    private String fcmToken;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "recipient")
     private List<Subscription> subscriptions;
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
 
     public List<Subscription> getSubscriptions() {
         return subscriptions;

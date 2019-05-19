@@ -73,7 +73,7 @@ public class SensorsEditor extends Div implements HasValueAndElement<ComponentVa
 	@Override
 	public void setReadOnly(boolean readOnly) {
 		HasValueAndElement.super.setReadOnly(readOnly);
-		getChildren().forEach(e -> ((SensorEditor) e).setReadOnly(readOnly));
+		getChildren().forEach(e -> ((SensorEditor)e).setReadOnly(readOnly));
 	}
 
 	@Override

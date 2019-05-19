@@ -371,6 +371,19 @@
                       </files>
                     </fragment>
                     <fragment>
+                      <name>setting-fragment</name>
+                      <files>
+                        <file>src/views/settings/settings-view.html</file>
+                        <file>src/views/settingedit/setting-editor.html</file>
+                        <file>src/views/settingedit/setting-details.html</file>
+                        <file>src/views/errors/access-denied-view.html</file>
+                        <file>src/components/amount-field.html</file>
+                        <file>src/components/form-buttons-bar.html</file>
+                        <file>src/components/search-bar.html</file>
+                        <file>src/components/utils-mixin.html</file>
+                      </files>
+                    </fragment>
+                    <fragment>
                       <name>grid-fragment</name>
                       <files>
                         <file>gridConnector.js</file>

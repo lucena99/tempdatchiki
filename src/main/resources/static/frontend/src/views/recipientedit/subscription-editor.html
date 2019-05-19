@@ -36,19 +36,20 @@
       }
     </style>
 
-    <vaadin-form-layout id="form1">
+    <vaadin-form-layout id="form1" class="product">
 
-      <vaadin-form-layout id="form2" colspan="2" class="product" style="flex: auto;">
+      <vaadin-form-layout id="form2" colspan="4" style="flex: auto;">
         <vaadin-combo-box id="controllers" colspan="8" index="[[index]]"></vaadin-combo-box>
       </vaadin-form-layout>
+
+      <vaadin-button class="delete self-start" id="delete" colspan="1" rowspan="2" index="[[index]]">
+        <iron-icon icon="vaadin:close-small"></iron-icon>
+      </vaadin-button>
 
       <vaadin-checkbox colspan="1" class="checkbox desktop" id="over">Интервал?</vaadin-checkbox>
 
       <vaadin-checkbox colspan="1" class="checkbox desktop" id="error">Ошибка?</vaadin-checkbox>
 
-      <vaadin-button class="delete self-start" id="delete" colspan="1" index="[[index]]">
-        <iron-icon icon="vaadin:close-small"></iron-icon>
-      </vaadin-button>
 
     </vaadin-form-layout>
 

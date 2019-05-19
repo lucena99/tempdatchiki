@@ -42,6 +42,10 @@ public class ControllerCard {
 		return c.getName();
 	}
 
+	public String getUrl() {
+		return c.getUrl();
+	}
+
 	public List<Sensor> getSensors() {
 		return c.getSensors();
 	}

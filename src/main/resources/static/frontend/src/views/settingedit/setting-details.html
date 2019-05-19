@@ -8,11 +8,10 @@
 
 <link rel="import" href="../../components/buttons-bar.html">
 <link rel="import" href="../../components/utils-mixin.html">
-<link rel="import" href="../recipients/order-status-badge.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
 
-<dom-module id="recipient-details">
+<dom-module id="setting-details">
   <template>
     <style include="shared-styles">
       :host {
@@ -125,10 +124,6 @@
     </style>
 
     <div class="scrollable main-row" id="main">
-      <div class="meta-row">
-        <order-status-badge status="[[state]]"></order-status-badge>
-      </div>
-
 
       <vaadin-form-layout id="form1">
         <vaadin-form-item>
@@ -139,36 +134,16 @@
 
       <vaadin-form-layout id="form2">
         <vaadin-form-item>
-          <label slot="label">UID</label>
-          <span>[[item.uid]]</span>
+          <label slot="label">Value</label>
+          <span style="word-break: break-word;white-space: initial;">[[item.value]]</span>
         </vaadin-form-item>
       </vaadin-form-layout>
 
-      <vaadin-form-layout id="form3">
-        <vaadin-form-item>
-          <label slot="label">Подписки</label>
-          <div class="table products">
-            <template is="dom-repeat" items="[[item.subscriptions]]" as="item">
-                <div class="tr">
-                  <div class="td product-name">
-                    <div class="bold">[[item.controller.name]]</div>
-                  </div>
-                  <div class="td number">
-                    <span class="count" hidden="[[!item.notifyOver]]">Интервал</span>
-                  </div>
-                  <div class="td number">
-                    <span class="count" hidden="[[!item.notifyError]]">Ошибка</span>
-                  </div>
-                </div>
-            </template>
-          </div>
-        </vaadin-form-item>
-      </vaadin-form-layout>
     </div>
 
     <buttons-bar id="footer" no-scroll$="[[noScroll]]">
       <vaadin-button slot="right" id="cancel" theme="tertiary">Отмена</vaadin-button>
-      <vaadin-button slot="right" id="edit" theme="primary" hidden="[[review]]">
+      <vaadin-button slot="right" id="edit" theme="primary">
         Редактировать
         <iron-icon icon="vaadin:edit" slot="suffix"></iron-icon>
       </vaadin-button>
@@ -176,9 +151,9 @@
   </template>
 
   <script>
-    class RecipientDetails extends window.ScrollShadowMixin(Polymer.Element) {
+    class SettingDetails extends window.ScrollShadowMixin(Polymer.Element) {
       static get is() {
-        return 'recipient-details';
+        return 'setting-details';
       }
 
       static get properties() {
@@ -194,6 +169,6 @@
       }
     }
 
-    window.customElements.define(RecipientDetails.is, RecipientDetails);
+    window.customElements.define(SettingDetails.is, SettingDetails);
   </script>
 </dom-module>

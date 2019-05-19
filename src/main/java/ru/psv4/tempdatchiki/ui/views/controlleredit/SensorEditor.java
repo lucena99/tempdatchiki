@@ -10,14 +10,16 @@ import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.internal.AbstractFieldSupport;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
+import com.vaadin.flow.component.textfield.NumberField;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.binder.BeanValidationBinder;
 import com.vaadin.flow.data.binder.BindingValidationStatus;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import ru.psv4.tempdatchiki.backend.data.Sensor;
-import ru.psv4.tempdatchiki.backend.data.Subscription;
-import ru.psv4.tempdatchiki.ui.events.*;
+import ru.psv4.tempdatchiki.ui.components.AmountField;
+import ru.psv4.tempdatchiki.ui.events.DeleteEvent;
+import ru.psv4.tempdatchiki.ui.events.NameChangeEvent;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -25,6 +27,9 @@ import java.util.stream.Stream;
 @Tag("sensor-editor")
 @HtmlImport("src/views/controlleredit/sensor-editor.html")
 public class SensorEditor extends PolymerTemplate<TemplateModel> implements HasValueAndElement<ComponentValueChangeEvent<SensorEditor, Sensor>, Sensor> {
+
+	@Id("num")
+	private AmountField num;
 
 	@Id("name")
 	private TextField name;
@@ -39,6 +44,8 @@ public class SensorEditor extends PolymerTemplate<TemplateModel> implements HasV
 	public SensorEditor() {
 		this.fieldSupport =  new AbstractFieldSupport<>(this, null,
 				Objects::equals, c ->  {});
+
+		binder.forField(num).bind("num");
 
 		binder.forField(name).bind("name");
 		name.setRequired(true);

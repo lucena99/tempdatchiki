@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.ui.views.recipientedit;
+package ru.psv4.tempdatchiki.ui.views.settingedit;
 
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.HasValue;
@@ -20,38 +20,27 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import ru.psv4.tempdatchiki.backend.data.Recipient;
+import ru.psv4.tempdatchiki.backend.data.Setting;
 import ru.psv4.tempdatchiki.backend.data.User;
 import ru.psv4.tempdatchiki.backend.service.SubscribtionService;
 import ru.psv4.tempdatchiki.dataproviders.ControllerGridDataProvider;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.events.CancelEvent;
 import ru.psv4.tempdatchiki.ui.events.SaveEvent;
-import ru.psv4.tempdatchiki.ui.views.RecipientUIUtil;
 
 import java.util.stream.Stream;
 
-@Tag("recipient-editor")
-@HtmlImport("src/views/recipientedit/recipient-editor.html")
+@Tag("setting-editor")
+@HtmlImport("src/views/settingedit/setting-editor.html")
 @SpringComponent
 @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-public class RecipientEditor extends PolymerTemplate<RecipientEditor.Model> {
-
-	public interface Model extends TemplateModel {
-		void setState(String state);
-	}
-
-	@Id("title")
-	private H2 title;
-
-	@Id("metaContainer")
-	private Div metaContainer;
+public class SettingEditor extends PolymerTemplate<TemplateModel> {
 
 	@Id("name")
 	private TextField name;
 
-	@Id("fcmToken")
-	private TextArea fcmToken;
+	@Id("value")
+	private TextArea value;
 
 	@Id("cancel")
 	private Button cancel;
@@ -59,73 +48,51 @@ public class RecipientEditor extends PolymerTemplate<RecipientEditor.Model> {
 	@Id("save")
 	private Button save;
 
-	@Id("subscriptionsContainer")
-	private Div subscriptionsContainer;
-
-	private SubscriptionsEditor subcriptionsEditor;
-
 	private User currentUser;
 
-	private BeanValidationBinder<Recipient> binder = new BeanValidationBinder<>(Recipient.class);
+	private BeanValidationBinder<Setting> binder = new BeanValidationBinder<>(Setting.class);
 
 	@Autowired
-	public RecipientEditor(ControllerGridDataProvider controllerDataProvider,
-						   SubscribtionService subscribtionService, CurrentUser currentUser) {
-		subcriptionsEditor = new SubscriptionsEditor(controllerDataProvider, subscribtionService, currentUser);
-		subscriptionsContainer.add(subcriptionsEditor);
-
+	public SettingEditor(ControllerGridDataProvider controllerDataProvider,
+						 SubscribtionService subscribtionService, CurrentUser currentUser) {
 		cancel.addClickListener(e -> fireEvent(new CancelEvent(this, false)));
 		save.addClickListener(e -> fireEvent(new SaveEvent(this, false)));
 
 		name.setRequired(true);
 		binder.bind(name, "name");
 
-		binder.bind(fcmToken, "fcmToken");
-
-		subcriptionsEditor.setRequiredIndicatorVisible(true);
-		binder.bind(subcriptionsEditor, "subscriptions");
-
-		subcriptionsEditor.addHasChangesListener(e -> { save.setEnabled(hasChanges());getModel().setState(calcState());});
+		value.setRequired(true);
+		binder.bind(value, "value");
 
 		binder.addValueChangeListener(e -> {
 			if (e.getOldValue() != null) {
 				save.setEnabled(hasChanges());
 			}
-			getModel().setState(calcState());
 		});
 	}
 
 	public boolean hasChanges() {
-		return binder.hasChanges() || subcriptionsEditor.hasChanges();
+		return binder.hasChanges(); 
 	}
 
 	public void clear() {
 		binder.readBean(null);
-		subcriptionsEditor.setValue(null);
 	}
 
 	public void close() {}
 
-	public void write(Recipient r) throws ValidationException {
-		binder.writeBean(r);
+	public void write(Setting e) throws ValidationException {
+		binder.writeBean(e);
 	}
 
-	public void read(Recipient r, boolean isNew) {
-		binder.readBean(r);
-		subcriptionsEditor.setRecipient(r);
-
-		title.setVisible(isNew);
-		metaContainer.setVisible(!isNew);
-
-		getModel().setState(calcState());
-
+	public void read(Setting e, boolean isNew) {
+		binder.readBean(e);
 		save.setEnabled(false);
 	}
 
 	public Stream<HasValue<?, ?>> validate() {
-		Stream<HasValue<?, ?>> errorFields = binder.validate().getFieldValidationErrors().stream()
+		return binder.validate().getFieldValidationErrors().stream()
 				.map(BindingValidationStatus::getField);
-		return Stream.concat(errorFields, subcriptionsEditor.validate());
 	}
 
 	public Registration addSaveListener(ComponentEventListener<SaveEvent> listener) {
@@ -138,9 +105,5 @@ public class RecipientEditor extends PolymerTemplate<RecipientEditor.Model> {
 
 	public void setCurrentUser(User currentUser) {
 		this.currentUser = currentUser;
-	}
-
-	private String calcState() {
-		return RecipientUIUtil.getState(subcriptionsEditor.getValue());
 	}
 }

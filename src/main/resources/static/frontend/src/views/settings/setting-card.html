@@ -1,7 +1,7 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../styles/shared-styles.html">
 
-<dom-module id="recipient-card">
+<dom-module id="setting-card">
   <template>
     <style include="shared-styles">
       :host {
@@ -86,9 +86,11 @@
 
       .goods > div {
         box-sizing: border-box;
-        width: 18em;
+        /*width: 18em;*/
        /* flex: auto;*/
         padding-right: var(--lumo-space-l);
+        word-break: break-word;
+        white-space: initial;
       }
 
       .goods-item {
@@ -132,19 +134,10 @@
     </style>
     <div class="content">
       <div class="wrapper" on-click="_cardClick">
-        <div class="info-wrapper">
-          <order-status-badge class="badge" status="[[recipientCard.state]]"></order-status-badge>
-        </div>
         <div class="name-items">
-          <h3 class="name">[[recipientCard.name]]</h3>
+          <h3 class="name">[[settingCard.name]]</h3>
           <div class="goods">
-            <template is="dom-repeat" items="[[recipientCard.subscriptions]]">
-              <div class="goods-item">
-                <div>[[item.controller.name]]</div>
-                <span class="count" hidden="[[!item.notifyOver]]">Интервал</span>
-                <span class="count" hidden="[[!item.notifyError]]">Ошибка</span>
-              </div>
-            </template>
+            <div>[[settingCard.value]]</div>
           </div>
         </div>
       </div>
@@ -152,9 +145,9 @@
   </template>
 
   <script>
-    class RecipientCard extends Polymer.Element {
+    class SettingCard extends Polymer.Element {
       static get is() {
-        return 'recipient-card';
+        return 'setting-card';
       }
 
       _cardClick() {
@@ -163,6 +156,6 @@
 
     }
 
-    window.customElements.define(RecipientCard.is, RecipientCard);
+    window.customElements.define(SettingCard.is, SettingCard);
   </script>
 </dom-module>
