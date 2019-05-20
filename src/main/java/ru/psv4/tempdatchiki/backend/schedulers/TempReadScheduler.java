@@ -16,21 +16,16 @@ import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import ru.psv4.tempdatchiki.backend.data.*;
-import ru.psv4.tempdatchiki.backend.service.ControllerService;
-import ru.psv4.tempdatchiki.backend.service.SensorService;
-import ru.psv4.tempdatchiki.backend.service.SettingService;
-import ru.psv4.tempdatchiki.backend.service.SubscribtionService;
+import ru.psv4.tempdatchiki.backend.service.*;
 import ru.psv4.tempdatchiki.utils.Lazy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.DecimalFormat;
@@ -40,6 +35,8 @@ import java.time.LocalTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static ru.psv4.tempdatchiki.backend.data.Tag.Normal;
 
 @Component
 public class TempReadScheduler {
@@ -56,7 +53,10 @@ public class TempReadScheduler {
     @Autowired
     private SettingService settingService;
 
-    @Value("${temp.scheduler.active}")
+    @Autowired
+    private MessageService messageService;
+
+    @org.springframework.beans.factory.annotation.Value("${temp.scheduler.active}")
     private boolean active;
 
     private static Logger log = LoggerFactory.getLogger(TempReadScheduler.class);
@@ -78,10 +78,9 @@ public class TempReadScheduler {
             tempMap = getTemp(controller.getUrl());
             tempMap.entrySet().stream().forEach(e -> log.trace(e.toString()));
 
-            Optional<List<Event>> opEvents = generateEventsIfNeed(controller, tempMap);
-            if (opEvents.isPresent()) {
-                notifyRecipients(controller, opEvents.get());
-            }
+            List<Temp> tempList = processMeasurement(controller, tempMap);
+
+            notifyRecipientsIfNeed(controller, tempList);
         } catch (IOException | ParseException e) {
             log.error("Error", e);
         }
@@ -94,21 +93,21 @@ public class TempReadScheduler {
         sep.setDecimalSeparator('.');
         tempFormatter.setDecimalFormatSymbols(sep);
     }
-    private class Event {
-        EventType type;
+    private class Temp {
+        Tag tag;
         Sensor sensor;
         float currentValue;
 
 
-        Event(EventType type, Sensor sensor, float currentValue) {
-            this.type = type;
+        Temp(Tag tag, Sensor sensor, float currentValue) {
+            this.tag = tag;
             this.sensor = sensor;
             this.currentValue = currentValue;
         }
 
         @Override
         public String toString() {
-            switch (type) {
+            switch (tag) {
                 case OverDown:
                     return String.format("%1$s.%2$s. %3$s(%4$s)",
                             sensor.getController().getName(), sensor.getName(),
@@ -123,32 +122,47 @@ public class TempReadScheduler {
         }
     }
 
-    private Optional<List<Event>> generateEventsIfNeed(Controller controller, Map<Integer, Float> tempMap) {
-        Lazy<List<Event>> events = new Lazy<>(() -> new ArrayList<>());
+    private List<Temp> processMeasurement(Controller controller, Map<Integer, Float> tempMap) {
+        Lazy<List<Temp>> events = new Lazy<>(() -> new ArrayList<>());
         List<Sensor> sensors = sensorService.getRepository().findByController(controller);
         for (Sensor sensor : sensors) {
             if (tempMap.containsKey(sensor.getNum())) {
                 float currentValue = tempMap.get(sensor.getNum());
                 if (currentValue > sensor.getMaxValue()) {
-                    events.get().add(new Event(EventType.OverUp, sensor, currentValue));
+                    events.get().add(new Temp(Tag.OverUp, sensor, currentValue));
                 } else if (currentValue < sensor.getMinValue()) {
-                    events.get().add(new Event(EventType.OverDown, sensor, currentValue));
+                    events.get().add(new Temp(Tag.OverDown, sensor, currentValue));
+                } else {
+                    events.get().add(new Temp(Normal, sensor, currentValue));
                 }
                 //TODO: добавить показание error
             }
         }
-        return events.getOptional();
+        return events.get();
     }
 
-    private void notifyRecipients(Controller controller, List<Event> events) throws JsonProcessingException {
+    private void notifyRecipientsIfNeed(Controller controller, List<Temp> tempList) throws JsonProcessingException {
         List<Subscription> subscriptions = subscribtionService.getRepository().findByController(controller);
         if (!subscriptions.isEmpty()) {
             for (Subscription subscription : subscriptions) {
                 Recipient recipient = subscription.getRecipient();
-                for (Event event : events) {
+                for (Temp temp : tempList) {
                     try {
-                        String jsonString = createJsonString(recipient, event);
-                        log.trace(jsonString);
+                        Optional<Message> opMessage = messageService.getRepository().findByRecipientAndSensorLast(recipient, temp.sensor);
+                        Tag tag = temp.tag;
+                        switch (tag) {
+                            case Normal: {
+                                if (!opMessage.isPresent() || opMessage.get().getEventType() == Normal) {
+                                    break;
+                                } else {
+                                    Message message = opMessage.get();
+                                    if (message.getEventType() != Normal) {
+                                        sendEvent(recipient, temp);
+                                    }
+                                }
+                            }
+                            case
+                        }
                         //sendEvent(jsonString);
                     } catch (JsonProcessingException e) {
                         log.error("Error", e);
@@ -158,7 +172,10 @@ public class TempReadScheduler {
         }
     }
 
-    private void sendEvent(String jsonString) {
+    private void sendEvent(Recipient recipient, Temp temp) {
+        String jsonString = createJsonString(recipient, temp);
+        log.trace(jsonString);
+
         final String authKey = settingService.getRepository().findByName(Setting.EVENT_HUB_AUTHORIZATION_KEY).get().getValue();
         final String hubURL = settingService.getRepository().findByName(Setting.EVENT_HUB_URL).get().getValue();
 
@@ -188,11 +205,14 @@ public class TempReadScheduler {
         } catch (IOException e) {
             log.error("http {}; {}", http, e.toString());
         }
+
+        Message message = messageService.createNew(null);
+        //TODO:save
     }
 
     private ObjectMapper mapper = new ObjectMapper();
 
-    private String createJsonString(Recipient recipient, Event event) throws JsonProcessingException {
+    private String createJsonString(Recipient recipient, Temp event) throws JsonProcessingException {
         ObjectNode rootNode = mapper.createObjectNode();
         rootNode.put("to", recipient.getFcmToken());
         ObjectNode notificationNode = mapper.createObjectNode();

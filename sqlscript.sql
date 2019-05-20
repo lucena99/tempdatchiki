@@ -155,3 +155,15 @@ ALTER TABLE recipient ADD COLUMN fcp_token text;
 ALTER TABLE recipient RENAME COLUMN fcp_token TO fcm_token;
 select * from recipient;
 update recipient set fcm_token = 'dTCzAHOae-Q:APA91bFrvlWe8upbXM1SkEs-_wISiZL706r9My6C1OjPk3ILySPmLfPSGrVWLNp6b_vcxH5BH_05esouYDi3ZcWOcBl4vIL8hiDJnMm1t0h0aQ8Xp1ckFPlDJi1UA89H8wiVcVnpcNTi';
+
+CREATE TABLE "message"
+(
+    uid VARCHAR(36) NOT NULL,
+    created_datetime timestamp NOT NULL,        
+    updated_datetime timestamp NOT NULL,
+    recipient_uid VARCHAR(36) NOT NULL,
+    sensor_uid VARCHAR(36) NOT NULL,
+    event_type_code int NOT NULL,
+    PRIMARY KEY (uid)
+);
+CREATE UNIQUE INDEX idx_unique_message on "message" (recipient_uid, sensor_uid, event_type_code);

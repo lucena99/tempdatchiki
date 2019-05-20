@@ -53,7 +53,7 @@ public class Message extends TdEntity {
         this.sensor = sensor;
     }
 
-    public EventType getEventType() {
-        return EventType.getByCode(eventTypeCode);
+    public Tag getEventType() {
+        return Tag.getByCode(eventTypeCode);
     }
 }
