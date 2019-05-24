@@ -36,7 +36,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static ru.psv4.tempdatchiki.backend.data.Tag.Normal;
+import static ru.psv4.tempdatchiki.backend.data.Tag.*;
 
 @Component
 public class TempReadScheduler {
@@ -147,25 +147,39 @@ public class TempReadScheduler {
             for (Subscription subscription : subscriptions) {
                 Recipient recipient = subscription.getRecipient();
                 for (Temp temp : tempList) {
-                    try {
-                        Optional<Message> opMessage = messageService.getRepository().findByRecipientAndSensorLast(recipient, temp.sensor);
-                        Tag tag = temp.tag;
-                        switch (tag) {
-                            case Normal: {
-                                if (!opMessage.isPresent() || opMessage.get().getEventType() == Normal) {
-                                    break;
-                                } else {
-                                    Message message = opMessage.get();
-                                    if (message.getEventType() != Normal) {
-                                        sendEvent(recipient, temp);
-                                    }
-                                }
+                    Optional<Message> opMessage = messageService.getRepository().findByRecipientAndSensorLast(recipient, temp.sensor);
+                    Tag tag = temp.tag;
+                    switch (tag) {
+                        case Normal: {
+                            if (opMessage.isPresent() && opMessage.get().getEventType() != Normal) {
+                                sendEvent(recipient, temp);
                             }
-                            case
+                            break;
                         }
-                        //sendEvent(jsonString);
-                    } catch (JsonProcessingException e) {
-                        log.error("Error", e);
+                        case OverDown: {
+                            if (opMessage.isPresent() && opMessage.get().getEventType() != OverDown) {
+                                sendEvent(recipient, temp);
+                            } else {
+                                sendEvent(recipient, temp);
+                            }
+                            break;
+                        }
+                        case OverUp: {
+                            if (opMessage.isPresent() && opMessage.get().getEventType() != OverUp) {
+                                sendEvent(recipient, temp);
+                            } else {
+                                sendEvent(recipient, temp);
+                            }
+                            break;
+                        }
+                        case Error: {
+                            if (opMessage.isPresent() && opMessage.get().getEventType() != Error) {
+                                sendEvent(recipient, temp);
+                            } else {
+                                sendEvent(recipient, temp);
+                            }
+                            break;
+                        }
                     }
                 }
             }
@@ -173,41 +187,49 @@ public class TempReadScheduler {
     }
 
     private void sendEvent(Recipient recipient, Temp temp) {
-        String jsonString = createJsonString(recipient, temp);
-        log.trace(jsonString);
+        if (true) {
+            log.info(String.format("Отправлено слушателю %s темп %s", recipient, temp));
+            return;
+        }
+        try {
+            String jsonString = createJsonString(recipient, temp);
+            log.trace(jsonString);
 
-        final String authKey = settingService.getRepository().findByName(Setting.EVENT_HUB_AUTHORIZATION_KEY).get().getValue();
-        final String hubURL = settingService.getRepository().findByName(Setting.EVENT_HUB_URL).get().getValue();
+            final String authKey = settingService.getRepository().findByName(Setting.EVENT_HUB_AUTHORIZATION_KEY).get().getValue();
+            final String hubURL = settingService.getRepository().findByName(Setting.EVENT_HUB_URL).get().getValue();
 
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(3000)
-                .setSocketTimeout(3000)
-                .build();
+            RequestConfig requestConfig = RequestConfig.custom()
+                    .setConnectTimeout(3000)
+                    .setSocketTimeout(3000)
+                    .build();
 
-        HttpPost http = new HttpPost(hubURL);
-        http.setConfig(requestConfig);
-        http.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-        http.setHeader(HttpHeaders.AUTHORIZATION, authKey);
-        http.setEntity(new StringEntity(jsonString, "UTF-8"));
+            HttpPost http = new HttpPost(hubURL);
+            http.setConfig(requestConfig);
+            http.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
+            http.setHeader(HttpHeaders.AUTHORIZATION, authKey);
+            http.setEntity(new StringEntity(jsonString, "UTF-8"));
 
-        try (CloseableHttpClient httpClient = HttpClientBuilder.create()
+            try (CloseableHttpClient httpClient = HttpClientBuilder.create()
                     .setConnectionManager(new BasicHttpClientConnectionManager())
                     .build()) {
-            try (CloseableHttpResponse response = httpClient.execute(http)) {
-                StatusLine statusLine = response.getStatusLine();
-                int status = statusLine.getStatusCode();
-                if (status == HttpStatus.SC_OK) {
-                    log.trace("http {}; response: {}", http, statusLine);
-                } else {
-                    log.error("http {}; response: {}", http, statusLine);
+                try (CloseableHttpResponse response = httpClient.execute(http)) {
+                    StatusLine statusLine = response.getStatusLine();
+                    int status = statusLine.getStatusCode();
+                    if (status == HttpStatus.SC_OK) {
+                        log.trace("http {}; response: {}", http, statusLine);
+                    } else {
+                        log.error("http {}; response: {}", http, statusLine);
+                    }
                 }
+            } catch (IOException e) {
+                log.error("http {}; {}", http, e.toString());
             }
-        } catch (IOException e) {
-            log.error("http {}; {}", http, e.toString());
-        }
 
-        Message message = messageService.createNew(null);
-        //TODO:save
+            Message message = messageService.createNew(null);
+            //TODO:save
+        } catch (JsonProcessingException e) {
+            log.error("Error", e);
+        }
     }
 
     private ObjectMapper mapper = new ObjectMapper();
