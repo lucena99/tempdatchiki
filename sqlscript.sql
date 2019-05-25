@@ -167,3 +167,5 @@ CREATE TABLE "message"
     PRIMARY KEY (uid)
 );
 CREATE UNIQUE INDEX idx_unique_message on "message" (recipient_uid, sensor_uid, event_type_code);
+
+ALTER TABLE message DROP COLUMN updated_datetime;

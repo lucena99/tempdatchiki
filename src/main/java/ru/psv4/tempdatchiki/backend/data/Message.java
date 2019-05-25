@@ -9,9 +9,6 @@ public class Message extends TdEntity {
     @Column(name = "created_datetime")
     private LocalDateTime createdDatetime;
 
-    @Column(name = "updated_datetime")
-    private LocalDateTime updatedDatetime;
-
     @ManyToOne @JoinColumn(name = "recipient_uid")
     private Recipient recipient;
 
@@ -27,14 +24,6 @@ public class Message extends TdEntity {
 
     public void setCreatedDatetime(LocalDateTime createdDatetime) {
         this.createdDatetime = createdDatetime;
-    }
-
-    public LocalDateTime getUpdatedDatetime() {
-        return updatedDatetime;
-    }
-
-    public void setUpdatedDatetime(LocalDateTime updatedDatetime) {
-        this.updatedDatetime = updatedDatetime;
     }
 
     public Recipient getRecipient() {
@@ -53,7 +42,7 @@ public class Message extends TdEntity {
         this.sensor = sensor;
     }
 
-    public Tag getEventType() {
-        return Tag.getByCode(eventTypeCode);
+    public State getEventType() {
+        return State.getByCode(eventTypeCode);
     }
 }

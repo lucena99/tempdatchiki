@@ -30,6 +30,4 @@ public class MessageService implements CrudService<Message> {
         e.setCreatedDatetime(LocalDateTime.now());
         return e;
     }
-
-
 }

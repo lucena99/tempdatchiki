@@ -12,7 +12,7 @@ import java.util.Optional;
 @Repository
 public interface MessageRepository extends JpaRepository<Message, String> {
 
-	@Query("SELECT e FROM Message e WHERE e.recipient = :recipient AND e.sensor = :sensor AND e.updatedDatetime = " +
-			"(SELECT MAX(e1.updatedDatetime) FROM Message e1 WHERE e1.recipient = :recipient AND e1.sensor = :sensor)")
+	@Query("SELECT e FROM Message e WHERE e.recipient = :recipient AND e.sensor = :sensor AND e.createdDatetime = " +
+			"(SELECT MAX(e1.createdDatetime) FROM Message e1 WHERE e1.recipient = :recipient AND e1.sensor = :sensor)")
 	public Optional<Message> findByRecipientAndSensorLast(Recipient recipient, Sensor sensor);
 }
