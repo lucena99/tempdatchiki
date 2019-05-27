@@ -45,7 +45,7 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 
 	private final RecipientEditor editor;
 
-	private final RecipientDetails details = new RecipientDetails();
+	private final RecipientDetails details = new RecipientDetails(null);
 
 	private final RecipientPresenter presenter;
 
@@ -62,7 +62,8 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 		grid.addColumn(RecipientCard.getTemplate()
 				.withProperty("recipientCard", RecipientCard::create)
 				.withEventHandler("cardClick",
-						r -> UI.getCurrent().navigate(TdConst.PAGE_RECIPIENTS + "/" + r.getUid())));
+//						r -> UI.getCurrent().navigate(TdConst.PAGE_RECIPIENTS + "/" + r.getUid())));
+						r -> UI.getCurrent().navigate("recipient/" + r.getUid())));
 
 		getSearchBar().addFilterChangeListener(
 				e -> presenter.filterChanged(getSearchBar().getFilter()));

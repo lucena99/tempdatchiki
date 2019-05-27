@@ -13,10 +13,8 @@ import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.Include;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import ru.psv4.tempdatchiki.backend.data.Controller;
-import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.ui.events.CancelEvent;
 import ru.psv4.tempdatchiki.ui.events.EditEvent;
-import ru.psv4.tempdatchiki.ui.views.RecipientUIUtil;
 
 /**
  * The component displaying a full (read-only) summary of an order, and a comment

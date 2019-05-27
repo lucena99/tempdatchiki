@@ -1,18 +1,13 @@
 <link rel="import" href="../../../bower_components/polymer/polymer-element.html">
 <link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
-<link rel="import" href="../../../bower_components/vaadin-button/src/vaadin-button.html">
-<link rel="import" href="../../../bower_components/vaadin-form-layout/src/vaadin-form-item.html">
-<link rel="import" href="../../../bower_components/vaadin-form-layout/src/vaadin-form-layout.html">
 <link rel="import" href="../../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
-
-<link rel="import" href="../../components/buttons-bar.html">
-<link rel="import" href="../../components/utils-mixin.html">
-<link rel="import" href="../../components/editable-field.html">
+<link rel="import" href="../../../bower_components/vaadin-button/src/vaadin-button.html">
+<link rel="import" href="../../../bower_components/vaadin-form-layout/src/vaadin-form-layout.html">
+<link rel="import" href="../../../bower_components/vaadin-combo-box/src/vaadin-combo-box.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
 
-<dom-module id="recipient-details">
+<dom-module id="subscription-details">
   <template>
     <style include="shared-styles">
       :host {
@@ -130,45 +125,30 @@
       }*/
     </style>
 
-      <div theme="orders no-row-borders">
-
-          <buttons-bar id="top" no-scroll$="[[noScroll]]">
-              <vaadin-button slot="left" id="backward" theme="primary">
-                  Назад
-                  <iron-icon icon="vaadin:backwards" slot="suffix"></iron-icon>
-              </vaadin-button>
-          </buttons-bar>
-
-              <div class="scrollable main-row" id="main">
-                  <vaadin-form-layout id="form1">
-                      <vaadin-form-item style="flex: auto;flex-direction: column;">
-                          <label slot="label">Наименование</label>
-                          <editable-field id="name" control="h3" value="[[item.name]]"></editable-field>
-                      </vaadin-form-item>
-                  </vaadin-form-layout>
-
-                  <vaadin-form-layout id="form2">
-                      <vaadin-form-item style="flex: auto;flex-direction: column;">
-                          <label slot="label">FcmToken</label>
-                          <editable-field id="fcmToken" control="span" value="[[item.fcmToken]]"></editable-field>
-                      </vaadin-form-item>
-                  </vaadin-form-layout>
-
-                  <vaadin-form-layout id="form3">
-                      <vaadin-form-item style="flex: auto;flex-direction: column;">
-                          <label slot="label">Подписки</label>
-                          <div class="table products" id="subscriptions"/>
-                      </vaadin-form-item>
-                  </vaadin-form-layout>
-              </div>
+    <div class="table products">
+      <div class="tr">
+        <div class="td product-name">
+          <table>
+            <tr>
+              <td colspan="2">
+                <editable-field id="name" control="span" class="bold" value="[[item.controller.name]]"></editable-field>
+              </td>
+            </tr>
+            <tr>
+              <td><span class="count" hidden="[[!item.notifyOver]]">Интервал</span></td>
+              <td><span class="count" hidden="[[!item.notifyError]]">Ошибка</span></td>
+            </tr>
+          </table>
+        </div>
       </div>
+    </div>
 
   </template>
 
   <script>
-    class RecipientDetails extends window.ScrollShadowMixin(Polymer.Element) {
+    class SubscriptionDetails extends Polymer.Element {
       static get is() {
-        return 'recipient-details';
+        return 'subscription-details';
       }
 
       static get properties() {
@@ -181,15 +161,9 @@
 
       ready() {
         super.ready();
-
-        // Not using attributes since Designer does not suppor single-quote attributes
-        this.$.form1.responsiveSteps = [
-          {columns: 1}
-        ];
-
       }
     }
 
-    window.customElements.define(RecipientDetails.is, RecipientDetails);
+    window.customElements.define(SubscriptionDetails.is, SubscriptionDetails);
   </script>
 </dom-module>

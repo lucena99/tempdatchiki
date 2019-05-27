@@ -1,0 +1,102 @@
+<link rel="import" href="../../../bower_components/polymer/polymer-element.html">
+<link rel="import" href="../../../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+<link rel="import" href="../../../bower_components/vaadin-text-field/src/vaadin-text-field.html">
+<link rel="import" href="../../../bower_components/vaadin-button/src/vaadin-button.html">
+<link rel="import" href="../../../bower_components/vaadin-form-layout/src/vaadin-form-layout.html">
+<link rel="import" href="../../../bower_components/vaadin-form-layout/src/vaadin-form-item.html">
+<link rel="import" href="../../../bower_components/vaadin-combo-box/src/vaadin-combo-box.html">
+<link rel="import" href="../../../bower_components/vaadin-date-picker/src/vaadin-date-picker.html">
+<link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
+
+<link rel="import" href="../../components/buttons-bar.html">
+<link rel="import" href="../../components/utils-mixin.html">
+
+<link rel="import" href="../../../styles/shared-styles.html">
+
+<dom-module id="string-field-editor">
+    <template>
+        <style include="shared-styles">
+          :host {
+            display: flex;
+            flex-direction: column;
+            flex: auto;
+          }
+
+          .meta-row {
+            display: flex;
+            justify-content: space-between;
+            padding-bottom: var(--lumo-space-s);
+          }
+
+          .dim {
+            color: var(--lumo-secondary-text-color);
+            text-align: right;
+            white-space: nowrap;
+            line-height: 2.5em;
+          }
+
+          .status {
+            width: 10em;
+          }
+
+          .badge {
+              margin: 0;
+          }
+        </style>
+
+        <buttons-bar id="top" no-scroll$="[[noScroll]]">
+            <vaadin-button slot="left" id="backward" theme="primary">
+                Назад
+                <iron-icon icon="vaadin:backwards" slot="suffix"></iron-icon>
+            </vaadin-button>
+        </buttons-bar>
+
+        <div class="scrollable main-row" id="main">
+            <vaadin-form-layout id="form1">
+                <vaadin-form-item style="flex-direction: column;">
+                    <vaadin-text-area  id="value" label="[[title]]" value="[[value]]" style="display:flex;"></vaadin-text-area>
+
+                    <buttons-bar id="footer" no-scroll$="[[noScroll]]">
+                        <vaadin-button slot="left" id="cancel" theme="tertiary">
+                            Отмена
+                        </vaadin-button>
+                        <vaadin-button slot="right" id="save" theme="primary">
+                            Сохранить
+                            <iron-icon icon="vaadin:check" slot="suffix"></iron-icon>
+                        </vaadin-button>
+                    </buttons-bar>
+                </vaadin-form-item>
+            </vaadin-form-layout>
+        </div>
+    </template>
+
+    <script>
+    class StringFieldEditor extends window.ScrollShadowMixin(Polymer.Element) {
+
+      static get is() {
+        return 'string-field-editor';
+      }
+
+      static get properties() {
+        return {
+          value: {
+            type: String
+          }
+        };
+      }
+
+      ready() {
+        super.ready();
+
+        // Not using attributes since Designer does not suppor single-quote attributes
+        this.$.form1.responsiveSteps = [
+          {columns: 1, labelsPosition: 'top'},
+          {minWidth: '600px', columns: 3, labelsPosition: 'top'}
+        ];
+      }
+    }
+
+    window.customElements.define(StringFieldEditor.is, StringFieldEditor);
+  </script>
+</dom-module>

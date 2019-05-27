@@ -52,7 +52,7 @@ public class RecipientPresenter {
 		dataProvider.setFilter(filter);
 	}
 
-	void onNavigation(String id, boolean edit) {
+	public void onNavigation(String id, boolean edit) {
 		entityPresenter.loadEntity(id, e -> open(e, edit));
 	}
 

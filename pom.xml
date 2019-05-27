@@ -350,10 +350,11 @@
                         <file>src/views/recipientedit/recipient-editor.html</file>
                         <file>src/views/recipientedit/recipient-details.html</file>
                         <file>src/views/errors/access-denied-view.html</file>
-                        <file>src/components/amount-field.html</file>
                         <file>src/components/form-buttons-bar.html</file>
                         <file>src/components/search-bar.html</file>
                         <file>src/components/utils-mixin.html</file>
+                        <file>src/views/editors/string-field-editor.html</file>
+                        <file>src/components/editable-field.html</file>
                       </files>
                     </fragment>
                     <fragment>
@@ -364,10 +365,11 @@
                         <file>src/views/controlleredit/controller-editor.html</file>
                         <file>src/views/controlleredit/controller-details.html</file>
                         <file>src/views/errors/access-denied-view.html</file>
-                        <file>src/components/amount-field.html</file>
                         <file>src/components/form-buttons-bar.html</file>
                         <file>src/components/search-bar.html</file>
                         <file>src/components/utils-mixin.html</file>
+                        <file>src/views/editors/string-field-editor.html</file>
+                        <file>src/components/editable-field.html</file>
                       </files>
                     </fragment>
                     <fragment>
@@ -377,10 +379,11 @@
                         <file>src/views/settingedit/setting-editor.html</file>
                         <file>src/views/settingedit/setting-details.html</file>
                         <file>src/views/errors/access-denied-view.html</file>
-                        <file>src/components/amount-field.html</file>
                         <file>src/components/form-buttons-bar.html</file>
                         <file>src/components/search-bar.html</file>
                         <file>src/components/utils-mixin.html</file>
+                        <file>src/views/editors/string-field-editor.html</file>
+                        <file>src/components/editable-field.html</file>
                       </files>
                     </fragment>
                     <fragment>

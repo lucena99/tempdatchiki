@@ -2,10 +2,7 @@ package ru.psv4.tempdatchiki.ui.views.controllers;
 
 import com.vaadin.flow.data.renderer.TemplateRenderer;
 import ru.psv4.tempdatchiki.backend.data.Controller;
-import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.backend.data.Sensor;
-import ru.psv4.tempdatchiki.backend.data.Subscription;
-import ru.psv4.tempdatchiki.ui.views.RecipientUIUtil;
 
 import java.util.List;
 

@@ -27,7 +27,6 @@ import ru.psv4.tempdatchiki.dataproviders.ControllerGridDataProvider;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.events.CancelEvent;
 import ru.psv4.tempdatchiki.ui.events.SaveEvent;
-import ru.psv4.tempdatchiki.ui.views.RecipientUIUtil;
 
 import java.util.stream.Stream;
 
@@ -43,9 +42,6 @@ public class RecipientEditor extends PolymerTemplate<RecipientEditor.Model> {
 
 	@Id("title")
 	private H2 title;
-
-	@Id("metaContainer")
-	private Div metaContainer;
 
 	@Id("name")
 	private TextField name;
@@ -85,13 +81,12 @@ public class RecipientEditor extends PolymerTemplate<RecipientEditor.Model> {
 		subcriptionsEditor.setRequiredIndicatorVisible(true);
 		binder.bind(subcriptionsEditor, "subscriptions");
 
-		subcriptionsEditor.addHasChangesListener(e -> { save.setEnabled(hasChanges());getModel().setState(calcState());});
+		subcriptionsEditor.addHasChangesListener(e -> save.setEnabled(hasChanges()));
 
 		binder.addValueChangeListener(e -> {
 			if (e.getOldValue() != null) {
 				save.setEnabled(hasChanges());
 			}
-			getModel().setState(calcState());
 		});
 	}
 
@@ -115,9 +110,6 @@ public class RecipientEditor extends PolymerTemplate<RecipientEditor.Model> {
 		subcriptionsEditor.setRecipient(r);
 
 		title.setVisible(isNew);
-		metaContainer.setVisible(!isNew);
-
-		getModel().setState(calcState());
 
 		save.setEnabled(false);
 	}
@@ -138,9 +130,5 @@ public class RecipientEditor extends PolymerTemplate<RecipientEditor.Model> {
 
 	public void setCurrentUser(User currentUser) {
 		this.currentUser = currentUser;
-	}
-
-	private String calcState() {
-		return RecipientUIUtil.getState(subcriptionsEditor.getValue());
 	}
 }
