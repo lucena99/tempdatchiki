@@ -354,6 +354,7 @@
                         <file>src/components/search-bar.html</file>
                         <file>src/components/utils-mixin.html</file>
                         <file>src/views/editors/string-field-editor.html</file>
+                        <file>src/views/editors/subscription-field-editor.html</file>
                         <file>src/components/editable-field.html</file>
                       </files>
                     </fragment>

@@ -34,12 +34,9 @@ public class SubscriptionDetails extends PolymerTemplate<SubscriptionDetails.Mod
 	@Id("name")
 	private EditableField nameField;
 
-	public SubscriptionDetails() {
-		nameField.addActionClickListener(e -> fireEvent(new EditEvent(this)));
-	}
-
-	public void display(Subscription s) {
+	public SubscriptionDetails(Subscription s) {
 		getModel().setItem(s);
+		nameField.addActionClickListener(e -> fireEvent(new EditEvent(this)));
 	}
 
 	public Registration addEditListener(ComponentEventListener<EditEvent> listener) {

@@ -3,7 +3,7 @@ package ru.psv4.tempdatchiki.ui.views.editors;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.crud.CrudEntityPresenter;
 
-public class RecipientFcmTokenSaver implements Saver<Recipient> {
+public class RecipientFcmTokenSaver implements Saver {
 
     private CrudEntityPresenter<Recipient> presenter;
 

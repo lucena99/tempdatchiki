@@ -14,36 +14,34 @@
 
 <link rel="import" href="../../../styles/shared-styles.html">
 
-<dom-module id="string-field-editor">
+<dom-module id="subscription-field-editor">
     <template>
         <style include="shared-styles">
-          :host {
-            display: flex;
-            flex-direction: column;
-            flex: auto;
-          }
+      .product {
+        margin-bottom: 1em;
+      }
 
-          .meta-row {
-            display: flex;
-            justify-content: space-between;
-            padding-bottom: var(--lumo-space-s);
-          }
+      .delete {
+        min-width: 2em;
+        padding: 0;
+      }
 
-          .dim {
-            color: var(--lumo-secondary-text-color);
-            text-align: right;
-            white-space: nowrap;
-            line-height: 2.5em;
-          }
+      @media (max-width: 700px) {
+        vaadin-form-layout {
+          --vaadin-form-layout-column-spacing: 1em;
+        }
+      }
 
-          .status {
-            width: 10em;
-          }
+      .money {
+        text-align: right;
+        line-height: 2.5em;
+      }
 
-          .badge {
-              margin: 0;
-          }
-        </style>
+      /* Workaround for vertically distorted elements inside a flex container in IE11 */
+      .self-start {
+        align-self: flex-start;
+      }
+    </style>
 
         <buttons-bar id="top" no-scroll$="[[noScroll]]">
             <vaadin-button slot="left" id="backward" theme="primary">
@@ -55,7 +53,9 @@
         <div class="scrollable main-row" id="main">
             <vaadin-form-layout id="form1">
                 <vaadin-form-item style="flex-direction: column;">
-                    <vaadin-text-area  id="value" label="[[title]]" style="display:flex;"></vaadin-text-area>
+                    <h3>[[title]]</h3>
+                    <vaadin-checkbox colspan="1" class="checkbox desktop" id="over">Интервал?</vaadin-checkbox>
+                    <vaadin-checkbox colspan="1" class="checkbox desktop" id="error">Ошибка?</vaadin-checkbox>
                 </vaadin-form-item>
                 <vaadin-form-item style="flex-direction: column;">
                     <buttons-bar id="footer" no-scroll$="[[noScroll]]">
@@ -73,18 +73,9 @@
     </template>
 
     <script>
-    class StringFieldEditor extends window.ScrollShadowMixin(Polymer.Element) {
-
+    class SubscriptionFieldEditor extends Polymer.Element {
       static get is() {
-        return 'string-field-editor';
-      }
-
-      static get properties() {
-        return {
-          value: {
-            type: String
-          }
-        };
+        return 'subscription-field-editor';
       }
 
       ready() {
@@ -92,12 +83,11 @@
 
         // Not using attributes since Designer does not suppor single-quote attributes
         this.$.form1.responsiveSteps = [
-          {columns: 1, labelsPosition: 'top'},
-          {minWidth: '600px', columns: 3, labelsPosition: 'top'}
+          {columns: 1}
         ];
       }
     }
 
-    window.customElements.define(StringFieldEditor.is, StringFieldEditor);
+    window.customElements.define(SubscriptionFieldEditor.is, SubscriptionFieldEditor);
   </script>
 </dom-module>

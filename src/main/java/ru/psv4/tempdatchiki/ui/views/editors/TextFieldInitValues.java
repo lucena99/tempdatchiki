@@ -6,7 +6,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class InitValues {
+public class TextFieldInitValues {
     String uid;
     String backwardUrl;
     String entityClass;
@@ -37,9 +37,9 @@ public class InitValues {
         return entityClass + ": " + property;
     }
 
-    public static InitValues parse(QueryParameters queryParameters) throws Exception {
+    public static TextFieldInitValues parse(QueryParameters queryParameters) {
         Map<String, List<String>> parametersMap = queryParameters.getParameters();
-        InitValues values = new InitValues();
+        TextFieldInitValues values = new TextFieldInitValues();
         values.uid = parametersMap.get("uid").get(0);
         values.backwardUrl = parametersMap.get("backwardUrl").get(0);
         values.entityClass = parametersMap.get("entityClass").get(0);
@@ -48,7 +48,7 @@ public class InitValues {
         return values;
     }
 
-    public static QueryParameters convert(InitValues values) {
+    public static QueryParameters convert(TextFieldInitValues values) {
         Map<String, String> map = new LinkedHashMap<>();
         map.put("uid", values.uid);
         map.put("backwardUrl", values.backwardUrl);

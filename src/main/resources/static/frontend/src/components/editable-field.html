@@ -11,11 +11,17 @@
       :host {
         display: block;
       }
+      .title-class {
+        width: 120px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
     </style>
 
     <div style="display: flex; align-items: baseline">
-      <h3 hidden="[[_h3Disabled()]]">[[value]]</h3>
-      <span hidden="[[_spanDisabled()]]" style="width: 120px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;">[[value]]</span>
+      <h3 hidden="[[_h3Disabled()]]" class="title-class">[[value]]</h3>
+      <span hidden="[[_spanDisabled()]]" class="title-class">[[value]]</span>
       <vaadin-button id="edit" theme="tertiary">
         <iron-icon icon="lumo:edit" slot="prefix"></iron-icon>
         Изменить

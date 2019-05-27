@@ -5,7 +5,7 @@ import ru.psv4.tempdatchiki.crud.CrudEntityPresenter;
 
 import java.util.function.Consumer;
 
-public class RecipientNameSaver implements Saver<Recipient> {
+public class RecipientNameSaver implements Saver {
 
     private CrudEntityPresenter<Recipient> presenter;
 

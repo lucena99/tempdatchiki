@@ -6,7 +6,11 @@ public enum State {
 
     private int code;
 
-    private State(int code) { this.code = code; }
+    State(int code) { this.code = code; }
+
+    public int getCode() {
+        return code;
+    }
 
     public static State getByCode(int code) {
         switch (code) {

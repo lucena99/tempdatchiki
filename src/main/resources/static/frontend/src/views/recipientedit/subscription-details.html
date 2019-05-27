@@ -128,15 +128,17 @@
     <div class="table products">
       <div class="tr">
         <div class="td product-name">
-          <table>
+          <table style="border-spacing: 0px;">
             <tr>
               <td colspan="2">
                 <editable-field id="name" control="span" class="bold" value="[[item.controller.name]]"></editable-field>
               </td>
             </tr>
             <tr>
-              <td><span class="count" hidden="[[!item.notifyOver]]">Интервал</span></td>
-              <td><span class="count" hidden="[[!item.notifyError]]">Ошибка</span></td>
+              <td colspan="2">
+                <span class="count" hidden="[[!item.notifyOver]]">Интервал</span>
+                <span class="count" hidden="[[!item.notifyError]]">Ошибка</span>
+              </td>
             </tr>
           </table>
         </div>

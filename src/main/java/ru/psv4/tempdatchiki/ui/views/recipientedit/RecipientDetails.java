@@ -26,9 +26,12 @@ import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.EditableField;
 import ru.psv4.tempdatchiki.ui.events.CancelEvent;
 import ru.psv4.tempdatchiki.ui.events.EditEvent;
-import ru.psv4.tempdatchiki.ui.views.editors.InitValues;
+import ru.psv4.tempdatchiki.ui.views.editors.SubscriptionFieldEditor;
+import ru.psv4.tempdatchiki.ui.views.editors.SubsriptionFieldInitValues;
+import ru.psv4.tempdatchiki.ui.views.editors.TextFieldInitValues;
 import ru.psv4.tempdatchiki.ui.views.editors.StringFieldEditor;
 import ru.psv4.tempdatchiki.ui.views.recipients.RecipientsView;
+import ru.psv4.tempdatchiki.utils.RouteUtils;
 
 /**
  * The component displaying a full (read-only) summary of an order, and a comment
@@ -68,19 +71,17 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
 	}
 
 	private void navigateEditor(String property, String value) {
-		UI.getCurrent().navigate(
-				RouteUtil.getRoutePath(StringFieldEditor.class, StringFieldEditor.class.getAnnotation(Route.class)),
-				createEditorParameters(property, value));
+		RouteUtils.route(StringFieldEditor.class, createEditorParameters(property, value));
 	}
 
 	private QueryParameters createEditorParameters(String property, String value) {
-		InitValues values = new InitValues();
+		TextFieldInitValues values = new TextFieldInitValues();
 		values.setUid(presenter.getEntity().getUid());
 		values.setBackwardUrl(currentLocation.getPath());
 		values.setEntityClass(Recipient.class.getSimpleName());
 		values.setProperty(property);
 		values.setValue(value);
-		return InitValues.convert(values);
+		return TextFieldInitValues.convert(values);
 	}
 
 	public void display(Recipient recipient) {
@@ -116,10 +117,9 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
 			presenter.loadEntity(uid, e -> {
                 getModel().setItem(e);
                 for (Subscription s : e.getSubscriptions()) {
-                    SubscriptionDetails details = new SubscriptionDetails();
-					details.addEditListener(ev -> {System.out.println(ev);});
+                    SubscriptionDetails details = new SubscriptionDetails(s);
+					details.addEditListener(ev -> navigateEditor(s));
                     subsrDiv.add(details);
-					details.display(s);
 				}
                 Button button = new Button("Добавить подписку", new Icon(VaadinIcon.PLUS));
                 button.setThemeName("tertiary");
@@ -127,5 +127,19 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
 				currentLocation = event.getLocation();
             });
 		}
+	}
+
+	private void navigateEditor(Subscription subscription) {
+		RouteUtils.route(SubscriptionFieldEditor.class, createEditorParameters(subscription));
+	}
+
+	private QueryParameters createEditorParameters(Subscription subscription) {
+		SubsriptionFieldInitValues values = new SubsriptionFieldInitValues();
+		values.setRecipientUid(subscription.getRecipient().getUid());
+		values.setControllerUid(subscription.getController().getUid());
+		values.setOver(subscription.isNotifyOver());
+		values.setError(subscription.isNotifyError());
+		values.setBackwardUrl(currentLocation.getPath());
+		return SubsriptionFieldInitValues.convert(values);
 	}
 }

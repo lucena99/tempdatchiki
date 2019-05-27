@@ -15,8 +15,8 @@ public class Message extends TdEntity {
     @ManyToOne @JoinColumn(name = "sensor_uid")
     private Sensor sensor;
 
-    @Column(name = "event_type_code")
-    private int eventTypeCode;
+    @Column(name = "state_code")
+    private int stateCode;
 
     public LocalDateTime getCreatedDatetime() {
         return createdDatetime;
@@ -42,7 +42,11 @@ public class Message extends TdEntity {
         this.sensor = sensor;
     }
 
-    public State getEventType() {
-        return State.getByCode(eventTypeCode);
+    public void setStateCode(int stateCode) {
+        this.stateCode = stateCode;
+    }
+
+    public State getState() {
+        return State.getByCode(stateCode);
     }
 }

@@ -23,6 +23,7 @@ import ru.psv4.tempdatchiki.ui.events.CancelEvent;
 import ru.psv4.tempdatchiki.ui.events.EditEvent;
 import ru.psv4.tempdatchiki.ui.views.HasNotifications;
 import ru.psv4.tempdatchiki.ui.views.recipients.RecipientsView;
+import ru.psv4.tempdatchiki.utils.TdConst;
 
 import java.util.List;
 import java.util.Map;
@@ -54,9 +55,9 @@ public class StringFieldEditor extends PolymerTemplate<StringFieldEditor.Model> 
 
 	private ApplicationContext applicationContext;
 
-	private InitValues initValues;
+	private TextFieldInitValues initValues;
 
-	private Saver<?> editor;
+	private Saver editor;
 
 	private static final Logger log = LoggerFactory.getLogger(StringFieldEditor.class);
 
@@ -99,27 +100,10 @@ public class StringFieldEditor extends PolymerTemplate<StringFieldEditor.Model> 
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
 		Location location = event.getLocation();
-		QueryParameters queryParameters = location.getQueryParameters();
-		Map<String, List<String>> parametersMap = queryParameters.getParameters();
 
-		initValues = new InitValues();
-		try {
-			initValues.uid = parametersMap.get("uid").get(0);
-			initValues.backwardUrl = parametersMap.get("backwardUrl").get(0);
-			initValues.entityClass = parametersMap.get("entityClass").get(0);
-			initValues.property = parametersMap.get("property").get(0);
-			initValues.value = parametersMap.get("value").get(0);
-		} catch (Exception e) {
-			log.error("Error open page", e);
-			showNotification(e.getMessage());
-			UI.getCurrent().navigate(RecipientsView.class);
-			return;
-		}
+		initValues = TextFieldInitValues.parse(location.getQueryParameters());
 
 		getModel().setTitle(initValues.composeTitle());
-		getModel().setValue(initValues.value);
-
-		//TODO: не понимаю почему не изменяется автоматически
 		valueField.setValue(initValues.value);
 
 		editor = EditorFactory.create(initValues, this, applicationContext);
@@ -127,6 +111,5 @@ public class StringFieldEditor extends PolymerTemplate<StringFieldEditor.Model> 
 
 	public interface Model extends TemplateModel {
 		void setTitle(String title);
-		void setValue(String value);
 	}
 }

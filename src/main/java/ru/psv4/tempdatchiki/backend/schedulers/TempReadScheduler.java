@@ -105,19 +105,19 @@ public class TempReadScheduler {
 
     private class AnalyzedValue {
 
-        State tag;
+        State state;
         Sensor sensor;
         float value;
 
         AnalyzedValue(State tag, Sensor sensor, float value) {
-            this.tag = tag;
+            this.state = tag;
             this.sensor = sensor;
             this.value = value;
         }
 
         @Override
         public String toString() {
-            switch (tag) {
+            switch (state) {
                 case OverDown:
                     return String.format("%1$s.%2$s. %3$s(%4$s)",
                             sensor.getController().getName(), sensor.getName(),
@@ -162,28 +162,28 @@ public class TempReadScheduler {
                 Recipient recipient = subscription.getRecipient();
                 for (AnalyzedValue temp : tempList) {
                     Optional<Message> opMessage = messageService.getRepository().findByRecipientAndSensorLast(recipient, temp.sensor);
-                    State tag = temp.tag;
+                    State tag = temp.state;
                     switch (tag) {
                         case Normal: {
-                            if (opMessage.isPresent() && opMessage.get().getEventType() != Normal) {
+                            if (opMessage.isPresent() && opMessage.get().getState() != Normal) {
                                 sendEvent(recipient, temp);
                             }
                             break;
                         }
                         case OverDown: {
-                            if (!opMessage.isPresent() || (opMessage.isPresent() && opMessage.get().getEventType() != OverDown)) {
+                            if (!opMessage.isPresent() || (opMessage.isPresent() && opMessage.get().getState() != OverDown)) {
                                 sendEvent(recipient, temp);
                             }
                             break;
                         }
                         case OverUp: {
-                            if (!opMessage.isPresent() || (opMessage.isPresent() && opMessage.get().getEventType() != OverUp)) {
+                            if (!opMessage.isPresent() || (opMessage.isPresent() && opMessage.get().getState() != OverUp)) {
                                 sendEvent(recipient, temp);
                             }
                             break;
                         }
                         case Error: {
-                            if (!opMessage.isPresent() || (opMessage.isPresent() && opMessage.get().getEventType() != Error)) {
+                            if (!opMessage.isPresent() || (opMessage.isPresent() && opMessage.get().getState() != Error)) {
                                 sendEvent(recipient, temp);
                             }
                             break;
@@ -230,6 +230,7 @@ public class TempReadScheduler {
 
                     //сохранение в базу отметки об отправке
                     Message message = messageService.createNew(null);
+                    message.setStateCode(temp.state.getCode());
                     message.setRecipient(recipient);
                     message.setSensor(temp.sensor);
                     messageService.getRepository().saveAndFlush(message);

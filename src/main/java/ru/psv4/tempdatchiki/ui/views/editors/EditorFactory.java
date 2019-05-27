@@ -8,7 +8,7 @@ import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.views.HasNotifications;
 
 public class EditorFactory {
-    public static Saver create(InitValues initValues, HasNotifications view, ApplicationContext applicationContext) {
+    public static Saver create(TextFieldInitValues initValues, HasNotifications view, ApplicationContext applicationContext) {
         switch (initValues.entityClass) {
             case "Recipient": {
                 switch (initValues.property) {
@@ -20,11 +20,11 @@ public class EditorFactory {
         throw new IllegalArgumentException();
     }
 
-    private static RecipientNameSaver createRecipientNameEditor(InitValues initValues, HasNotifications view, ApplicationContext applicationContext) {
+    private static RecipientNameSaver createRecipientNameEditor(TextFieldInitValues initValues, HasNotifications view, ApplicationContext applicationContext) {
         return new RecipientNameSaver(creareRecipientCrud(view, applicationContext));
     }
 
-    private static RecipientFcmTokenSaver createRecipientFcmTokenEditor(InitValues initValues, HasNotifications view, ApplicationContext applicationContext) {
+    private static RecipientFcmTokenSaver createRecipientFcmTokenEditor(TextFieldInitValues initValues, HasNotifications view, ApplicationContext applicationContext) {
         return new RecipientFcmTokenSaver(creareRecipientCrud(view, applicationContext));
     }
 
