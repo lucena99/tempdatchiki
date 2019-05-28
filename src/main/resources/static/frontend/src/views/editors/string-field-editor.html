@@ -45,30 +45,33 @@
           }
         </style>
 
-        <buttons-bar id="top" no-scroll$="[[noScroll]]">
-            <vaadin-button slot="left" id="backward" theme="primary">
-                Назад
-                <iron-icon icon="vaadin:backwards" slot="suffix"></iron-icon>
-            </vaadin-button>
-        </buttons-bar>
+        <div theme="orders no-row-borders">
 
-        <div class="scrollable main-row" id="main">
-            <vaadin-form-layout id="form1">
-                <vaadin-form-item style="flex-direction: column;">
-                    <vaadin-text-area  id="value" label="[[title]]" style="display:flex;"></vaadin-text-area>
-                </vaadin-form-item>
-                <vaadin-form-item style="flex-direction: column;">
-                    <buttons-bar id="footer" no-scroll$="[[noScroll]]">
-                        <vaadin-button slot="left" id="cancel" theme="tertiary">
-                            Отмена
-                        </vaadin-button>
-                        <vaadin-button slot="right" id="save" theme="primary">
-                            Сохранить
-                            <iron-icon icon="vaadin:check" slot="suffix"></iron-icon>
-                        </vaadin-button>
-                    </buttons-bar>
-                </vaadin-form-item>
-            </vaadin-form-layout>
+            <buttons-bar id="top" no-scroll$="[[noScroll]]">
+                <vaadin-button slot="left" id="backward" theme="primary">
+                    Назад
+                    <iron-icon icon="vaadin:backwards" slot="suffix"></iron-icon>
+                </vaadin-button>
+            </buttons-bar>
+
+            <div class="scrollable main-row" id="main">
+                <vaadin-form-layout id="form1">
+                    <vaadin-form-item style="flex-direction: column;">
+                        <vaadin-text-area  id="value" label="[[title]]" style="display:flex;"></vaadin-text-area>
+                    </vaadin-form-item>
+                    <vaadin-form-item style="flex-direction: column;">
+                        <buttons-bar id="footer" no-scroll$="[[noScroll]]">
+                            <vaadin-button slot="left" id="cancel" theme="tertiary">
+                                Отмена
+                            </vaadin-button>
+                            <vaadin-button slot="right" id="save" theme="primary">
+                                Сохранить
+                                <iron-icon icon="vaadin:check" slot="suffix"></iron-icon>
+                            </vaadin-button>
+                        </buttons-bar>
+                    </vaadin-form-item>
+                </vaadin-form-layout>
+            </div>
         </div>
     </template>
 

@@ -171,3 +171,6 @@ CREATE UNIQUE INDEX idx_unique_message on "message" (recipient_uid, sensor_uid, 
 ALTER TABLE message DROP COLUMN updated_datetime;
 
 ALTER TABLE message RENAME COLUMN event_type_code TO state_code;
+
+select * from message
+DROP INDEX idx_unique_message;
