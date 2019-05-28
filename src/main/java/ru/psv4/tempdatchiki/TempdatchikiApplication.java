@@ -40,8 +40,8 @@ public class TempdatchikiApplication extends SpringBootServletInitializer {
         log.info("port = " + env.getProperty("port"));
     }
 
-//    @Bean
-//    public ServletRegistrationBean<SpringServlet> springServlet(ApplicationContext context) {
-//        return new ServletRegistrationBean<>(new SpringServlet(context, false), "/app/*", "/frontend/*");
-//    }
+    @Bean
+    public ServletRegistrationBean<SpringServlet> springServlet(ApplicationContext context) {
+        return new ServletRegistrationBean<>(new SpringServlet(context, false), "/app/*", "/frontend/*");
+    }
 }

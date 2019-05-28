@@ -85,6 +85,7 @@ public class SecurityConfiguration {
 					.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 					.and()
 					.antMatcher("/restapi/**")
+					.antMatcher("/swagger/**")
 					.authorizeRequests()
 						.anyRequest().hasAuthority(Role.RESTAPI)
 						.and()
@@ -159,7 +160,9 @@ public class SecurityConfiguration {
 
 					// (production mode) static META-INF.resources
 					"/static.frontend-es5/**", "/static.frontend-es6/**",
-					"/index.html");
+					"/index.html",
+
+					"/sw.js");
 		}
 	}
 }
