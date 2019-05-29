@@ -4,7 +4,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
-import ru.psv4.tempdatchiki.HasLogger;
+import ru.psv4.tempdatchiki.ui.HasLogger;
 import ru.psv4.tempdatchiki.backend.data.EntityUtil;
 import ru.psv4.tempdatchiki.backend.data.TdEntity;
 import ru.psv4.tempdatchiki.backend.service.CrudService;

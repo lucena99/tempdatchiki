@@ -2,7 +2,7 @@ package ru.psv4.tempdatchiki.crud;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;
-import ru.psv4.tempdatchiki.HasLogger;
+import ru.psv4.tempdatchiki.ui.HasLogger;
 import ru.psv4.tempdatchiki.backend.data.TdEntity;
 import ru.psv4.tempdatchiki.backend.service.CrudService;
 import ru.psv4.tempdatchiki.backend.service.UserFriendlyDataException;
