@@ -7,14 +7,14 @@ import com.vaadin.flow.component.login.LoginOverlay;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.templatemodel.TemplateModel;
+import ru.psv4.tempdatchiki.security.Role;
 import ru.psv4.tempdatchiki.security.SecurityUtils;
 import ru.psv4.tempdatchiki.ui.views.recipients.RecipientsView;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
 @Route
 @PageTitle("Температурные датчики")
-@HtmlImport("/styles/shared-styles.html")
+@HtmlImport("styles/shared-styles.html")
 @Viewport(TdConst.VIEWPORT)
 public class LoginView extends VerticalLayout
 	implements AfterNavigationObserver, BeforeEnterObserver {
@@ -37,13 +37,14 @@ public class LoginView extends VerticalLayout
 		i18n.getForm().setPassword("Пароль");
 		login.setI18n(i18n);
 		login.setForgotPasswordButtonVisible(false);
-		login.setAction("login");
+		login.setAction("/app/login");
 		login.setOpened(true);
 	}
 
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
-		if (SecurityUtils.isUserLoggedIn()) {
+		if (SecurityUtils.isUserLoggedIn() &&
+                SecurityUtils.isAnyAllowed(Role.getUIRoles())) {
 			// Needed manually to change the URL because of https://github.com/vaadin/flow/issues/4189
 			UI.getCurrent().getPage().getHistory().replaceState(null, "");
 			event.rerouteTo(RecipientsView.class);
@@ -54,6 +55,6 @@ public class LoginView extends VerticalLayout
 	public void afterNavigation(AfterNavigationEvent event) {
 		login.setError(
 			event.getLocation().getQueryParameters().getParameters().containsKey(
-				"error"));
+			        "error"));
 	}
 }

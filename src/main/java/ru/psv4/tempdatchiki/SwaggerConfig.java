@@ -1,5 +1,6 @@
 package ru.psv4.tempdatchiki;
 
+import org.springframework.boot.autoconfigure.web.ResourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -13,7 +14,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-//@EnableWebMvc
+@EnableWebMvc
 public class SwaggerConfig implements WebMvcConfigurer {
     @Bean
     public Docket api() {
@@ -44,7 +45,18 @@ public class SwaggerConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
 
-        registry.addResourceHandler("/frontend/**")
-                .addResourceLocations("classpath:/static/");
+//        registry.addResourceHandler("/frontend/**")
+//                .addResourceLocations("classpath:/static/");
+//
+//        registry.addResourceHandler("/VAADIN/**")
+//                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+//
+//        registry.addResourceHandler("/sw.js")
+//                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    }
+
+    @Bean
+    public ResourceProperties resourceProperties() {
+        return new ResourceProperties();
     }
 }

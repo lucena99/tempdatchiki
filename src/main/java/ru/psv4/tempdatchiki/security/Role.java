@@ -9,7 +9,7 @@ public class Role {
 
 	private Role() {}
 
-	public static String[] getAppRoles() {
+	public static String[] getUIRoles() {
 		return new String[] { RECIPIENT, ADMIN };
 	}
 }
