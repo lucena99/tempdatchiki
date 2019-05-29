@@ -14,7 +14,7 @@ import ru.psv4.tempdatchiki.utils.TdConst;
 
 @Route
 @PageTitle("Температурные датчики")
-@HtmlImport("/app/styles/shared-styles.html")
+@HtmlImport("/styles/shared-styles.html")
 @Viewport(TdConst.VIEWPORT)
 public class LoginView extends VerticalLayout
 	implements AfterNavigationObserver, BeforeEnterObserver {
@@ -43,11 +43,11 @@ public class LoginView extends VerticalLayout
 
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
-//		if (SecurityUtils.isUserLoggedIn()) {
-//			// Needed manually to change the URL because of https://github.com/vaadin/flow/issues/4189
-//			UI.getCurrent().getPage().getHistory().replaceState(null, "");
-//			event.rerouteTo(RecipientsView.class);
-//		}
+		if (SecurityUtils.isUserLoggedIn()) {
+			// Needed manually to change the URL because of https://github.com/vaadin/flow/issues/4189
+			UI.getCurrent().getPage().getHistory().replaceState(null, "");
+			event.rerouteTo(RecipientsView.class);
+		}
 	}
 
 	@Override
