@@ -47,6 +47,9 @@ public class TempdatchikiApplication extends SpringBootServletInitializer {
 
     @Bean
     public ServletRegistrationBean<SpringServlet> springServlet(ApplicationContext context) {
-        return new ServletRegistrationBean<>(new SpringServlet(context, false), "/app/*", "/frontend/*");
+        return new ServletRegistrationBean<>(new SpringServlet(context, false), "/app/*",
+                "/app/frontend/*","/frontend/*",
+                "/VAADIN/*", "/images/*", "/icons/*",
+                "/styles/*");
     }
 }

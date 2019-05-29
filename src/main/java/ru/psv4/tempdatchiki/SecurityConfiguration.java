@@ -15,9 +15,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
-import ru.psv4.tempdatchiki.backend.service.UserService;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import ru.psv4.tempdatchiki.backend.data.User;
+import ru.psv4.tempdatchiki.backend.service.UserService;
 import ru.psv4.tempdatchiki.security.*;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
@@ -32,10 +32,10 @@ import ru.psv4.tempdatchiki.utils.TdConst;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-	private static final String LOGIN_PROCESSING_URL = "/login";
-	private static final String LOGIN_FAILURE_URL = "/login?error";
-	private static final String LOGIN_URL = "/login";
-	private static final String LOGOUT_SUCCESS_URL = "/" + TdConst.PAGE_RECIPIENTS;
+	private static final String LOGIN_PROCESSING_URL = "/login.do";
+	private static final String LOGIN_FAILURE_URL = "/login.home?error";
+	private static final String LOGIN_URL = "/login.home";
+	private static final String LOGOUT_SUCCESS_URL = "/app/" + TdConst.PAGE_RECIPIENTS;
 
 	private final UserDetailsService userDetailsService;
 
@@ -89,7 +89,6 @@ public class SecurityConfiguration {
 						.antMatchers("/restapi/**",
 							"/swagger-ui.html/**",
 							"/v2/api-docs",
-							"/sw.js",
 							"/swagger-resources",
 							"/configuration/security",
 							"/configuration/ui")
@@ -114,23 +113,23 @@ public class SecurityConfiguration {
 //					.and().authorizeRequests()
 //
 //					// Allow all flow internal requests.
-//					.requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
+					.and().authorizeRequests()
+					.requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
 
 					.and().authorizeRequests()
-
 					// Allow all requests by logged in users.
-					.antMatchers("/app/**").hasAnyAuthority(Role.ADMIN)
+					.antMatchers("/app/**").hasAnyAuthority(Role.getUIRoles());
 
-					// Configure the login page.
-					.and().formLogin().loginPage(LOGIN_URL).permitAll().loginProcessingUrl(LOGIN_PROCESSING_URL)
-					.failureUrl(LOGIN_FAILURE_URL)
-
-					// Register the success handler that redirects users to the page they last tried
-					// to access
-					.successHandler(new SavedRequestAwareAuthenticationSuccessHandler())
-
-					// Configure logout
-					.and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
+//					// Configure the login page.
+//					.and().formLogin().loginPage(LOGIN_URL).permitAll().loginProcessingUrl(LOGIN_PROCESSING_URL)
+//					.failureUrl(LOGIN_FAILURE_URL)
+//
+//					// Register the success handler that redirects users to the page they last tried
+//					// to access
+//					.successHandler(new AppSuccessHandler())
+//
+//					// Configure logout
+//					.and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
 		}
 //
 //		/**
@@ -173,8 +172,32 @@ public class SecurityConfiguration {
 	}
 
 	@Configuration
-	@Order(3)
+	@Order(0)
 	public static class GeneralWebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			// Not using Spring CSRF here to be able to use plain HTML for the login page
+			http.csrf().disable()
+					// Register our CustomRequestCache, that saves unauthorized access attempts, so
+					// the user is redirected after login.
+					.requestCache().requestCache(new CustomRequestCache())
+
+					// Restrict access to our application.
+					.and().authorizeRequests()
+//
+					// Configure the login page.
+					.and().formLogin().loginPage("/app/login").permitAll().loginProcessingUrl("/app/login")
+					.failureUrl(LOGIN_FAILURE_URL)
+
+					// Register the success handler that redirects users to the page they last tried
+					// to access
+					.successHandler(new SimpleUrlAuthenticationSuccessHandler("/app/recipients"))
+
+					// Configure logout
+					.and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
+		}
+
 		/**
 		 * Allows access to static META-INF.resources, bypassing Spring security.
 		 */
@@ -182,35 +205,35 @@ public class SecurityConfiguration {
 		public void configure(WebSecurity web) throws Exception {
 			web.ignoring().antMatchers(
 					// Vaadin Flow static META-INF.resources
-					"/VAADIN/**",
+					"/app/VAADIN/**",
 
 					// the standard favicon URI
-					"/favicon.ico",
+					"/app/favicon.ico",
 
 					// the robots exclusion standard
-					"/robots.txt",
+					"/app/robots.txt",
 
 					// web application manifest
-					"/manifest.webmanifest",
-					"/sw.js",
-					"/offline-page.html",
+					"/app/manifest.webmanifest",
+					"/app/sw.js",
+					"/app/offline-page.html",
 
 					// icons and images
-					"/icons/**",
-					"/images/**",
+					"/app/icons/**",
+					"/app/images/**",
 
 					// (development mode) static META-INF.resources
-					"/frontend/**",
+					"/app/frontend/**",
 
 					// (development mode) webjars
-					"/webjars/**",
+					"/app/webjars/**",
 
 					// (development mode) H2 debugging console
-					"/h2-console/**",
+					"/app/h2-console/**",
 
 					// (production mode) static META-INF.resources
-					"/static.frontend-es5/**", "/static.frontend-es6/**",
-					"/index.html");
+					"/app/static.frontend-es5/**", "/app/static.frontend-es6/**",
+					"/app/index.html");
 		}
 	}
 }

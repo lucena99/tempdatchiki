@@ -7,6 +7,7 @@ import java.util.Locale;
 public class TdConst {
     public static final Locale APP_LOCALE = new Locale("ru");
 
+    public static final String APP = "app/";
     public static final String PAGE_ROOT = "";
     public static final String PAGE_RECIPIENTS = "recipients";
     public static final String PAGE_RECIPIENT_EDIT = "recipients/edit";

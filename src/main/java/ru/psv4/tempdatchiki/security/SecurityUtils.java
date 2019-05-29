@@ -96,6 +96,18 @@ public final class SecurityUtils {
 			&& !(authentication instanceof AnonymousAuthenticationToken);
 	}
 
+	public static boolean isAnyAllowed(String... rolesArray) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if (authentication != null
+				&& !(authentication instanceof AnonymousAuthenticationToken)) {
+			List<String> rolesList = Arrays.asList(rolesArray);
+			return authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
+					.anyMatch(rolesList::contains);
+		} else {
+			return false;
+		}
+	}
+
 	/**
 	 * Tests if the request is an internal framework request. The test consists of
 	 * checking if the request parameter is present and if its value is consistent
