@@ -32,9 +32,9 @@ import ru.psv4.tempdatchiki.utils.TdConst;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-	private static final String LOGIN_PROCESSING_URL = "/app/login";
-	private static final String LOGIN_FAILURE_URL = "/app/login?error";
-	private static final String LOGIN_URL = "/app/login";
+	private static final String LOGIN_PROCESSING_URL = "/login";
+	private static final String LOGIN_FAILURE_URL = "/login?error";
+	private static final String LOGIN_URL = "/login";
 	private static final String LOGOUT_SUCCESS_URL = "/" + TdConst.PAGE_RECIPIENTS;
 
 	private final UserDetailsService userDetailsService;
@@ -111,13 +111,15 @@ public class SecurityConfiguration {
 					.requestCache().requestCache(new CustomRequestCache())
 
 					// Restrict access to our application.
+//					.and().authorizeRequests()
+//
+//					// Allow all flow internal requests.
+//					.requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
+
 					.and().authorizeRequests()
 
-					// Allow all flow internal requests.
-					.requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
-
 					// Allow all requests by logged in users.
-					.antMatchers("/app/**").hasAnyAuthority(Role.getAppRoles())
+					.antMatchers("/app/**").hasAnyAuthority(Role.ADMIN)
 
 					// Configure the login page.
 					.and().formLogin().loginPage(LOGIN_URL).permitAll().loginProcessingUrl(LOGIN_PROCESSING_URL)
@@ -130,7 +132,49 @@ public class SecurityConfiguration {
 					// Configure logout
 					.and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
 		}
+//
+//		/**
+//		 * Allows access to static META-INF.resources, bypassing Spring security.
+//		 */
+//		@Override
+//		public void configure(WebSecurity web) throws Exception {
+//			web.ignoring().antMatchers(
+//					// Vaadin Flow static META-INF.resources
+//					"/VAADIN/**",
+//
+//					// the standard favicon URI
+//					"/favicon.ico",
+//
+//					// the robots exclusion standard
+//					"/robots.txt",
+//
+//					// web application manifest
+//					"/manifest.webmanifest",
+//					"/sw.js",
+//					"/offline-page.html",
+//
+//					// icons and images
+//					"/icons/**",
+//					"/images/**",
+//
+//					// (development mode) static META-INF.resources
+//					"/frontend/**",
+//
+//					// (development mode) webjars
+//					"/webjars/**",
+//
+//					// (development mode) H2 debugging console
+//					"/h2-console/**",
+//
+//					// (production mode) static META-INF.resources
+//					"/static.frontend-es5/**", "/static.frontend-es6/**",
+//					"/index.html");
+//		}
+	}
 
+	@Configuration
+	@Order(3)
+	public static class GeneralWebSecurityConfig extends WebSecurityConfigurerAdapter {
 		/**
 		 * Allows access to static META-INF.resources, bypassing Spring security.
 		 */
@@ -138,35 +182,35 @@ public class SecurityConfiguration {
 		public void configure(WebSecurity web) throws Exception {
 			web.ignoring().antMatchers(
 					// Vaadin Flow static META-INF.resources
-					"/app/VAADIN/**",
+					"/VAADIN/**",
 
 					// the standard favicon URI
-					"/app/favicon.ico",
+					"/favicon.ico",
 
 					// the robots exclusion standard
-					"/app/robots.txt",
+					"/robots.txt",
 
 					// web application manifest
-					"/app/manifest.webmanifest",
-					"/app/sw.js",
-					"/app/offline-page.html",
+					"/manifest.webmanifest",
+					"/sw.js",
+					"/offline-page.html",
 
 					// icons and images
-					"/app/icons/**",
-					"/app/images/**",
+					"/icons/**",
+					"/images/**",
 
 					// (development mode) static META-INF.resources
-					"/app/frontend/**",
+					"/frontend/**",
 
 					// (development mode) webjars
-					"/app/webjars/**",
+					"/webjars/**",
 
 					// (development mode) H2 debugging console
-					"/app/h2-console/**",
+					"/h2-console/**",
 
 					// (production mode) static META-INF.resources
-					"/app/static.frontend-es5/**", "/app/static.frontend-es6/**",
-					"/app/index.html");
+					"/static.frontend-es5/**", "/static.frontend-es6/**",
+					"/index.html");
 		}
 	}
 }

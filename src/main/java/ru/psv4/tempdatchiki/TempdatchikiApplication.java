@@ -1,6 +1,11 @@
 package ru.psv4.tempdatchiki;
 
+import com.vaadin.flow.function.DeploymentConfiguration;
+import com.vaadin.flow.server.ServiceException;
+import com.vaadin.flow.server.VaadinServlet;
+import com.vaadin.flow.server.VaadinServletService;
 import com.vaadin.flow.spring.SpringServlet;
+import com.vaadin.flow.spring.SpringVaadinServletService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
