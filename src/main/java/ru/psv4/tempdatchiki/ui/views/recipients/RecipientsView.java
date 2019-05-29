@@ -12,7 +12,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.psv4.tempdatchiki.HasLogger;
+import ru.psv4.tempdatchiki.ui.HasLogger;
 import ru.psv4.tempdatchiki.backend.data.EntityUtil;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.ui.MainView;
@@ -90,12 +90,12 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String uid) {
-		boolean editView = event.getLocation().getPath().contains(TdConst.PAGE_RECIPIENT_EDIT);
-		if (uid != null) {
-			presenter.onNavigation(uid, editView);
-		} else if (dialog.isOpened()) {
-			presenter.closeSilently();
-		}
+//		boolean editView = event.getLocation().getPath().contains(TdConst.PAGE_RECIPIENT_EDIT);
+//		if (uid != null) {
+//			presenter.onNavigation(uid, editView);
+//		} else if (dialog.isOpened()) {
+//			presenter.closeSilently();
+//		}
 	}
 
 	void navigateToMainView() {

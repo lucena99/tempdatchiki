@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki;
+package ru.psv4.tempdatchiki.ui;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

@@ -12,7 +12,7 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.psv4.tempdatchiki.HasLogger;
+import ru.psv4.tempdatchiki.ui.HasLogger;
 import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.EntityUtil;
 import ru.psv4.tempdatchiki.ui.MainView;
