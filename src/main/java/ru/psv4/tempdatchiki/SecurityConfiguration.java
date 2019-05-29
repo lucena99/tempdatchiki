@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.security;
+package ru.psv4.tempdatchiki;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import ru.psv4.tempdatchiki.backend.service.UserService;
 import ru.psv4.tempdatchiki.backend.data.User;
+import ru.psv4.tempdatchiki.security.*;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
 /**
@@ -31,16 +32,16 @@ import ru.psv4.tempdatchiki.utils.TdConst;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-	private static final String LOGIN_PROCESSING_URL = "/login";
-	private static final String LOGIN_FAILURE_URL = "/login?error";
-	private static final String LOGIN_URL = "/login";
+	private static final String LOGIN_PROCESSING_URL = "/app/login";
+	private static final String LOGIN_FAILURE_URL = "/app/login?error";
+	private static final String LOGIN_URL = "/app/login";
 	private static final String LOGOUT_SUCCESS_URL = "/" + TdConst.PAGE_RECIPIENTS;
 
 	private final UserDetailsService userDetailsService;
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-	
+
 	@Autowired
 	public SecurityConfiguration(UserDetailsService userDetailsService) {
 		this.userDetailsService = userDetailsService;
@@ -84,12 +85,17 @@ public class SecurityConfiguration {
 				http
 					.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 					.and()
-					.antMatcher("/restapi/**")
-					.antMatcher("/swagger/**")
-					.authorizeRequests()
-						.anyRequest().hasAuthority(Role.RESTAPI)
-						.and()
-					.httpBasic();
+						.authorizeRequests()
+						.antMatchers("/restapi/**",
+							"/swagger-ui.html/**",
+							"/v2/api-docs",
+							"/sw.js",
+							"/swagger-resources",
+							"/configuration/security",
+							"/configuration/ui")
+						.hasAuthority(Role.RESTAPI)
+					.and()
+						.httpBasic();
 		}
 	}
 
@@ -111,7 +117,7 @@ public class SecurityConfiguration {
 					.requestMatchers(SecurityUtils::isFrameworkInternalRequest).permitAll()
 
 					// Allow all requests by logged in users.
-					.anyRequest().hasAnyAuthority(Role.getAppRoles())
+					.antMatchers("/app/**").hasAnyAuthority(Role.getAppRoles())
 
 					// Configure the login page.
 					.and().formLogin().loginPage(LOGIN_URL).permitAll().loginProcessingUrl(LOGIN_PROCESSING_URL)
@@ -132,37 +138,35 @@ public class SecurityConfiguration {
 		public void configure(WebSecurity web) throws Exception {
 			web.ignoring().antMatchers(
 					// Vaadin Flow static META-INF.resources
-					"/VAADIN/**",
+					"/app/VAADIN/**",
 
 					// the standard favicon URI
-					"/favicon.ico",
+					"/app/favicon.ico",
 
 					// the robots exclusion standard
-					"/robots.txt",
+					"/app/robots.txt",
 
 					// web application manifest
-					"/manifest.webmanifest",
-					"/sw.js",
-					"/offline-page.html",
+					"/app/manifest.webmanifest",
+					"/app/sw.js",
+					"/app/offline-page.html",
 
 					// icons and images
-					"/icons/**",
-					"/images/**",
+					"/app/icons/**",
+					"/app/images/**",
 
 					// (development mode) static META-INF.resources
-					"/frontend/**",
+					"/app/frontend/**",
 
 					// (development mode) webjars
-					"/webjars/**",
+					"/app/webjars/**",
 
 					// (development mode) H2 debugging console
-					"/h2-console/**",
+					"/app/h2-console/**",
 
 					// (production mode) static META-INF.resources
-					"/static.frontend-es5/**", "/static.frontend-es6/**",
-					"/index.html",
-
-					"/sw.js");
+					"/app/static.frontend-es5/**", "/app/static.frontend-es6/**",
+					"/app/index.html");
 		}
 	}
 }

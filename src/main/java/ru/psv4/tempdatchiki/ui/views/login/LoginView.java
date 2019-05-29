@@ -14,7 +14,7 @@ import ru.psv4.tempdatchiki.utils.TdConst;
 
 @Route
 @PageTitle("Температурные датчики")
-@HtmlImport("styles/shared-styles.html")
+@HtmlImport("/app/styles/shared-styles.html")
 @Viewport(TdConst.VIEWPORT)
 public class LoginView extends VerticalLayout
 	implements AfterNavigationObserver, BeforeEnterObserver {
@@ -27,8 +27,8 @@ public class LoginView extends VerticalLayout
 		LoginI18n i18n = LoginI18n.createDefault();
 		i18n.setHeader(new LoginI18n.Header());
 		i18n.getHeader().setTitle("Sensors App");
-		i18n.getHeader().setDescription(
-			"admin + admin\n" + "stas + stas");
+//		i18n.getHeader().setDescription(
+//			"admin + admin\n" + "stas + stas");
 		i18n.setAdditionalInformation(null);
 		i18n.setForm(new LoginI18n.Form());
 		i18n.getForm().setSubmit("Войти");
@@ -43,11 +43,11 @@ public class LoginView extends VerticalLayout
 
 	@Override
 	public void beforeEnter(BeforeEnterEvent event) {
-		if (SecurityUtils.isUserLoggedIn()) {
-			// Needed manually to change the URL because of https://github.com/vaadin/flow/issues/4189
-			UI.getCurrent().getPage().getHistory().replaceState(null, "");
-			event.rerouteTo(RecipientsView.class);
-		}
+//		if (SecurityUtils.isUserLoggedIn()) {
+//			// Needed manually to change the URL because of https://github.com/vaadin/flow/issues/4189
+//			UI.getCurrent().getPage().getHistory().replaceState(null, "");
+//			event.rerouteTo(RecipientsView.class);
+//		}
 	}
 
 	@Override
