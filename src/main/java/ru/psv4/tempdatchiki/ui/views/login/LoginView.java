@@ -27,8 +27,6 @@ public class LoginView extends VerticalLayout
 		LoginI18n i18n = LoginI18n.createDefault();
 		i18n.setHeader(new LoginI18n.Header());
 		i18n.getHeader().setTitle("Sensors App");
-		i18n.getHeader().setDescription(
-			"admin + admin\n" + "stas + stas");
 		i18n.setAdditionalInformation(null);
 		i18n.setForm(new LoginI18n.Form());
 		i18n.getForm().setSubmit("Войти");
