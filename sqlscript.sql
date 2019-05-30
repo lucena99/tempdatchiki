@@ -172,5 +172,5 @@ ALTER TABLE message DROP COLUMN updated_datetime;
 
 ALTER TABLE message RENAME COLUMN event_type_code TO state_code;
 
-select * from message
+select * from message;
 DROP INDEX idx_unique_message;
