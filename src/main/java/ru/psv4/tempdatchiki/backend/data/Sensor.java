@@ -21,10 +21,10 @@ public class Sensor extends Reference implements JsonSerializable {
     private int num;
 
     @Column(name = "minvalue")
-    private float minValue;
+    private double minValue;
 
     @Column(name = "maxvalue")
-    private float maxValue;
+    private double maxValue;
 
     public Controller getController() {
         return controller;
@@ -34,13 +34,13 @@ public class Sensor extends Reference implements JsonSerializable {
         this.controller = controller;
     }
 
-    public float getMinValue() { return minValue; }
+    public double getMinValue() { return minValue; }
 
-    public void setMinValue(float minValue) { this.minValue = minValue; }
+    public void setMinValue(double minValue) { this.minValue = minValue; }
 
-    public float getMaxValue() { return maxValue; }
+    public double getMaxValue() { return maxValue; }
 
-    public void setMaxValue(float maxValue) { this.maxValue = maxValue; }
+    public void setMaxValue(double maxValue) { this.maxValue = maxValue; }
 
     public int getNum() { return num; }
 

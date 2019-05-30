@@ -200,7 +200,7 @@ public class SecurityConfiguration {
 		protected void configure(HttpSecurity http) throws Exception {
 			SavedRequestAwareAuthenticationSuccessHandler successHandler =
 					new SavedRequestAwareAuthenticationSuccessHandler();
-			successHandler.setDefaultTargetUrl("/app/controllers");
+			successHandler.setDefaultTargetUrl("/app/recipients");
 
 			// Not using Spring CSRF here to be able to use plain HTML for the login page
 			http.csrf().disable()

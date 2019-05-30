@@ -19,6 +19,7 @@ import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.SearchBar;
 import ru.psv4.tempdatchiki.ui.views.EntityView;
 import ru.psv4.tempdatchiki.ui.views.controlleredit.ControllerDetails;
+import ru.psv4.tempdatchiki.ui.views.controlleredit.ControllerDetails2;
 import ru.psv4.tempdatchiki.ui.views.controlleredit.ControllerEditor;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
@@ -42,7 +43,7 @@ public class ControllersView  extends PolymerTemplate<TemplateModel>
 
     private final ControllerEditor editor;
 
-    private final ControllerDetails details = new ControllerDetails();
+    private final ControllerDetails details = new ControllerDetails(null);
 
     private final ControllerPresenter presenter;
 
@@ -59,7 +60,7 @@ public class ControllersView  extends PolymerTemplate<TemplateModel>
         grid.addColumn(ControllerCard.getTemplate()
                 .withProperty("controllerCard", ControllerCard::create)
                 .withEventHandler("cardClick",
-                        r -> UI.getCurrent().navigate(TdConst.PAGE_CONTROLLERS + "/" + r.getUid())));
+                        r -> UI.getCurrent().navigate("controller/" + r.getUid())));
 
         getSearchBar().addFilterChangeListener(
                 e -> presenter.filterChanged(getSearchBar().getFilter()));
