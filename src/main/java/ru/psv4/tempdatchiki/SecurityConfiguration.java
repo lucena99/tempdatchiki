@@ -163,7 +163,7 @@ public class SecurityConfiguration {
 					.antMatchers("/restapi/**").hasAuthority(Role.RESTAPI)
 					.and().httpBasic().and()*/
 					.antMatcher("/swagger-ui.html/**").authorizeRequests()
-					.antMatchers("/swagger-ui.html/**").hasAuthority(Role.RESTAPI)
+					.antMatchers("/swagger-ui.html/**").hasAuthority(Role.ADMIN)
 					.and().httpBasic();/*.and()
 					.antMatcher("/v2/api-docs").authorizeRequests()
 					.antMatchers("/v2/api-docs").hasAuthority(Role.RESTAPI)

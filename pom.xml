@@ -345,7 +345,6 @@
                       <name>recipient-fragment</name>
                       <files>
                         <file>src/views/recipients/recipients-view.html</file>
-                        <file>src/views/recipients/order-status-badge.html</file>
                         <file>src/views/recipientedit/subscription-editor.html</file>
                         <file>src/views/recipientedit/recipient-editor.html</file>
                         <file>src/views/recipientedit/recipient-details.html</file>
