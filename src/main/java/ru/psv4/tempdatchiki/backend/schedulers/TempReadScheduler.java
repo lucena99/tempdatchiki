@@ -99,7 +99,7 @@ public class TempReadScheduler {
             List<AnalyzedValue> analyzedValues = analyzeTempValues(controller, values);
             notifyRecipientsIfNeed(controller, analyzedValues);
         } catch (IOException | ParseException e) {
-            log.error("Error", e);
+            log.error("Error read controller {} Message {}", controller, e.getMessage());
         }
     }
 
