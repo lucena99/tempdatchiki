@@ -104,7 +104,7 @@ public class SecurityConfiguration {
 			// the ant matcher is what limits the scope of this configuration.
 			http
 					.antMatcher("/restapi/**").authorizeRequests()
-					.antMatchers("/restapi/**").hasAuthority(Role.RESTAPI)
+					.antMatchers("/restapi/**").hasAnyAuthority(Role.RESTAPI, Role.ADMIN)
 					.and()
 					.httpBasic();/*.and()
 					.antMatcher("/swagger-ui.html/**").authorizeRequests()
