@@ -20,6 +20,7 @@ public class Controller extends Reference implements JsonSerializable {
     private String url;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "controller")
+    @OrderBy("num ASC")
     private List<Sensor> sensors;
 
     public String getUrl() { return url; }
