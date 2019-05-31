@@ -1,7 +1,9 @@
 package ru.psv4.tempdatchiki.ui.views.editors;
 
 import org.springframework.context.ApplicationContext;
+import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
+import ru.psv4.tempdatchiki.backend.service.ControllerService;
 import ru.psv4.tempdatchiki.backend.service.RecipientService;
 import ru.psv4.tempdatchiki.crud.CrudEntityPresenter;
 import ru.psv4.tempdatchiki.security.CurrentUser;
@@ -12,25 +14,34 @@ public class EditorFactory {
         switch (initValues.entityClass) {
             case "Recipient": {
                 switch (initValues.property) {
-                    case "name": return createRecipientNameEditor(initValues, view, applicationContext);
-                    case "fcmToken": return createRecipientFcmTokenEditor(initValues, view, applicationContext);
+                    case "name": return new EntityStringFieldSaver<Recipient>(
+                            creareRecipientCrud(view, applicationContext), (c, v) -> { c.setName(v); });
+                    case "fcmToken": return new EntityStringFieldSaver<Recipient>(
+                            creareRecipientCrud(view, applicationContext), (c, v) -> { c.setFcmToken(v); });
+                }
+            }
+            case "Controller": {
+                switch (initValues.property) {
+                    case "name": return new EntityStringFieldSaver<Controller>(
+                            creareControllerCrud(view, applicationContext), (c, v) -> { c.setName(v); });
+                    case "url": return new EntityStringFieldSaver<Controller>(
+                            creareControllerCrud(view, applicationContext), (c, v) -> { c.setUrl(v); });
                 }
             }
         }
         throw new IllegalArgumentException();
     }
 
-    private static RecipientNameSaver createRecipientNameEditor(TextFieldInitValues initValues, HasNotifications view, ApplicationContext applicationContext) {
-        return new RecipientNameSaver(creareRecipientCrud(view, applicationContext));
-    }
-
-    private static RecipientFcmTokenSaver createRecipientFcmTokenEditor(TextFieldInitValues initValues, HasNotifications view, ApplicationContext applicationContext) {
-        return new RecipientFcmTokenSaver(creareRecipientCrud(view, applicationContext));
-    }
-
     private static CrudEntityPresenter<Recipient> creareRecipientCrud(HasNotifications view, ApplicationContext applicationContext) {
         return new CrudEntityPresenter<>(
                 applicationContext.getBean(RecipientService.class),
+                applicationContext.getBean(CurrentUser.class),
+                view);
+    }
+
+    private static CrudEntityPresenter<Controller> creareControllerCrud(HasNotifications view, ApplicationContext applicationContext) {
+        return new CrudEntityPresenter<>(
+                applicationContext.getBean(ControllerService.class),
                 applicationContext.getBean(CurrentUser.class),
                 view);
     }

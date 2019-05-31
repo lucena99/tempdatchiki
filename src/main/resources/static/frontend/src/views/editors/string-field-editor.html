@@ -59,18 +59,16 @@
                     <vaadin-form-item style="flex-direction: column;">
                         <vaadin-text-area  id="value" label="[[title]]" style="display:flex;"></vaadin-text-area>
                     </vaadin-form-item>
-                    <vaadin-form-item style="flex-direction: column;">
-                        <buttons-bar id="footer" no-scroll$="[[noScroll]]">
-                            <vaadin-button slot="left" id="cancel" theme="tertiary">
-                                Отмена
-                            </vaadin-button>
-                            <vaadin-button slot="right" id="save" theme="primary">
-                                Сохранить
-                                <iron-icon icon="vaadin:check" slot="suffix"></iron-icon>
-                            </vaadin-button>
-                        </buttons-bar>
-                    </vaadin-form-item>
                 </vaadin-form-layout>
+                <buttons-bar id="footer" no-scroll$="[[noScroll]]">
+                    <vaadin-button slot="left" id="cancel" theme="tertiary">
+                        Отмена
+                    </vaadin-button>
+                    <vaadin-button slot="right" id="save" theme="primary">
+                        Сохранить
+                        <iron-icon icon="vaadin:check" slot="suffix"></iron-icon>
+                    </vaadin-button>
+                </buttons-bar>
             </div>
         </div>
     </template>

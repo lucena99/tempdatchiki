@@ -46,7 +46,7 @@ public class Message extends TdEntity {
         this.stateCode = stateCode;
     }
 
-    public State getState() {
-        return State.getByCode(stateCode);
+    public EventType getState() {
+        return EventType.getByCode(stateCode);
     }
 }

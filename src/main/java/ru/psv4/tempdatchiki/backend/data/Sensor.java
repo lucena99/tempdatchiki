@@ -5,10 +5,7 @@ import elemental.json.JsonObject;
 import ru.psv4.tempdatchiki.vaadin_json.JsonSerializerUtils;
 import ru.psv4.tempdatchiki.vaadin_json.TdJsonIgnore;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 
 @Entity
 public class Sensor extends Reference implements JsonSerializable {
@@ -25,6 +22,9 @@ public class Sensor extends Reference implements JsonSerializable {
 
     @Column(name = "maxvalue")
     private double maxValue;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "sensor")
+    private Temp temp;
 
     public Controller getController() {
         return controller;
@@ -45,6 +45,10 @@ public class Sensor extends Reference implements JsonSerializable {
     public int getNum() { return num; }
 
     public void setNum(int num) { this.num = num; }
+
+    public Temp getTemp() {
+        return temp;
+    }
 
     @Override
     public JsonObject toJson() { return JsonSerializerUtils.toJson(this); }

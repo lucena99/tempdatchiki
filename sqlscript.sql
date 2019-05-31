@@ -177,3 +177,15 @@ DROP INDEX idx_unique_message;
 
 alter table sensor alter column minvalue TYPE numeric(2,1);
 alter table sensor alter column maxvalue TYPE numeric(2,1);
+
+CREATE TABLE temp
+(
+    uid VARCHAR(36) NOT NULL,
+    sensor_uid VARCHAR(36) NOT NULL,
+    value numeric(2,1) NOT NULL,   
+    updated_datetime timestamp NOT NULL,
+    PRIMARY KEY (uid)
+);
+CREATE UNIQUE INDEX idx_unique_temp on "temp" (sensor_uid);
+ALTER TABLE temp ADD COLUMN statusCode int NOT NULL;
+ALTER TABLE temp RENAME COLUMN statusCode TO status_code;

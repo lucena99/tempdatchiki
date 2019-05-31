@@ -248,14 +248,14 @@ public class SecurityConfiguration {
 //					.and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
 
 					.and().formLogin().loginPage("/app/login").permitAll().loginProcessingUrl("/app/login")
-					.failureUrl(LOGIN_FAILURE_URL)
+					.failureUrl("/app/login?error")
 
 					// Register the success handler that redirects users to the page they last tried
 					// to access
 					.successHandler(successHandler)
 
 					// Configure logout
-					.and().logout().logoutSuccessUrl(LOGOUT_SUCCESS_URL);
+					.and().logout().logoutSuccessUrl("/app/recipients");
 		}
 
 		@Override

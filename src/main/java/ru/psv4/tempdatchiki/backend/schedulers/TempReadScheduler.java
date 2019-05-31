@@ -32,12 +32,14 @@ import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static ru.psv4.tempdatchiki.backend.data.State.*;
+import static ru.psv4.tempdatchiki.backend.data.EventType.Error;
+import static ru.psv4.tempdatchiki.backend.data.EventType.*;
 
 @Component
 public class TempReadScheduler {
@@ -49,13 +51,10 @@ public class TempReadScheduler {
     private SensorService sensorService;
 
     @Autowired
-    private SubscribtionService subscribtionService;
+    private TempService tempService;
 
     @Autowired
-    private SettingService settingService;
-
-    @Autowired
-    private MessageService messageService;
+    private EventBroker eventBroker;
 
     @Value("${temp.scheduler.active}")
     private boolean active;
@@ -73,190 +72,84 @@ public class TempReadScheduler {
 
     private static Logger log = LoggerFactory.getLogger(TempReadScheduler.class);
 
-    private static DecimalFormat tempFormatter;
-    static {
-        tempFormatter = new DecimalFormat("#.#");
-        DecimalFormatSymbols sep = new DecimalFormatSymbols(Locale.getDefault());
-        sep.setDecimalSeparator('.');
-        tempFormatter.setDecimalFormatSymbols(sep);
-    }
-
     @Scheduled(fixedRate = 1000)
     public void tempRead() {
         if (active) {
             LocalTime now = LocalTime.now();
             log.info(String.format("Temp read scheduler time = %s", now));
             List<Controller> controllers = controllerService.getList();
-            controllers.stream().forEach(c -> tempReadAndNotifyRecipientsIfNeed(c));
+            controllers.stream().forEach(c -> tempReadAndNotifyIfNeed(c));
         }
     }
 
-    private void tempReadAndNotifyRecipientsIfNeed(Controller controller) {
-        log.trace("Read controller {}", controller);
+    private void tempReadAndNotifyIfNeed(Controller controller) {
         try {
+            log.trace("Reading controller {}", controller);
             TempValues values = readTemp(controller.getUrl());
             values.trace(log);
-            List<AnalyzedValue> analyzedValues = analyzeTempValues(controller, values);
-            notifyRecipientsIfNeed(controller, analyzedValues);
+            log.trace("Successful read controller {}", controller);
+
+            List<TempEvent> events = updateTempsAndCreateEvents(controller, values);
+            if (!events.isEmpty()) {
+                eventBroker.notify(new ControllerEvent(controller, events));
+            }
         } catch (IOException | ParseException e) {
             log.error("Error read controller {} Message {}", controller, e.getMessage());
         }
     }
 
-    private class AnalyzedValue {
-
-        State state;
-        Sensor sensor;
-        float value;
-
-        AnalyzedValue(State tag, Sensor sensor, float value) {
-            this.state = tag;
-            this.sensor = sensor;
-            this.value = value;
-        }
-
-        @Override
-        public String toString() {
-            switch (state) {
-                case OverDown:
-                    return String.format("%1$s.%2$s. %3$s(%4$s)",
-                            sensor.getController().getName(), sensor.getName(),
-                            tempFormatter.format(value), tempFormatter.format(sensor.getMinValue()));
-                case OverUp:
-                    return String.format("%1$s.%2$s. %3$s(%4$s)",
-                            sensor.getController().getName(), sensor.getName(),
-                            tempFormatter.format(value), tempFormatter.format(sensor.getMaxValue()));
-                default:
-                    return "Unknown";
-            }
-        }
-    }
-
-    private List<AnalyzedValue> analyzeTempValues(Controller controller, TempValues values) {
-        Lazy<List<AnalyzedValue>> events = new Lazy<>(() -> new ArrayList<>());
+    private List<TempEvent> updateTempsAndCreateEvents(Controller controller, TempValues values) {
+        Lazy<List<TempEvent>> events = new Lazy<>(() -> new ArrayList<>());
         List<Sensor> sensors = sensorService.getRepository().findByController(controller);
         for (Sensor sensor : sensors) {
+            Temp temp = sensor.getTemp();
+            if (temp == null) {
+                temp = tempService.createNew(null);
+                temp.setSensor(sensor);
+            }
+            TempEvent event = null;
             Integer num = sensor.getNum();
             if (values.contains(num)) {
                 if (values.isError(num)) {
-                    events.get().add(new AnalyzedValue(State.Error, sensor, 0));
-                } else {
-                    float value = values.getValue(num).get();
-                    if (value > sensor.getMaxValue()) {
-                        events.get().add(new AnalyzedValue(State.OverUp, sensor, value));
-                    } else if (value < sensor.getMinValue()) {
-                        events.get().add(new AnalyzedValue(State.OverDown, sensor, value));
-                    } else {
-                        events.get().add(new AnalyzedValue(Normal, sensor, value));
+                    if (temp.getStatus() != Status.Error) {
+                        event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), Status.Error, 0d);
                     }
+                    temp.setStatus(Status.Error);
+                } else {
+                    double valueNew = values.getValue(num).get();
+                    if (temp.getStatus() != Status.Normal ||
+                        temp.getValue() != valueNew) {
+                        event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), Status.Normal, valueNew);
+                    }
+                    temp.setStatus(Status.Normal);
+                    temp.setValue(valueNew);
                 }
+            } else {
+                if (temp.getStatus() != Status.Absence) {
+                    event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), Status.Absence, 0d);
+                }
+                temp.setStatus(Status.Absence);
+            }
+
+            temp.setUpdatedDatetime(values.time);
+            tempService.getRepository().saveAndFlush(temp);
+
+            if (event != null) {
+                events.get().add(event);
             }
         }
         return events.get();
     }
 
-    private void notifyRecipientsIfNeed(Controller controller, List<AnalyzedValue> tempList) throws JsonProcessingException {
-        List<Subscription> subscriptions = subscribtionService.getRepository().findByController(controller);
-        if (!subscriptions.isEmpty()) {
-            for (Subscription subscription : subscriptions) {
-                Recipient recipient = subscription.getRecipient();
-                for (AnalyzedValue temp : tempList) {
-                    Optional<Message> opMessage = messageService.getRepository().findByRecipientAndSensorLast(recipient, temp.sensor);
-                    State tag = temp.state;
-                    switch (tag) {
-                        case Normal: {
-                            if (opMessage.isPresent() && opMessage.get().getState() != Normal) {
-                                sendEvent(recipient, temp);
-                            }
-                            break;
-                        }
-                        case OverDown: {
-                            if (!opMessage.isPresent() || (opMessage.isPresent() && opMessage.get().getState() != OverDown)) {
-                                sendEvent(recipient, temp);
-                            }
-                            break;
-                        }
-                        case OverUp: {
-                            if (!opMessage.isPresent() || (opMessage.isPresent() && opMessage.get().getState() != OverUp)) {
-                                sendEvent(recipient, temp);
-                            }
-                            break;
-                        }
-                        case Error: {
-                            if (!opMessage.isPresent() || (opMessage.isPresent() && opMessage.get().getState() != Error)) {
-                                sendEvent(recipient, temp);
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private void sendEvent(Recipient recipient, AnalyzedValue temp) {
-        String jsonString;
-        try {
-            jsonString = createJsonString(recipient, temp);
-            log.trace(jsonString);
-        } catch (JsonProcessingException e) {
-            log.error("Error create json", e);
-            return;
-        }
-
-        final String authKey = settingService.getRepository().findByName(Setting.EVENT_HUB_AUTHORIZATION_KEY).get().getValue();
-        final String hubURL = settingService.getRepository().findByName(Setting.EVENT_HUB_URL).get().getValue();
-
-        RequestConfig requestConfig = RequestConfig.custom()
-                .setConnectTimeout(3000)
-                .setSocketTimeout(3000)
-                .build();
-
-        HttpPost http = new HttpPost(hubURL);
-        http.setConfig(requestConfig);
-        http.setHeader(HttpHeaders.CONTENT_TYPE, "application/json");
-        http.setHeader(HttpHeaders.AUTHORIZATION, authKey);
-        http.setEntity(new StringEntity(jsonString, "UTF-8"));
-
-        try (CloseableHttpClient httpClient = HttpClientBuilder.create()
-                .setConnectionManager(new BasicHttpClientConnectionManager())
-                .build()) {
-            try (CloseableHttpResponse response = httpClient.execute(http)) {
-                StatusLine statusLine = response.getStatusLine();
-                int status = statusLine.getStatusCode();
-                if (status == HttpStatus.SC_OK) {
-                    log.trace("http {}; response: {}", http, statusLine);
-                    log.info(String.format("Отправлено слушателю %s темп %s", recipient, temp));
-
-                    //сохранение в базу отметки об отправке
-                    Message message = messageService.createNew(null);
-                    message.setStateCode(temp.state.getCode());
-                    message.setRecipient(recipient);
-                    message.setSensor(temp.sensor);
-                    messageService.getRepository().saveAndFlush(message);
-                } else {
-                    log.error("http {}; response: {}", http, statusLine);
-                }
-            }
-        } catch (IOException e) {
-            log.error("http error {}; {}", http, e.toString());
-        }
-    }
-
-    private String createJsonString(Recipient recipient, AnalyzedValue event) throws JsonProcessingException {
-        ObjectNode rootNode = jacksonMapper.createObjectNode();
-        rootNode.put("to", recipient.getFcmToken());
-        ObjectNode notificationNode = jacksonMapper.createObjectNode();
-        notificationNode.put("title", "Датчик температуры");
-        notificationNode.put("body", event.toString());
-        rootNode.set("notification", notificationNode);
-        return jacksonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
-    }
-
     private class TempValues {
 
+        LocalDateTime time;
         List<Integer> errors;
         Map<Integer, Float> values;
+
+        public TempValues(LocalDateTime time) {
+            this.time = time;
+        }
 
         void addValue(Integer num, Float value) {
             if (values == null) {
@@ -295,7 +188,7 @@ public class TempReadScheduler {
     }
 
     private TempValues readTemp(String urlToRead) throws IOException, ParseException {
-        TempValues values = new TempValues();
+        TempValues values = new TempValues(LocalDateTime.now());
         URL url = new URL(urlToRead);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");

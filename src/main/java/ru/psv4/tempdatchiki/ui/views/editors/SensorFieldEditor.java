@@ -5,7 +5,6 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.checkbox.Checkbox;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
@@ -22,13 +21,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import ru.psv4.tempdatchiki.backend.data.Controller;
-import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.backend.data.Sensor;
-import ru.psv4.tempdatchiki.backend.data.Subscription;
 import ru.psv4.tempdatchiki.backend.service.ControllerService;
-import ru.psv4.tempdatchiki.backend.service.RecipientService;
 import ru.psv4.tempdatchiki.backend.service.SensorService;
-import ru.psv4.tempdatchiki.backend.service.SubscribtionService;
 import ru.psv4.tempdatchiki.crud.CrudEntityPresenter;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.MainView;
@@ -51,11 +46,14 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 	@Id("cancel")
 	private Button cancel;
 
+	@Id("name")
+	private TextField nameField;
+
 	@Id("minValue")
-	private NumberField minValue;
+	private NumberField minField;
 
 	@Id("maxValue")
-	private NumberField maxValue;
+	private NumberField maxField;
 
 	private SensorFieldInitValues initValues;
 	private Controller controller;
@@ -74,14 +72,14 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 
 		save.addClickListener(e -> saveAction());
 
-		minValue.setValueChangeMode(ValueChangeMode.EAGER);
-		maxValue.setValueChangeMode(ValueChangeMode.EAGER);
+		minField.setValueChangeMode(ValueChangeMode.EAGER);
+		maxField.setValueChangeMode(ValueChangeMode.EAGER);
 
-		minValue.setPattern("\\d\\\\.\\d");
-		minValue.setPreventInvalidInput(true);
+		minField.setPattern("\\d\\\\.\\d");
+		minField.setPreventInvalidInput(true);
 
-		maxValue.setPattern("\\d\\\\.\\d");
-		maxValue.setPreventInvalidInput(true);
+		maxField.setPattern("\\d\\\\.\\d");
+		maxField.setPreventInvalidInput(true);
 	}
 
 	private void saveAction() {
@@ -92,8 +90,9 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 				this);
 		Sensor sensor = sensorService.getRepository()
 				.findByControllerAndNameIgnoreCase(controller, initValues.name).get();
-		sensor.setMinValue(minValue.getValue());
-		sensor.setMaxValue(maxValue.getValue());
+		sensor.setName(nameField.getValue());
+		sensor.setMinValue(minField.getValue());
+		sensor.setMaxValue(maxField.getValue());
 		presenter.save(sensor,
 				(s) -> UI.getCurrent().navigate(initValues.backwardUrl),
 				(s) -> {});
@@ -106,8 +105,9 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 		controller = applicationContext.getBean(ControllerService.class).load(initValues.controllerUid);
 		getModel().setTitle(controller.getName() + " : " + initValues.name);
 
-		minValue.setValue(initValues.minValue);
-		maxValue.setValue(initValues.maxValue);
+		minField.setValue(initValues.minValue);
+		maxField.setValue(initValues.maxValue);
+		nameField.setValue(initValues.name);
 	}
 
 	public interface Model extends TemplateModel {
