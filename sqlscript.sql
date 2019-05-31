@@ -175,8 +175,8 @@ ALTER TABLE message RENAME COLUMN event_type_code TO state_code;
 select * from message;
 DROP INDEX idx_unique_message;
 
-alter table sensor alter column minvalue TYPE numeric(2,1);
-alter table sensor alter column maxvalue TYPE numeric(2,1);
+alter table sensor alter column minvalue TYPE numeric(3,1);
+alter table sensor alter column maxvalue TYPE numeric(3,1);
 
 CREATE TABLE temp
 (
