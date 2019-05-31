@@ -23,11 +23,14 @@ import ru.psv4.tempdatchiki.backend.schedulers.ControllerEvent;
 import ru.psv4.tempdatchiki.backend.schedulers.TempEvent;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
-import static ru.psv4.tempdatchiki.backend.data.EventType.Error;
-import static ru.psv4.tempdatchiki.backend.data.EventType.*;
+import static ru.psv4.tempdatchiki.backend.data.NotificationType.Error;
+import static ru.psv4.tempdatchiki.backend.data.NotificationType.*;
 
 @Service
 public class RecipientNotifier implements InitializingBean, EventBroker.EventListener {
@@ -42,11 +45,19 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
     private SettingService settingService;
 
     @Autowired
-    private MessageService messageService;
+    private NotificationService messageService;
 
     private final ObjectMapper jacksonMapper = new ObjectMapper();
 
-    private static Logger log = LoggerFactory.getLogger(RecipientNotifier.class);
+    private static final Logger log = LoggerFactory.getLogger(RecipientNotifier.class);
+
+    private static final DecimalFormat tempFormatter;
+    static {
+        tempFormatter = new DecimalFormat("#.#");
+        DecimalFormatSymbols sep = new DecimalFormatSymbols(Locale.getDefault());
+        sep.setDecimalSeparator('.');
+        tempFormatter.setDecimalFormatSymbols(sep);
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -63,34 +74,34 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
             for (Subscription subscription : subscriptions) {
                 Recipient recipient = subscription.getRecipient();
                 for (TempEvent event : events) {
-                    Optional<Message> opMessage = messageService.getRepository()
+                    Optional<Notification> opMessage = messageService.getRepository()
                             .findByRecipientAndSensorLast(recipient, event.getSensor());
-                    EventType state = event.getState();
-                    switch (state) {
+                    NotificationType nt = defineNotificationType(event);
+                    switch (nt) {
                         case Normal: {
-                            if (opMessage.isPresent() && opMessage.get().getState() != Normal) {
-                                sendEvent(recipient, event);
+                            if (opMessage.isPresent() && opMessage.get().getType() != Normal) {
+                                sendNotification(nt, recipient, event);
                             }
                             break;
                         }
                         case OverDown: {
                             if (!opMessage.isPresent() ||
-                                    (opMessage.isPresent() && opMessage.get().getState() != OverDown)) {
-                                sendEvent(recipient, event);
+                                    (opMessage.isPresent() && opMessage.get().getType() != OverDown)) {
+                                sendNotification(nt, recipient, event);
                             }
                             break;
                         }
                         case OverUp: {
                             if (!opMessage.isPresent() ||
-                                    (opMessage.isPresent() && opMessage.get().getState() != OverUp)) {
-                                sendEvent(recipient, event);
+                                    (opMessage.isPresent() && opMessage.get().getType() != OverUp)) {
+                                sendNotification(nt, recipient, event);
                             }
                             break;
                         }
                         case Error: {
                             if (!opMessage.isPresent() ||
-                                    (opMessage.isPresent() && opMessage.get().getState() != Error)) {
-                                sendEvent(recipient, event);
+                                    (opMessage.isPresent() && opMessage.get().getType() != Error)) {
+                                sendNotification(nt, recipient, event);
                             }
                             break;
                         }
@@ -100,10 +111,32 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
         }
     }
 
-    private void sendEvent(Recipient recipient, TempEvent event) {
+    private NotificationType defineNotificationType(TempEvent event) {
+        Status status = event.getStatusNew();
+        Sensor sensor = event.getSensor();
+        double value = event.getValueNew();
+        switch (event.getStatusNew()) {
+            case Error:
+                return NotificationType.Error;
+            case Absence:
+                return NotificationType.Error;
+            case Normal:
+                if (value < sensor.getMinValue()) {
+                    return NotificationType.OverDown;
+                } else if (value > sensor.getMaxValue()) {
+                    return NotificationType.OverUp;
+                } else {
+                    return NotificationType.Normal;
+                }
+            default:
+                throw new IllegalStateException("Can't define notification type");
+        }
+    }
+
+    private void sendNotification(NotificationType nt, Recipient recipient, TempEvent event) {
         String jsonString;
         try {
-            jsonString = createJsonString(recipient, event);
+            jsonString = createJsonString(nt, recipient, event);
             log.trace(jsonString);
         } catch (JsonProcessingException e) {
             log.error("Error create json", e);
@@ -136,9 +169,9 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
                     log.trace("http {}; response: {}", http, statusLine);
                     log.info(String.format("Отправлено слушателю %s темп %s", recipient, event));
 
-                    //сохранение в базу отметки об отправке
-                    Message message = messageService.createNew(null);
-                    message.setStateCode(event.getState().getCode());
+                    //сохранение в базу отметки об отправке уведомления
+                    Notification message = messageService.createNew(null);
+                    message.setType(nt);
                     message.setRecipient(recipient);
                     message.setSensor(event.getSensor());
                     messageService.getRepository().saveAndFlush(message);
@@ -151,13 +184,40 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
         }
     }
 
-    private String createJsonString(Recipient recipient, TempEvent event) throws JsonProcessingException {
+    private String createJsonString(NotificationType nt, Recipient recipient, TempEvent event) throws JsonProcessingException {
         ObjectNode rootNode = jacksonMapper.createObjectNode();
         rootNode.put("to", recipient.getFcmToken());
         ObjectNode notificationNode = jacksonMapper.createObjectNode();
         notificationNode.put("title", "Датчик температуры");
-        notificationNode.put("body", event.toString());
+        notificationNode.put("body", formatString(nt, event));
         rootNode.set("notification", notificationNode);
         return jacksonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
+    }
+
+    public String formatString(NotificationType nt, TempEvent event) {
+        Sensor sensor = event.getSensor();
+        double value = event.getValueNew();
+        switch (nt) {
+            case OverDown:
+                return String.format("%1$s.%2$s. %3$s(%4$s)",
+                        sensor.getController().getName(), sensor.getName(),
+                        tempFormatter.format(value), tempFormatter.format(sensor.getMinValue()));
+            case OverUp:
+                return String.format("%1$s.%2$s. %3$s(%4$s)",
+                        sensor.getController().getName(), sensor.getName(),
+                        tempFormatter.format(value), tempFormatter.format(sensor.getMaxValue()));
+            case Normal:
+                return String.format("%1$s.%2$s. %3$s(%4$s : %5$s)",
+                        sensor.getController().getName(), sensor.getName(),
+                        tempFormatter.format(value), tempFormatter.format(sensor.getMinValue()),
+                        tempFormatter.format(sensor.getMaxValue()));
+            case Error:
+                return String.format("%1$s.%2$s. %3$s(%4$s : %5$s)",
+                        sensor.getController().getName(), sensor.getName(),
+                        "ERROR", tempFormatter.format(sensor.getMinValue()),
+                        tempFormatter.format(sensor.getMaxValue()));
+            default:
+                return "Unknown";
+        }
     }
 }

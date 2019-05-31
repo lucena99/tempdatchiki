@@ -1,14 +1,11 @@
 package ru.psv4.tempdatchiki.backend.data;
 
-import com.vaadin.flow.component.JsonSerializable;
-import elemental.json.JsonObject;
-import ru.psv4.tempdatchiki.vaadin_json.JsonSerializerUtils;
 import ru.psv4.tempdatchiki.vaadin_json.TdJsonIgnore;
 
 import javax.persistence.*;
 
 @Entity
-public class Sensor extends Reference implements JsonSerializable {
+public class Sensor extends Reference implements TdJsonSerializable {
 
     @ManyToOne
     @JoinColumn(name = "controller_uid", nullable = false)
@@ -34,27 +31,31 @@ public class Sensor extends Reference implements JsonSerializable {
         this.controller = controller;
     }
 
-    public double getMinValue() { return minValue; }
+    public double getMinValue() {
+        return minValue;
+    }
 
-    public void setMinValue(double minValue) { this.minValue = minValue; }
+    public void setMinValue(double minValue) {
+        this.minValue = minValue;
+    }
 
-    public double getMaxValue() { return maxValue; }
+    public double getMaxValue() {
+        return maxValue;
+    }
 
-    public void setMaxValue(double maxValue) { this.maxValue = maxValue; }
+    public void setMaxValue(double maxValue) {
+        this.maxValue = maxValue;
+    }
 
-    public int getNum() { return num; }
+    public int getNum() {
+        return num;
+    }
 
-    public void setNum(int num) { this.num = num; }
+    public void setNum(int num) {
+        this.num = num;
+    }
 
     public Temp getTemp() {
         return temp;
-    }
-
-    @Override
-    public JsonObject toJson() { return JsonSerializerUtils.toJson(this); }
-
-    @Override
-    public JsonSerializable readJson(JsonObject value) {
-        return JsonSerializerUtils.readJson(value);
     }
 }

@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 @HtmlImport("src/views/recipients/recipients-view.html")
 @Route(value = TdConst.PAGE_RECIPIENTS, layout = MainView.class)
 @RouteAlias(value = TdConst.PAGE_RECIPIENT_EDIT, layout = MainView.class)
-@RouteAlias(value = TdConst.PAGE_ROOT, layout = MainView.class)
 @PageTitle(TdConst.TITLE_RECIPIENTS)
 public class RecipientsView extends PolymerTemplate<TemplateModel>
 		implements HasLogger, HasUrlParameter<String>, EntityView<Recipient> {

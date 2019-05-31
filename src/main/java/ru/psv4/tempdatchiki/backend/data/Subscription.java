@@ -12,7 +12,7 @@ import javax.persistence.ManyToOne;
 import java.time.LocalDateTime;
 
 @Entity
-public class Subscription extends TdEntity implements IReg<Subscription>, JsonSerializable {
+public class Subscription extends TdEntity implements IReg<Subscription>, TdJsonSerializable {
 
     @Column(name = "created_datetime")
     private LocalDateTime createdDatetime;
@@ -71,13 +71,5 @@ public class Subscription extends TdEntity implements IReg<Subscription>, JsonSe
     @Override
     public boolean equivalent(Subscription other) {
         return recipient.equals(other.recipient) && controller.equals(other.controller);
-    }
-
-    @Override
-    public JsonObject toJson() { return JsonSerializerUtils.toJson(this); }
-
-    @Override
-    public JsonSerializable readJson(JsonObject value) {
-        return JsonSerializerUtils.readJson(value);
     }
 }

@@ -29,7 +29,7 @@ public class DtoUtils {
                     Class<?> oClass = rClass;
                     Object pValue = r;
                     for (String property : properties) {
-                        Field pField = ReflectionUtils.getField(oClass, property);
+                        Field pField = ReflectionUtils.getField(oClass, property).get();
                         pField.setAccessible(true);
                         pValue = pField.get(pValue);
                         oClass = pField.getDeclaringClass();

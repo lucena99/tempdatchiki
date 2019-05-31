@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class ReflectionUtils {
 
@@ -17,7 +18,7 @@ public class ReflectionUtils {
         return fields;
     }
 
-    public static <T> Field getField(Class<T> tClass, String name) {
-        return getFields(tClass).stream().filter(e -> e.getName().equals(name)).findFirst().get();
+    public static <T> Optional<Field> getField(Class<T> tClass, String name) {
+        return getFields(tClass).stream().filter(e -> e.getName().equals(name)).findFirst();
     }
 }

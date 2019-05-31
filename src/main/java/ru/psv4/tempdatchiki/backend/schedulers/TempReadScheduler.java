@@ -1,18 +1,5 @@
 package ru.psv4.tempdatchiki.backend.schedulers;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.http.HttpHeaders;
-import org.apache.http.HttpStatus;
-import org.apache.http.StatusLine;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +25,6 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static ru.psv4.tempdatchiki.backend.data.EventType.Error;
-import static ru.psv4.tempdatchiki.backend.data.EventType.*;
-
 @Component
 public class TempReadScheduler {
 
@@ -59,15 +43,13 @@ public class TempReadScheduler {
     @Value("${temp.scheduler.active}")
     private boolean active;
 
-    private ObjectMapper jacksonMapper = new ObjectMapper();
-
-    private Pattern controllerResponsePattern = Pattern.compile("(?<num>[\\d\\s]+)#(?<val>-?[\\d\\s]+\\.?[\\d\\s]*)");
-    private DecimalFormat floatFormat;
-    {
+    private static final Pattern controllerResponsePattern = Pattern.compile("(?<num>[\\d\\s]+)#(?<val>(-?[\\d\\s]+\\.?[\\d\\s]*)|(ERROR))");
+    private static final DecimalFormat tempFormat;
+    static {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
         symbols.setDecimalSeparator('.');
-        floatFormat = new DecimalFormat();
-        floatFormat.setDecimalFormatSymbols(symbols);
+        tempFormat = new DecimalFormat();
+        tempFormat.setDecimalFormatSymbols(symbols);
     }
 
     private static Logger log = LoggerFactory.getLogger(TempReadScheduler.class);
@@ -111,24 +93,33 @@ public class TempReadScheduler {
             Integer num = sensor.getNum();
             if (values.contains(num)) {
                 if (values.isError(num)) {
-                    if (temp.getStatus() != Status.Error) {
-                        event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), Status.Error, 0d);
+                    Status error = Status.Error;
+                    if (temp.getStatus() != error) {
+                        event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), error, 0d);
                     }
-                    temp.setStatus(Status.Error);
+                    temp.setStatus(error);
+                } else if (values.isBlank(num)) {
+                    Status absence = Status.Absence;
+                    if (temp.getStatus() != absence) {
+                        event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), absence, 0d);
+                    }
+                    temp.setStatus(absence);
                 } else {
+                    Status normal = Status.Normal;
                     double valueNew = values.getValue(num).get();
-                    if (temp.getStatus() != Status.Normal ||
+                    if (temp.getStatus() != normal ||
                         temp.getValue() != valueNew) {
-                        event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), Status.Normal, valueNew);
+                        event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), normal, valueNew);
                     }
-                    temp.setStatus(Status.Normal);
+                    temp.setStatus(normal);
                     temp.setValue(valueNew);
                 }
             } else {
-                if (temp.getStatus() != Status.Absence) {
-                    event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), Status.Absence, 0d);
+                Status absence = Status.Absence;
+                if (temp.getStatus() != absence) {
+                    event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), absence, 0d);
                 }
-                temp.setStatus(Status.Absence);
+                temp.setStatus(absence);
             }
 
             temp.setUpdatedDatetime(values.time);
@@ -145,13 +136,14 @@ public class TempReadScheduler {
 
         LocalDateTime time;
         List<Integer> errors;
-        Map<Integer, Float> values;
+        List<Integer> blanks;
+        Map<Integer, Double> values;
 
         public TempValues(LocalDateTime time) {
             this.time = time;
         }
 
-        void addValue(Integer num, Float value) {
+        void addValue(Integer num, Double value) {
             if (values == null) {
                 values = new HashMap<>();
             }
@@ -165,15 +157,28 @@ public class TempReadScheduler {
             errors.add(num);
         }
 
+        void addBlank(Integer num) {
+            if (blanks == null) {
+                blanks = new ArrayList<>();
+            }
+            blanks.add(num);
+        }
+
         boolean contains(Integer num) {
-            return (values != null && values.containsKey(num)) || (errors != null && errors.contains(num));
+            return (values != null && values.containsKey(num)) ||
+                    (errors != null && errors.contains(num)) ||
+                    (blanks != null && blanks.contains(num));
         }
 
         boolean isError(Integer num) {
             return errors != null && errors.contains(num);
         }
 
-        Optional<Float> getValue(Integer num) {
+        boolean isBlank(Integer num) {
+            return blanks != null && blanks.contains(num);
+        }
+
+        Optional<Double> getValue(Integer num) {
             return Optional.ofNullable(values != null && values.containsKey(num) ? values.get(num) : null);
         }
 
@@ -183,6 +188,9 @@ public class TempReadScheduler {
             }
             if (errors != null) {
                 errors.stream().forEach(e -> log.trace("ERROR #{}", e));
+            }
+            if (blanks != null) {
+                blanks.stream().forEach(e -> log.trace("BLANK #{}", e));
             }
         }
     }
@@ -205,7 +213,7 @@ public class TempReadScheduler {
                     if (val.equals("ERROR")) {
                         values.addError(num);
                     } else {
-                        values.addValue(num, floatFormat.parse(val).floatValue());
+                        values.addValue(num, tempFormat.parse(val).doubleValue());
                     }
                 }
             }

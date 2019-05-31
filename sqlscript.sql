@@ -189,3 +189,9 @@ CREATE TABLE temp
 CREATE UNIQUE INDEX idx_unique_temp on "temp" (sensor_uid);
 ALTER TABLE temp ADD COLUMN statusCode int NOT NULL;
 ALTER TABLE temp RENAME COLUMN statusCode TO status_code;
+alter table temp alter column value TYPE numeric(3,1);
+
+ALTER TABLE message RENAME TO notification;
+ALTER TABLE notification RENAME COLUMN state_code TO notification_code;
+
+select * from notification ;

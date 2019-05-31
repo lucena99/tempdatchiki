@@ -21,7 +21,9 @@ public class JsonSerializerUtils {
             BeanInfo info = Introspector.getBeanInfo(objectClass);
             for (PropertyDescriptor pd : info.getPropertyDescriptors()) {
                 if ("class".equals(pd.getName()) ||
-                        ReflectionUtils.getField(objectClass, pd.getName()).isAnnotationPresent(TdJsonIgnore.class)) {
+                        ReflectionUtils.getField(objectClass, pd.getName())
+                                .map(f -> f.isAnnotationPresent(TdJsonIgnore.class))
+                                .orElse(false)) {
                     continue;
                 }
                 Method reader = pd.getReadMethod();

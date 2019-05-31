@@ -138,7 +138,13 @@
           <div class="goods">
             <template is="dom-repeat" items="[[controllerCard.sensors]]">
               <div class="goods-item">
-                <div>[[item.name]]</div>
+                <div>
+                  <span>[[item.name]]</span>
+                  <span class="count">
+                    <span style="font-weight: bold;">[[item.temp.value]]</span>
+                    <span> <span>[</span>[[item.minValue]] : [[item.maxValue]]<span>]</span></span>
+                </span>
+                </div>
               </div>
             </template>
           </div>

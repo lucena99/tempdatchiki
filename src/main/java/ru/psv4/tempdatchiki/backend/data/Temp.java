@@ -1,14 +1,19 @@
 package ru.psv4.tempdatchiki.backend.data;
 
+import com.vaadin.flow.component.JsonSerializable;
+import ru.psv4.tempdatchiki.vaadin_json.TdJsonIgnore;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class Temp extends TdEntity {
+public class Temp extends TdEntity implements TdJsonSerializable {
 
     private double value;
 
-    @OneToOne @JoinColumn(name = "sensor_uid", nullable = false)
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "sensor_uid", nullable = false)
+    @TdJsonIgnore
     private Sensor sensor;
 
     @Column(name = "updated_datetime", nullable = false)

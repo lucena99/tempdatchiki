@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class Message extends TdEntity {
+public class Notification extends TdEntity {
 
     @Column(name = "created_datetime")
     private LocalDateTime createdDatetime;
@@ -15,8 +15,8 @@ public class Message extends TdEntity {
     @ManyToOne @JoinColumn(name = "sensor_uid")
     private Sensor sensor;
 
-    @Column(name = "state_code")
-    private int stateCode;
+    @Column(name = "notification_code")
+    private int notificationCode;
 
     public LocalDateTime getCreatedDatetime() {
         return createdDatetime;
@@ -42,11 +42,11 @@ public class Message extends TdEntity {
         this.sensor = sensor;
     }
 
-    public void setStateCode(int stateCode) {
-        this.stateCode = stateCode;
+    public void setType(NotificationType type) {
+        this.notificationCode = type.getCode();
     }
 
-    public EventType getState() {
-        return EventType.getByCode(stateCode);
+    public NotificationType getType() {
+        return NotificationType.getByCode(notificationCode);
     }
 }

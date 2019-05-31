@@ -34,11 +34,7 @@ import ru.psv4.tempdatchiki.utils.TdConst;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-	private static final String LOGIN_PROCESSING_URL = "/login.do";
-	private static final String LOGIN_FAILURE_URL = "/login.home?error";
-	private static final String LOGIN_URL = "/login.home";
-	private static final String LOGOUT_SUCCESS_URL = "/app/" + TdConst.PAGE_RECIPIENTS;
-
+	public static final String STARTUP_PAGE = "/app/controllers";
 	private final UserDetailsService userDetailsService;
 
 	@Autowired
@@ -200,7 +196,7 @@ public class SecurityConfiguration {
 		protected void configure(HttpSecurity http) throws Exception {
 			SavedRequestAwareAuthenticationSuccessHandler successHandler =
 					new SavedRequestAwareAuthenticationSuccessHandler();
-			successHandler.setDefaultTargetUrl("/app/recipients");
+			successHandler.setDefaultTargetUrl(STARTUP_PAGE);
 
 			// Not using Spring CSRF here to be able to use plain HTML for the login page
 			http.csrf().disable()
@@ -255,7 +251,7 @@ public class SecurityConfiguration {
 					.successHandler(successHandler)
 
 					// Configure logout
-					.and().logout().logoutSuccessUrl("/app/recipients");
+					.and().logout().logoutSuccessUrl("/app/controllers");
 		}
 
 		@Override

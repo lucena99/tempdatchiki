@@ -17,7 +17,7 @@ public enum Status {
             case 0: return Normal;
             case 1: return Error;
             case 2: return Absence;
-            default: throw new IllegalArgumentException(String.format("Unknown response code %d", code));
+            default: throw new IllegalArgumentException(String.format("Unknown status code %d", code));
         }
     }
 }

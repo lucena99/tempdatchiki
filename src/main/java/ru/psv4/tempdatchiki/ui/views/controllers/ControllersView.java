@@ -28,6 +28,7 @@ import java.util.stream.Stream;
 @Tag("controllers-view")
 @HtmlImport("src/views/controllers/controllers-view.html")
 @Route(value = TdConst.PAGE_CONTROLLERS, layout = MainView.class)
+@RouteAlias(value = TdConst.PAGE_ROOT, layout = MainView.class)
 @RouteAlias(value = TdConst.PAGE_CONTROLLERS_EDIT, layout = MainView.class)
 @PageTitle(TdConst.TITLE_CONTROLLERS)
 public class ControllersView  extends PolymerTemplate<TemplateModel>

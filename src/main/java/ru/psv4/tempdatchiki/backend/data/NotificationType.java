@@ -1,18 +1,20 @@
 package ru.psv4.tempdatchiki.backend.data;
 
-public enum EventType {
+public enum NotificationType {
 
     OverDown(1), OverUp(2), Error(3), Normal(4);
 
     private int code;
 
-    EventType(int code) { this.code = code; }
+    NotificationType(int code) {
+        this.code = code;
+    }
 
     public int getCode() {
         return code;
     }
 
-    public static EventType getByCode(int code) {
+    public static NotificationType getByCode(int code) {
         switch (code) {
             case 1: return OverDown;
             case 2: return OverUp;

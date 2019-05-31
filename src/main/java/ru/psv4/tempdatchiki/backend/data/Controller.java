@@ -12,7 +12,7 @@ import java.util.List;
 @NamedEntityGraphs({@NamedEntityGraph(name = Controller.ENTITY_GRAPTH_FULL, attributeNodes = {
         @NamedAttributeNode("sensors")
 })})
-public class Controller extends Reference implements JsonSerializable {
+public class Controller extends Reference implements TdJsonSerializable {
 
     public static final String ENTITY_GRAPTH_FULL = "Controller.full";
 
@@ -33,15 +33,5 @@ public class Controller extends Reference implements JsonSerializable {
 
     public void setSensors(List<Sensor> sensors) {
         this.sensors = sensors;
-    }
-
-    @Override
-    public JsonObject toJson() {
-        return JsonSerializerUtils.toJson(this);
-    }
-
-    @Override
-    public JsonSerializable readJson(JsonObject value) {
-        return JsonSerializerUtils.readJson(value);
     }
 }
