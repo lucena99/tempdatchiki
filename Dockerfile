@@ -11,7 +11,7 @@ RUN mkdir -p /log
 
 WORKDIR /app
 
-EXPOSE 8181
+#EXPOSE 8181
 
 CMD [ "java", \
     "-Dspring.profiles.active=prod", \
