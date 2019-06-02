@@ -10,9 +10,17 @@ import java.time.LocalDateTime;
 
 @EntityClass(Sensor.class)
 public class SensorDto extends ReferenceDto {
+    @JsonProperty("num")
+    @EntityField("num")
+    private Integer num;
+
     @JsonProperty("controllerUid")
     @EntityField("controller.uid")
     private String controllerUid;
+
+    @JsonProperty("controllerName")
+    @EntityField("controller.name")
+    private String controllerName;
 
     @JsonProperty("minValue")
     @EntityField("minValue")
@@ -36,9 +44,17 @@ public class SensorDto extends ReferenceDto {
 
     @EntityField("temp.updatedDatetime")
     @ApiModelProperty(notes = "Дата-время обновления")
-    @JsonProperty("updated_datetime")
+    @JsonProperty("temp_updated_datetime")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedDatetime;
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
+    }
 
     public String getControllerUid() {
         return controllerUid;
@@ -94,5 +110,13 @@ public class SensorDto extends ReferenceDto {
 
     public void setUpdatedDatetime(LocalDateTime updatedDatetime) {
         this.updatedDatetime = updatedDatetime;
+    }
+
+    public String getControllerName() {
+        return controllerName;
+    }
+
+    public void setControllerName(String controllerName) {
+        this.controllerName = controllerName;
     }
 }

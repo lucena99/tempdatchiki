@@ -207,3 +207,4 @@ CREATE TABLE incident
     incident_code int NOT NULL,
     PRIMARY KEY (uid)
 );
+ALTER TABLE incident RENAME COLUMN incident_code TO type_code;

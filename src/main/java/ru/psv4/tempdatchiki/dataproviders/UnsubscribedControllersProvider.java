@@ -6,30 +6,37 @@ import com.vaadin.flow.data.provider.QuerySortOrderBuilder;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import com.vaadin.flow.spring.annotation.UIScope;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.vaadin.artur.spring.dataprovider.FilterablePageableDataProvider;
+import org.vaadin.artur.spring.dataprovider.PageableDataProvider;
+import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
-import ru.psv4.tempdatchiki.backend.service.RecipientService;
+import ru.psv4.tempdatchiki.backend.service.ControllerService;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
 import java.util.List;
 import java.util.Optional;
 
+import static com.vaadin.flow.spring.scopes.VaadinUIScope.VAADIN_UI_SCOPE_NAME;
+
 /**
  * A pageable order data provider.
  */
 @SpringComponent
-@UIScope
-public class RecipientGridDataProvider extends FilterablePageableDataProvider<Recipient, String> {
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class UnsubscribedControllersProvider extends PageableDataProvider<Controller, String> {
 
 	@Autowired
-	private RecipientService recipientService;
+	private ControllerService controllerService;
+	private Recipient recipient;
 	private List<QuerySortOrder> defaultSortOrders;
 
-	public RecipientGridDataProvider() {
-		setSortOrders(Sort.Direction.DESC, new String[]{"createdDatetime"});
+	public UnsubscribedControllersProvider() {
+		setSortOrders(TdConst.DEFAULT_SORT_DIRECTION, TdConst.REFERENCE_SORT_FIELDS);
 	}
 
 	private void setSortOrders(Sort.Direction direction, String[] properties) {
@@ -45,9 +52,9 @@ public class RecipientGridDataProvider extends FilterablePageableDataProvider<Re
 	}
 
 	@Override
-	protected Page<Recipient> fetchFromBackEnd(Query<Recipient, String> query, Pageable pageable) {
+	protected Page<Controller> fetchFromBackEnd(Query<Controller, String> query, Pageable pageable) {
 		String filter = query.getFilter().orElse("");
-		return recipientService.findAnyMatching(Optional.ofNullable(filter), pageable);
+		return controllerService.findAnyMatching(recipient, Optional.ofNullable(filter), pageable);
 	}
 
 	@Override
@@ -56,13 +63,17 @@ public class RecipientGridDataProvider extends FilterablePageableDataProvider<Re
 	}
 
 	@Override
-	protected int sizeInBackEnd(Query<Recipient, String> query) {
+	protected int sizeInBackEnd(Query<Controller, String> query) {
 		String filter = query.getFilter().orElse("");
-		return (int) recipientService.countAnyMatching(Optional.ofNullable(filter));
+		return (int) controllerService.countAnyMatching(recipient, Optional.ofNullable(filter));
 	}
 
 	@Override
-	public Object getId(Recipient item) {
+	public Object getId(Controller item) {
 		return item.getUid();
+	}
+
+	public void setRecipient(Recipient recipient) {
+		this.recipient = recipient;
 	}
 }

@@ -11,6 +11,12 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.page.Viewport;
 import com.vaadin.flow.server.PWA;
+import com.vaadin.flow.spring.annotation.SpringComponent;
+import com.vaadin.flow.spring.annotation.UIScope;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import ru.psv4.tempdatchiki.security.SecurityUtils;
 import ru.psv4.tempdatchiki.ui.views.HasConfirmation;
 import ru.psv4.tempdatchiki.ui.views.settingsview.SettingsView;
@@ -19,7 +25,7 @@ import static ru.psv4.tempdatchiki.utils.TdConst.*;
 
 
 @Viewport(VIEWPORT)
-@PWA(name = "TempDatchiki App", shortName = "TempDatchiki",
+@PWA(name = "Sensors App", shortName = "SensorsApp",
 		startPath = "login",
 		backgroundColor = "#227aef", themeColor = "#227aef",
 		offlinePath = "offline-page.html",
@@ -42,8 +48,8 @@ public class MainView extends AbstractAppRouterLayout {
 		appLayout.setBranding(new Span("Sensors App"));
 
 		if (SecurityUtils.isUserLoggedIn()) {
-			setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.EDIT.create(), TITLE_RECIPIENTS, PAGE_RECIPIENTS));
 			setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.CLOCK.create(), TITLE_CONTROLLERS, PAGE_CONTROLLERS));
+			setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.EDIT.create(), TITLE_RECIPIENTS, PAGE_RECIPIENTS));
 			if (SecurityUtils.isAccessGranted(SettingsView.class)) {
 				setMenuItem(menu, new AppLayoutMenuItem(VaadinIcon.VAADIN_H.create(), TITLE_SETTINGS, PAGE_SETTINGS));
 			}

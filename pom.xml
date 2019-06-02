@@ -10,7 +10,7 @@
   </parent>
   <groupId>ru.psv4</groupId>
   <artifactId>tempdatchiki</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0.0</version>
   <name>tempdatchiki</name>
   <description>tempdatchiki</description>
   <packaging>war</packaging>
@@ -226,17 +226,23 @@
 <!--      <version>1.0.1</version>-->
 <!--    </dependency>-->
 
-        <dependency>
-          <groupId>io.springfox</groupId>
-          <artifactId>springfox-swagger-ui</artifactId>
-          <version>2.9.2</version>
-        </dependency>
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger-ui</artifactId>
+      <version>2.9.2</version>
+    </dependency>
 
-        <dependency>
-          <groupId>io.springfox</groupId>
-          <artifactId>springfox-swagger2</artifactId>
-          <version>2.9.2</version>
-        </dependency>
+    <dependency>
+      <groupId>io.springfox</groupId>
+      <artifactId>springfox-swagger2</artifactId>
+      <version>2.9.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.claspina</groupId>
+      <artifactId>confirm-dialog</artifactId>
+      <version>1.0.0</version>
+    </dependency>
 
   </dependencies>
 

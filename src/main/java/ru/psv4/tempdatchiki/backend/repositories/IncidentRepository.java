@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import ru.psv4.tempdatchiki.backend.data.Incident;
 import ru.psv4.tempdatchiki.backend.data.Sensor;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface IncidentRepository extends JpaRepository<Incident, String> {
@@ -16,4 +17,6 @@ public interface IncidentRepository extends JpaRepository<Incident, String> {
 	@Query("SELECT e FROM Incident e WHERE e.sensor = :sensor AND e.createdDatetime = " +
 			"(SELECT MAX(e1.createdDatetime) FROM Incident e1 WHERE e1.sensor = :sensor)")
 	public Optional<Incident> findBySensorLast(Sensor sensor);
+
+	public List<Incident> getListBySensorOrderByCreatedDatetime(Sensor sensor);
 }

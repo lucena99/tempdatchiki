@@ -4,16 +4,23 @@ import ru.psv4.tempdatchiki.backend.schedulers.TempEvent;
 
 public enum IncidentType {
 
-    OverDown(1), OverUp(2), Error(3), Normal(4);
+    OverDown(1, "Ниже границы"), OverUp(2, "Выше границы"),
+    Error(3, "Ошибка"), Normal(4, "Возвращение в норму");
 
     private int code;
+    private String name;
 
-    IncidentType(int code) {
+    IncidentType(int code, String name) {
         this.code = code;
+        this.name = name;
     }
 
     public int getCode() {
         return code;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public static IncidentType getByCode(int code) {

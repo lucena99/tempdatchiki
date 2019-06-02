@@ -52,6 +52,22 @@ public class ControllerService extends ReferenceService<Controller> implements C
         }
     }
 
+    public Page<Controller> findAnyMatching(Recipient recipient, Optional<String> optionalFilter, Pageable pageable) {
+        if (optionalFilter.isPresent() && !optionalFilter.get().isEmpty()) {
+            return controllerRepository.findByNameContainingIgnoreCase(recipient, optionalFilter.get(), pageable);
+        } else {
+            return controllerRepository.findAll(recipient, pageable);
+        }
+    }
+
+    public long countAnyMatching(Recipient recipient, Optional<String> optionalFilter) {
+        if (optionalFilter.isPresent() && !optionalFilter.get().isEmpty()) {
+            return controllerRepository.countByNameContainingIgnoreCase(recipient, optionalFilter.get());
+        } else {
+            return controllerRepository.count(recipient);
+        }
+    }
+
     public Page<Controller> find(Pageable pageable) {
         return controllerRepository.findAll(pageable);
     }

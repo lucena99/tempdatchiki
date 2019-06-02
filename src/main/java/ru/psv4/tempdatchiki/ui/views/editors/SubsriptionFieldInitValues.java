@@ -35,13 +35,13 @@ public class SubsriptionFieldInitValues {
     }
 
     public static SubsriptionFieldInitValues parse(QueryParameters queryParameters) {
-        Map<String, List<String>> parametersMap = queryParameters.getParameters();
+        Map<String, List<String>> map = queryParameters.getParameters();
         SubsriptionFieldInitValues values = new SubsriptionFieldInitValues();
-        values.recipientUid = parametersMap.get("recipientUid").get(0);
-        values.backwardUrl = parametersMap.get("backwardUrl").get(0);
-        values.controllerUid = parametersMap.get("controllerUid").get(0);
-        values.over = Boolean.parseBoolean(parametersMap.get("over").get(0));
-        values.error = Boolean.parseBoolean(parametersMap.get("error").get(0));
+        values.recipientUid = map.get("recipientUid").get(0);
+        values.backwardUrl = map.get("backwardUrl").get(0);
+        values.controllerUid = map.get("controllerUid").get(0);
+        values.over = map.containsKey("over") ? Boolean.parseBoolean(map.get("over").get(0)) : null;
+        values.error = map.containsKey("error") ? Boolean.parseBoolean(map.get("error").get(0)) : null;
         return values;
     }
 
@@ -50,8 +50,8 @@ public class SubsriptionFieldInitValues {
         map.put("recipientUid", values.recipientUid);
         map.put("backwardUrl", values.backwardUrl);
         map.put("controllerUid", values.controllerUid);
-        map.put("over", Boolean.toString(values.over));
-        map.put("error", Boolean.toString(values.error));
+        map.put("over", values.over != null ? Boolean.toString(values.over) : "");
+        map.put("error", values.error != null ? Boolean.toString(values.error) : "");
         return QueryParameters.simple(map);
     }
 }

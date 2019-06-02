@@ -15,6 +15,7 @@ public class Recipient extends Reference {
     private String fcmToken;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "recipient")
+    @OrderBy("createdDatetime ASC")
     private List<Subscription> subscriptions;
 
     public String getFcmToken() {

@@ -49,7 +49,8 @@ public class SettingService extends ReferenceService<Setting> implements CrudSer
         SettingService service = applicationContext.getBean(SettingService.class);
         for (String key : new String[]{
                 Setting.EVENT_HUB_AUTHORIZATION_KEY,
-                Setting.EVENT_HUB_URL }) {
+                Setting.EVENT_HUB_URL,
+                Setting.DB_VERSION}) {
             Optional<Setting> opSetting = service.getRepository().findByName(key);
             if (!opSetting.isPresent()) {
                 Setting setting = service.createNew(null);

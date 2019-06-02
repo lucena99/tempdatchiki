@@ -10,12 +10,11 @@
 <link rel="import" href="../../../bower_components/vaadin-icons/vaadin-icons.html">
 
 <link rel="import" href="../../components/buttons-bar.html">
-<link rel="import" href="../../components/form-buttons-bar.html">
 <link rel="import" href="../../components/utils-mixin.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
 
-<dom-module id="subscription-field-editor">
+<dom-module id="subscription-field-add">
     <template>
         <style include="shared-styles">
       .product {
@@ -56,15 +55,12 @@
             <div class="scrollable main-row" id="main">
                 <h3 colspan="2">[[title]]</h3>
                 <vaadin-form-layout id="form1">
+                    <vaadin-combo-box id="controller" colspan="2"></vaadin-combo-box>
                     <vaadin-checkbox colspan="1" class="checkbox desktop" id="over">Интервал?</vaadin-checkbox>
                     <vaadin-checkbox colspan="1" class="checkbox desktop" id="error">Ошибка?</vaadin-checkbox>
                 </vaadin-form-layout>
                 <buttons-bar id="footer" no-scroll$="[[noScroll]]">
-                    <vaadin-button slot="left" id="delete" theme="tertiary error">
-                        Удалить
-                        <iron-icon icon="vaadin:check" slot="suffix"></iron-icon>
-                    </vaadin-button>
-                    <vaadin-button slot="right" id="cancel" theme="tertiary">
+                    <vaadin-button slot="left" id="cancel" theme="tertiary">
                         Отмена
                     </vaadin-button>
                     <vaadin-button slot="right" id="save" theme="primary">
@@ -78,9 +74,9 @@
     </template>
 
     <script>
-    class SubscriptionFieldEditor extends Polymer.Element {
+    class SubscriptionFieldAdd extends Polymer.Element {
       static get is() {
-        return 'subscription-field-editor';
+        return 'subscription-field-add';
       }
 
       ready() {
@@ -93,6 +89,6 @@
       }
     }
 
-    window.customElements.define(SubscriptionFieldEditor.is, SubscriptionFieldEditor);
+    window.customElements.define(SubscriptionFieldAdd.is, SubscriptionFieldAdd);
   </script>
 </dom-module>

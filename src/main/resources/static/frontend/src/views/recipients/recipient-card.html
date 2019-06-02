@@ -131,7 +131,7 @@
       }
     </style>
     <div class="content">
-      <div class="wrapper" on-click="_cardClick">
+      <div id="wrapper" class="wrapper" on-click="_cardClick">
         <div class="name-items">
           <h3 class="name">[[recipientCard.name]]</h3>
           <div class="goods">
@@ -155,6 +155,7 @@
       }
 
       _cardClick() {
+        this.$.wrapper.style="background-image:linear-gradient(var(--_lumo-grid-selected-row-color), var(--_lumo-grid-selected-row-color))";
         this.dispatchEvent(new CustomEvent('card-click'));
       }
 

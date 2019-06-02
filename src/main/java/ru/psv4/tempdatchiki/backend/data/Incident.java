@@ -1,15 +1,13 @@
 package ru.psv4.tempdatchiki.backend.data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 public class Incident extends TdEntity implements IncidentTyped {
 
-    @ManyToOne @JoinColumn(name = "sensor_uid")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "sensor_uid")
     private Sensor sensor;
 
     private double value;
@@ -20,8 +18,8 @@ public class Incident extends TdEntity implements IncidentTyped {
     @Column(name = "maxvalue")
     private double maxValue;
 
-    @Column(name = "incident_code")
-    private int incidentCode;
+    @Column(name = "type_code")
+    private int typeCode;
 
     @Column(name = "created_datetime")
     private LocalDateTime createdDatetime;
@@ -43,7 +41,7 @@ public class Incident extends TdEntity implements IncidentTyped {
     }
 
     public void setType(IncidentType type) {
-        this.incidentCode = type.getCode();
+        this.typeCode = type.getCode();
     }
 
     public double getValue() {
@@ -71,6 +69,6 @@ public class Incident extends TdEntity implements IncidentTyped {
     }
 
     public IncidentType getType() {
-        return IncidentType.getByCode(incidentCode);
+        return IncidentType.getByCode(typeCode);
     }
 }

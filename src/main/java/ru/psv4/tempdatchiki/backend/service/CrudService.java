@@ -18,7 +18,7 @@ public interface CrudService<T extends TdEntity> {
 		if (entity == null) {
 			throw new EntityNotFoundException();
 		}
-		getRepository().delete(entity);
+		getRepository().deleteById(entity.getUid());
 	}
 
 	default void delete(User currentUser, String id) {

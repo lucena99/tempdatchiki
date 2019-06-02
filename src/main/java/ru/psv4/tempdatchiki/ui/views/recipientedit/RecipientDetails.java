@@ -26,10 +26,7 @@ import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.EditableField;
 import ru.psv4.tempdatchiki.ui.events.CancelEvent;
 import ru.psv4.tempdatchiki.ui.events.EditEvent;
-import ru.psv4.tempdatchiki.ui.views.editors.SubscriptionFieldEditor;
-import ru.psv4.tempdatchiki.ui.views.editors.SubsriptionFieldInitValues;
-import ru.psv4.tempdatchiki.ui.views.editors.TextFieldInitValues;
-import ru.psv4.tempdatchiki.ui.views.editors.StringFieldEditor;
+import ru.psv4.tempdatchiki.ui.views.editors.*;
 import ru.psv4.tempdatchiki.ui.views.recipients.RecipientsView;
 import ru.psv4.tempdatchiki.utils.RouteUtils;
 
@@ -41,8 +38,6 @@ import ru.psv4.tempdatchiki.utils.RouteUtils;
 @HtmlImport("src/views/recipientedit/recipient-details.html")
 @Route(value = "recipient", layout = MainView.class)
 public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> implements HasUrlParameter<String> {
-
-	private Recipient recipient;
 
 	@Id("backward")
 	private Button backward;
@@ -84,9 +79,8 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
 		return TextFieldInitValues.convert(values);
 	}
 
+	@Deprecated
 	public void display(Recipient recipient) {
-		this.recipient = recipient;
-		getModel().setItem(recipient);
 	}
 
 	public boolean isDirty() {
@@ -114,15 +108,16 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String uid) {
 		if (uid != null) {
-			presenter.loadEntity(uid, e -> {
-                getModel().setItem(e);
-                for (Subscription s : e.getSubscriptions()) {
+			presenter.loadEntity(uid, r -> {
+                getModel().setItem(r);
+                for (Subscription s : r.getSubscriptions()) {
                     SubscriptionDetails details = new SubscriptionDetails(s);
-					details.addEditListener(ev -> navigateEditor(s));
+					details.addEditListener(e -> navigateEditor(s));
                     subsrDiv.add(details);
 				}
                 Button button = new Button("Добавить подписку", new Icon(VaadinIcon.PLUS));
                 button.setThemeName("tertiary");
+				button.addClickListener(e -> navigateAdd(r));
 				subsrDiv.add(button);
 				currentLocation = event.getLocation();
             });
@@ -133,12 +128,23 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
 		RouteUtils.route(SubscriptionFieldEditor.class, createEditorParameters(subscription));
 	}
 
+	private void navigateAdd(Recipient recipient) {
+		RouteUtils.route(SubscriptionFieldAdd.class, createAddParameters(recipient));
+	}
+
 	private QueryParameters createEditorParameters(Subscription subscription) {
 		SubsriptionFieldInitValues values = new SubsriptionFieldInitValues();
 		values.setRecipientUid(subscription.getRecipient().getUid());
 		values.setControllerUid(subscription.getController().getUid());
 		values.setOver(subscription.isNotifyOver());
 		values.setError(subscription.isNotifyError());
+		values.setBackwardUrl(currentLocation.getPath());
+		return SubsriptionFieldInitValues.convert(values);
+	}
+
+	private QueryParameters createAddParameters(Recipient recipient) {
+		SubsriptionFieldInitValues values = new SubsriptionFieldInitValues();
+		values.setRecipientUid(recipient.getUid());
 		values.setBackwardUrl(currentLocation.getPath());
 		return SubsriptionFieldInitValues.convert(values);
 	}

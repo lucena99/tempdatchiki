@@ -1,6 +1,7 @@
 package ru.psv4.tempdatchiki.backend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -36,6 +37,10 @@ public class SensorService extends ReferenceService<Sensor> implements CrudServi
     @Override
     public SensorRepository getRepository() {
         return sensorRepository;
+    }
+
+    public List<Sensor> getListOrderByControllerNameAndNum() {
+        return sensorRepository.findAll(Sort.by("controller.name", "num").ascending());
     }
 
     @Transactional
