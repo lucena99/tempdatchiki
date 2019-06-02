@@ -66,7 +66,7 @@ public class TempReadScheduler {
 
     private void tempReadAndNotifyIfNeed(Controller controller) {
         try {
-            log.trace("Reading controller {}", controller);
+            log.trace("Start read controller {}", controller);
             TempValues values = readTemp(controller.getUrl());
             values.trace(log);
             log.trace("Successful read controller {}", controller);

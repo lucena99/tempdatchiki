@@ -4,7 +4,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class Notification extends TdEntity {
+public class Notification extends TdEntity implements IncidentTyped {
 
     @Column(name = "created_datetime")
     private LocalDateTime createdDatetime;
@@ -42,11 +42,11 @@ public class Notification extends TdEntity {
         this.sensor = sensor;
     }
 
-    public void setType(NotificationType type) {
+    public void setType(IncidentType type) {
         this.notificationCode = type.getCode();
     }
 
-    public NotificationType getType() {
-        return NotificationType.getByCode(notificationCode);
+    public IncidentType getType() {
+        return IncidentType.getByCode(notificationCode);
     }
 }

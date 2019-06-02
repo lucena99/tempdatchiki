@@ -1,14 +1,14 @@
 package ru.psv4.tempdatchiki.backend.schedulers;
 
 import ru.psv4.tempdatchiki.backend.data.Sensor;
-import ru.psv4.tempdatchiki.backend.data.NotificationType;
+import ru.psv4.tempdatchiki.backend.data.IncidentType;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
 
 public class AnalyzedTemp {
-    NotificationType state;
+    IncidentType state;
     Sensor sensor;
     float value;
 
@@ -20,7 +20,7 @@ public class AnalyzedTemp {
         tempFormatter.setDecimalFormatSymbols(sep);
     }
 
-    AnalyzedTemp(NotificationType tag, Sensor sensor, float value) {
+    AnalyzedTemp(IncidentType tag, Sensor sensor, float value) {
         this.state = tag;
         this.sensor = sensor;
         this.value = value;

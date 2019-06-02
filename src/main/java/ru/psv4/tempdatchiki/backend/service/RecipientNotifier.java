@@ -3,6 +3,7 @@ package ru.psv4.tempdatchiki.backend.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -21,16 +22,21 @@ import org.springframework.stereotype.Service;
 import ru.psv4.tempdatchiki.backend.data.*;
 import ru.psv4.tempdatchiki.backend.schedulers.ControllerEvent;
 import ru.psv4.tempdatchiki.backend.schedulers.TempEvent;
+import ru.psv4.tempdatchiki.utils.IncidentDecisionResolver;
 
+import javax.annotation.PreDestroy;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import static ru.psv4.tempdatchiki.backend.data.NotificationType.Error;
-import static ru.psv4.tempdatchiki.backend.data.NotificationType.*;
+import static ru.psv4.tempdatchiki.backend.data.IncidentType.Error;
+import static ru.psv4.tempdatchiki.backend.data.IncidentType.*;
 
 @Service
 public class RecipientNotifier implements InitializingBean, EventBroker.EventListener {
@@ -46,6 +52,11 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
 
     @Autowired
     private NotificationService messageService;
+
+    private ExecutorService executorService = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
+            .setNameFormat("Notifications-%d")
+            .setDaemon(true)
+            .build());
 
     private final ObjectMapper jacksonMapper = new ObjectMapper();
 
@@ -64,8 +75,27 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
         eventBroker.addListener(this);
     }
 
+    @PreDestroy
+    public void destroy() {
+        eventBroker.removeListener(this);
+        executorService.shutdownNow();
+        log.trace("Destroy " + getClass().getSimpleName());
+    }
+
+
     @Override
     public void onEvent(ControllerEvent controllerEvent) {
+        LocalDateTime startTime = LocalDateTime.now();
+        executorService.submit(() -> {
+            try {
+                sendNotifications(controllerEvent);
+            } catch (Exception e) {
+                log.error("Error send notifictions startTime={} message={}", startTime, e.getMessage());
+            }
+        });
+    }
+
+    public void sendNotifications(ControllerEvent controllerEvent) {
         Controller controller = controllerEvent.getController();
         List<TempEvent> events = controllerEvent.getTempEvents();
 
@@ -74,66 +104,20 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
             for (Subscription subscription : subscriptions) {
                 Recipient recipient = subscription.getRecipient();
                 for (TempEvent event : events) {
-                    Optional<Notification> opMessage = messageService.getRepository()
-                            .findByRecipientAndSensorLast(recipient, event.getSensor());
-                    NotificationType nt = defineNotificationType(event);
-                    switch (nt) {
-                        case Normal: {
-                            if (opMessage.isPresent() && opMessage.get().getType() != Normal) {
-                                sendNotification(nt, recipient, event);
-                            }
-                            break;
-                        }
-                        case OverDown: {
-                            if (!opMessage.isPresent() ||
-                                    (opMessage.isPresent() && opMessage.get().getType() != OverDown)) {
-                                sendNotification(nt, recipient, event);
-                            }
-                            break;
-                        }
-                        case OverUp: {
-                            if (!opMessage.isPresent() ||
-                                    (opMessage.isPresent() && opMessage.get().getType() != OverUp)) {
-                                sendNotification(nt, recipient, event);
-                            }
-                            break;
-                        }
-                        case Error: {
-                            if (!opMessage.isPresent() ||
-                                    (opMessage.isPresent() && opMessage.get().getType() != Error)) {
-                                sendNotification(nt, recipient, event);
-                            }
-                            break;
-                        }
-                    }
+                    IncidentDecisionResolver.resolve(event,
+                            (e) -> {
+                                return messageService.getRepository()
+                                        .findByRecipientAndSensorLast(recipient, e.getSensor());
+                            },
+                            (e, it) -> {
+                                sendNotification(it, recipient, e);
+                            });
                 }
             }
         }
     }
 
-    private NotificationType defineNotificationType(TempEvent event) {
-        Status status = event.getStatusNew();
-        Sensor sensor = event.getSensor();
-        double value = event.getValueNew();
-        switch (event.getStatusNew()) {
-            case Error:
-                return NotificationType.Error;
-            case Absence:
-                return NotificationType.Error;
-            case Normal:
-                if (value < sensor.getMinValue()) {
-                    return NotificationType.OverDown;
-                } else if (value > sensor.getMaxValue()) {
-                    return NotificationType.OverUp;
-                } else {
-                    return NotificationType.Normal;
-                }
-            default:
-                throw new IllegalStateException("Can't define notification type");
-        }
-    }
-
-    private void sendNotification(NotificationType nt, Recipient recipient, TempEvent event) {
+    private void sendNotification(IncidentType nt, Recipient recipient, TempEvent event) {
         String jsonString;
         try {
             jsonString = createJsonString(nt, recipient, event);
@@ -184,7 +168,7 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
         }
     }
 
-    private String createJsonString(NotificationType nt, Recipient recipient, TempEvent event) throws JsonProcessingException {
+    private String createJsonString(IncidentType nt, Recipient recipient, TempEvent event) throws JsonProcessingException {
         ObjectNode rootNode = jacksonMapper.createObjectNode();
         rootNode.put("to", recipient.getFcmToken());
         ObjectNode notificationNode = jacksonMapper.createObjectNode();
@@ -194,7 +178,7 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
         return jacksonMapper.writerWithDefaultPrettyPrinter().writeValueAsString(rootNode);
     }
 
-    public String formatString(NotificationType nt, TempEvent event) {
+    public String formatString(IncidentType nt, TempEvent event) {
         Sensor sensor = event.getSensor();
         double value = event.getValueNew();
         switch (nt) {

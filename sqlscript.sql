@@ -195,3 +195,15 @@ ALTER TABLE message RENAME TO notification;
 ALTER TABLE notification RENAME COLUMN state_code TO notification_code;
 
 select * from notification ;
+
+CREATE TABLE incident
+(
+    uid VARCHAR(36) NOT NULL,
+    sensor_uid VARCHAR(36) NOT NULL,
+    value numeric(3,1) NOT NULL,
+    minvalue numeric(3,1) NOT NULL,
+    maxvalue numeric(3,1) NOT NULL,
+    created_datetime timestamp NOT NULL,
+    incident_code int NOT NULL,
+    PRIMARY KEY (uid)
+);
