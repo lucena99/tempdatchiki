@@ -99,13 +99,13 @@ public class TempReadScheduler {
                     }
                     temp.setStatus(error);
                 } else if (values.isBlank(num)) {
-                    Status absence = Status.Absence;
+                    Status absence = Status.Off;
                     if (temp.getStatus() != absence) {
                         event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), absence, 0d);
                     }
                     temp.setStatus(absence);
                 } else {
-                    Status normal = Status.Normal;
+                    Status normal = Status.On;
                     double valueNew = values.getValue(num).get();
                     if (temp.getStatus() != normal ||
                         temp.getValue() != valueNew) {
@@ -115,7 +115,7 @@ public class TempReadScheduler {
                     temp.setValue(valueNew);
                 }
             } else {
-                Status absence = Status.Absence;
+                Status absence = Status.Off;
                 if (temp.getStatus() != absence) {
                     event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), absence, 0d);
                 }

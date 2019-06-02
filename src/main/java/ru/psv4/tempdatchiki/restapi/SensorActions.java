@@ -37,7 +37,7 @@ public class SensorActions {
     private ControllerService controllerService;
 
     @ApiOperation(value = "Получить всех датчики, отсортированных по дате создания", response = Iterable.class)
-    @RequestMapping(path = "/sensors", method = RequestMethod.GET)
+    @RequestMapping(path = "/sensors", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody List<SensorDto> getSensorsAll() {
         return DtoUtils.convert(SensorDto.class, sensorService.getList());
     }

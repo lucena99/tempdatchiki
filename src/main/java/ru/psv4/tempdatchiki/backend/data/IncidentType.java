@@ -32,9 +32,9 @@ public enum IncidentType {
         double value = event.getValueNew();
         switch (event.getStatusNew()) {
             case Error:
-            case Absence:
+            case Off:
                 return IncidentType.Error;
-            case Normal:
+            case On:
                 if (value < sensor.getMinValue()) {
                     return IncidentType.OverDown;
                 } else if (value > sensor.getMaxValue()) {

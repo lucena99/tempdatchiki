@@ -3,6 +3,8 @@ package ru.psv4.tempdatchiki.dto;
 import ru.psv4.tempdatchiki.utils.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,16 +31,17 @@ public class DtoUtils {
                     Class<?> oClass = rClass;
                     Object pValue = r;
                     for (String property : properties) {
-                        Field pField = ReflectionUtils.getField(oClass, property).get();
-                        pField.setAccessible(true);
-                        pValue = pField.get(pValue);
-                        oClass = pField.getDeclaringClass();
+                        Method pGetter = ReflectionUtils.getMethod(oClass, "get" +
+                                property.substring(0,1).toUpperCase() +
+                                property.substring(1, property.length())).get();
+                        pValue = pGetter.invoke(pValue);
+                        oClass = pGetter.getReturnType();
                     }
                     f.set(dto, pValue);
                 }
             }
             return dto;
-        } catch (IllegalAccessException | InstantiationException e) {
+        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }

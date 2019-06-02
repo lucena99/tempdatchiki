@@ -13,6 +13,7 @@ import ru.psv4.tempdatchiki.dto.DtoUtils;
 import ru.psv4.tempdatchiki.dto.RecipientCreateDto;
 import ru.psv4.tempdatchiki.dto.RecipientDto;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
+import ru.psv4.tempdatchiki.utils.UIDUtils;
 
 import javax.annotation.Resource;
 import java.time.LocalDateTime;
@@ -47,7 +48,8 @@ public class RecipientActions {
         }
         try {
             Recipient r = new Recipient();
-            r.setUid(dto.getUid());
+            r.setUid(UIDUtils.generate());
+            r.setFcmToken(dto.getFcmToken());
             r.setName(dto.getName());
             r.setCreatedDatetime(LocalDateTime.now());
             r = recipientService.save(r);
