@@ -19,6 +19,7 @@ CMD [ "java", \
     "-Ddburl=${DATABASE_URL}", \
     "-Xmx256m", \
     "-DlogPath=/log", \
+    "-Dfile.encoding=UTF8", \
     "-jar", "/app/tempdatchiki.war"]
 
 #windows

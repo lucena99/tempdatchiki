@@ -13,3 +13,7 @@ PGUSER=laba PGPASSWORD=laba heroku pg:push td DATABASE_URL -a tempdatchiki
 heroku run echo \$DATABASE_URL
 
 heroku pg:reset --confirm tempdatchiki -a tempdatchiki
+
+docker build -t td .
+docker tag td 109.167.245.56:5000/td:1.0.0
+docker push 109.167.245.56:5000/td:1.0.0
