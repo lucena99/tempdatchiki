@@ -93,8 +93,8 @@ public class SubscriptionFieldEditor extends PolymerTemplate<SubscriptionFieldEd
 			case DELETE:
 				ConfirmDialog
 						.createQuestion()
-						.withCaption("System alert")
-						.withMessage("Вы уверены, что хотите удаить подписку?")
+						.withCaption("Подтверждение")
+						.withMessage("Вы уверены, что хотите удалить подписку?")
 						.withOkButton(() -> {
 							presenter.delete(subscription,
 									(s) -> UI.getCurrent().navigate(initValues.backwardUrl),

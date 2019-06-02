@@ -51,6 +51,10 @@
                     Назад
                     <iron-icon icon="vaadin:backwards" slot="suffix"></iron-icon>
                 </vaadin-button>
+                <vaadin-button slot="right" id="delete" theme="tertiary error">
+                    Удалить
+                    <iron-icon icon="vaadin:check" slot="suffix"></iron-icon>
+                </vaadin-button>
             </buttons-bar>
 
             <div class="scrollable main-row" id="main">
@@ -60,10 +64,6 @@
                     <vaadin-checkbox colspan="1" class="checkbox desktop" id="error">Ошибка?</vaadin-checkbox>
                 </vaadin-form-layout>
                 <buttons-bar id="footer" no-scroll$="[[noScroll]]">
-                    <vaadin-button slot="left" id="delete" theme="tertiary error">
-                        Удалить
-                        <iron-icon icon="vaadin:check" slot="suffix"></iron-icon>
-                    </vaadin-button>
                     <vaadin-button slot="right" id="cancel" theme="tertiary">
                         Отмена
                     </vaadin-button>
