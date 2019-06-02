@@ -12,7 +12,16 @@ import static ru.psv4.tempdatchiki.backend.data.IncidentType.Error;
 
 public class IncidentDecisionResolver {
 
-    public static <D extends IncidentTyped> void resolve(TempEvent event, LastDecisionGetter<D> ldGetter, DecisionMaker<D> maker) {
+    /**
+     * Резолвит событие изменения температуры. С помощью {@code ldGetter} получает последнее принятое решение
+     * по данному датчику, если его тип инцидента отличается от текущего типа инцидента, вызывается {@code maker}
+     * @param event событие изменения температуры
+     * @param ldGetter операция по получению последнего принятого решения по датчику
+     * @param maker операция принятия решения
+     * @param <D> Решение
+     */
+    public static <D extends IncidentTyped> void resolve(TempEvent event, LastDecisionGetter<D> ldGetter,
+                                                         DecisionMaker<D> maker) {
         Optional<D> ld = ldGetter.get(event);
         IncidentType it = IncidentType.defineType(event);
         switch (it) {
