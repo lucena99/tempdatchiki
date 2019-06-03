@@ -15,5 +15,6 @@ heroku run echo \$DATABASE_URL
 heroku pg:reset --confirm tempdatchiki -a tempdatchiki
 
 docker build -t td .
-docker tag td 109.167.245.56:5000/td:1.0.0
-docker push 109.167.245.56:5000/td:1.0.0
+docker tag td ****:5000/td:1.0.0
+docker push ****:5000/td:1.0.0
+docker run -p 8181:8181 -e PORT=8181 -e DATABASE_URL="sqlserver://username:password@host:1433/databaseName=sensorapp" td
