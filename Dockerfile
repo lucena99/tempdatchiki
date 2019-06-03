@@ -23,4 +23,4 @@ CMD [ "java", \
     "-jar", "/app/tempdatchiki.war"]
 
 #windows
-#docker run -p 8181:8181 -e PORT=8181 -e DATABASE_URL="postgres://laba:laba@host.docker.internal:5432/td" td
+#docker run -p 8181:8181 -e PORT=8181 -e DATABASE_URL="sqlserver://username:password@host:1433/databaseName=sensorapp" td
