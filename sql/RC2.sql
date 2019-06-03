@@ -1,0 +1,1 @@
+update setting set value = 'RC2' where name = 'dbVersion';

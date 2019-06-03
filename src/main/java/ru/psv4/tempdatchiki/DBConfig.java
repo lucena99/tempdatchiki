@@ -15,7 +15,7 @@ public class DBConfig {
         URI dburl = new URI(env.getProperty("dburl"));
         String username = dburl.getUserInfo().split(":")[0];
         String password = dburl.getUserInfo().split(":")[1];
-        String dbUrl = "jdbc:sqlserver://" + dburl.getHost() + ':' + dburl.getPort() + dburl.getPath();
+        String dbUrl = "jdbc:sqlserver://" + dburl.getHost() + ':' + dburl.getPort() + ";" + dburl.getPath().substring(1);
         DataSourceBuilder b = DataSourceBuilder.create();
         b.driverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         b.url(dbUrl);
