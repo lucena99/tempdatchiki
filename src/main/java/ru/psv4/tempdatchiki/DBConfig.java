@@ -15,10 +15,9 @@ public class DBConfig {
         URI dburl = new URI(env.getProperty("dburl"));
         String username = dburl.getUserInfo().split(":")[0];
         String password = dburl.getUserInfo().split(":")[1];
-        String dbUrl = "jdbc:postgresql://" + dburl.getHost() + ':' +
-                dburl.getPort() + dburl.getPath() + "?sslmode=require";
+        String dbUrl = "jdbc:sqlserver://" + dburl.getHost() + ':' + dburl.getPort() + dburl.getPath();
         DataSourceBuilder b = DataSourceBuilder.create();
-        b.driverClassName("org.postgresql.Driver");
+        b.driverClassName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
         b.url(dbUrl);
         b.username(username);
         b.password(password);

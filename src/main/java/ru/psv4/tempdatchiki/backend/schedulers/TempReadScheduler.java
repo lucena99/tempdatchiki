@@ -43,6 +43,9 @@ public class TempReadScheduler {
     @Value("${temp.scheduler.active}")
     private boolean active;
 
+    @Value("${temp.scheduler.http.attemps}")
+    private int attempts;
+
     private static final Pattern controllerResponsePattern = Pattern.compile("(?<num>[\\d\\s]+)#(?<val>(-?[\\d\\s]+\\.?[\\d\\s]*)|(ERROR))");
     private static final DecimalFormat tempFormat;
     static {
@@ -171,7 +174,21 @@ public class TempReadScheduler {
 
     private TempValues readTemp(String urlToRead) throws IOException {
         TempValues values = new TempValues(LocalDateTime.now());
-        String response = execHttpRequest(urlToRead);
+
+        int attempts = this.attempts;
+        String response = null;
+        while (response == null) {
+            try {
+                --attempts;
+                response = execHttpRequest(urlToRead);
+            } catch (IOException e) {
+                log.trace("Осталось количество попыток {} прочитать {}", attempts, urlToRead);
+                if (attempts == 0) {
+                    throw e; //попытки кончились
+                }
+            }
+        }
+
         for (String line : response.split(System.lineSeparator())) {
             Matcher m = controllerResponsePattern.matcher(line.trim());
             if (m.find()) {
@@ -198,8 +215,8 @@ public class TempReadScheduler {
         URL url = new URL(urlToRead);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
-        conn.setConnectTimeout(8000);
-        conn.setReadTimeout(8000);
+        conn.setConnectTimeout(10*1000);
+        conn.setReadTimeout(10*1000);
         BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
         String line;
         while ((line = rd.readLine()) != null) {
