@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.dto;
+package ru.psv4.tempdatchiki.backend.restapi.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

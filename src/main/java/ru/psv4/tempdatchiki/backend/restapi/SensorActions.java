@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.restapi;
+package ru.psv4.tempdatchiki.backend.restapi;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.psv4.tempdatchiki.backend.service.ControllerService;
 import ru.psv4.tempdatchiki.backend.service.NotFoundException;
 import ru.psv4.tempdatchiki.backend.service.SensorService;
-import ru.psv4.tempdatchiki.dto.DtoUtils;
-import ru.psv4.tempdatchiki.dto.SensorCreateDto;
-import ru.psv4.tempdatchiki.dto.SensorDto;
+import ru.psv4.tempdatchiki.backend.restapi.dto.DtoUtils;
+import ru.psv4.tempdatchiki.backend.restapi.dto.SensorCreateDto;
+import ru.psv4.tempdatchiki.backend.restapi.dto.SensorDto;
 import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.Sensor;
 import ru.psv4.tempdatchiki.utils.UIDUtils;

@@ -54,7 +54,7 @@ public class TempReadScheduler {
 
     private static Logger log = LoggerFactory.getLogger(TempReadScheduler.class);
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 5000)
     public void tempRead() {
         if (active) {
             LocalTime now = LocalTime.now();
@@ -65,18 +65,25 @@ public class TempReadScheduler {
     }
 
     private void tempReadAndNotifyIfNeed(Controller controller) {
+        String urlToRead = controller.getUrl();
+        TempValues values;
         try {
             log.trace("Start read controller {}", controller);
-            TempValues values = readTemp(controller.getUrl());
+            values = readTemp(urlToRead);
             values.trace(log);
             log.trace("Successful read controller {}", controller);
-
-            List<TempEvent> events = updateTempsAndCreateEvents(controller, values);
-            if (!events.isEmpty()) {
-                eventBroker.notify(new ControllerEvent(controller, events));
+        } catch (IOException e) {
+            log.error("Error http-request: {} message: {}", urlToRead, e.getMessage());
+            values = new TempValues(LocalDateTime.now());
+            List<Sensor> sensors = sensorService.getRepository().findByController(controller);
+            for (Sensor sensor : sensors) {
+                values.setStatus(sensor.getNum(), Status.Unreachable);
             }
-        } catch (IOException | ParseException e) {
-            log.error("Error read controller {} Message {}", controller, e.getMessage());
+        }
+
+        List<TempEvent> events = updateTempsAndCreateEvents(controller, values);
+        if (!events.isEmpty()) {
+            eventBroker.notify(new ControllerEvent(controller, events));
         }
     }
 
@@ -92,34 +99,26 @@ public class TempReadScheduler {
             TempEvent event = null;
             Integer num = sensor.getNum();
             if (values.contains(num)) {
-                if (values.isError(num)) {
-                    Status error = Status.Error;
-                    if (temp.getStatus() != error) {
-                        event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), error, 0d);
+                Status status = values.getStatus(num);
+                if (status == Status.On) {
+                    Optional<Double> value = values.getValue(num);
+                    if (temp.getStatus() != status) {
+                        event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), status, value.get());
                     }
-                    temp.setStatus(error);
-                } else if (values.isBlank(num)) {
-                    Status absence = Status.Off;
-                    if (temp.getStatus() != absence) {
-                        event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), absence, 0d);
-                    }
-                    temp.setStatus(absence);
+                    temp.setValue(value.get());
+                    temp.setStatus(status);
                 } else {
-                    Status normal = Status.On;
-                    double valueNew = values.getValue(num).get();
-                    if (temp.getStatus() != normal ||
-                        temp.getValue() != valueNew) {
-                        event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), normal, valueNew);
+                    if (temp.getStatus() != status) {
+                        event = new TempEvent(sensor, temp.getStatus(), status);
                     }
-                    temp.setStatus(normal);
-                    temp.setValue(valueNew);
+                    temp.setStatus(status);
                 }
             } else {
-                Status absence = Status.Off;
-                if (temp.getStatus() != absence) {
-                    event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), absence, 0d);
+                Status notfound = Status.NotFound;
+                if (temp.getStatus() != notfound) {
+                    event = new TempEvent(sensor, temp.getStatus(), notfound);
                 }
-                temp.setStatus(absence);
+                temp.setStatus(notfound);
             }
 
             temp.setUpdatedDatetime(values.time);
@@ -135,47 +134,28 @@ public class TempReadScheduler {
     private class TempValues {
 
         LocalDateTime time;
-        List<Integer> errors;
-        List<Integer> blanks;
-        Map<Integer, Double> values;
+        Map<Integer, Double> values = new HashMap<>();
+        Map<Integer, Status> statuses = new HashMap<>();
 
         public TempValues(LocalDateTime time) {
             this.time = time;
         }
 
         void addValue(Integer num, Double value) {
-            if (values == null) {
-                values = new HashMap<>();
-            }
             values.put(num, value);
+            statuses.put(num, Status.On);
         }
 
-        void addError(Integer num) {
-            if (errors == null) {
-                errors = new ArrayList<>();
-            }
-            errors.add(num);
+        void setStatus(Integer num, Status value) {
+            statuses.put(num, value);
         }
 
-        void addBlank(Integer num) {
-            if (blanks == null) {
-                blanks = new ArrayList<>();
-            }
-            blanks.add(num);
+        Status getStatus(Integer num) {
+            return statuses.get(num);
         }
 
         boolean contains(Integer num) {
-            return (values != null && values.containsKey(num)) ||
-                    (errors != null && errors.contains(num)) ||
-                    (blanks != null && blanks.contains(num));
-        }
-
-        boolean isError(Integer num) {
-            return errors != null && errors.contains(num);
-        }
-
-        boolean isBlank(Integer num) {
-            return blanks != null && blanks.contains(num);
+            return statuses.containsKey(num);
         }
 
         Optional<Double> getValue(Integer num) {
@@ -183,41 +163,51 @@ public class TempReadScheduler {
         }
 
         void trace(Logger log) {
-            if (values != null) {
-                values.entrySet().stream().forEach(e -> log.trace(e.toString()));
-            }
-            if (errors != null) {
-                errors.stream().forEach(e -> log.trace("ERROR #{}", e));
-            }
-            if (blanks != null) {
-                blanks.stream().forEach(e -> log.trace("BLANK #{}", e));
-            }
+            values.entrySet().stream().forEach(e -> log.trace(e.toString()));
+            statuses.entrySet().stream().filter(e -> e.getValue() != Status.On)
+                    .forEach(e -> log.trace("{} #{}",e.getValue(), e.getKey()));
         }
     }
 
-    private TempValues readTemp(String urlToRead) throws IOException, ParseException {
+    private TempValues readTemp(String urlToRead) throws IOException {
         TempValues values = new TempValues(LocalDateTime.now());
-        URL url = new URL(urlToRead);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setConnectTimeout(3000);
-        conn.setReadTimeout(3000);
-        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-        String line;
-        while ((line = rd.readLine()) != null) {
+        String response = execHttpRequest(urlToRead);
+        for (String line : response.split(System.lineSeparator())) {
             Matcher m = controllerResponsePattern.matcher(line.trim());
             if (m.find()) {
                 Integer num = new Integer(m.group("num").trim());
                 String val = m.group("val").trim();
                 if (!StringUtils.isEmpty(val)) {
                     if (val.equals("ERROR")) {
-                        values.addError(num);
+                        values.setStatus(num, Status.Error);
                     } else {
-                        values.addValue(num, tempFormat.parse(val).doubleValue());
+                        try {
+                            values.addValue(num, tempFormat.parse(val).doubleValue());
+                        } catch (ParseException e) {
+                            values.setStatus(num, Status.SystemError);
+                        }
                     }
                 }
             }
         }
         return values;
+    }
+
+    private String execHttpRequest(String urlToRead) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        URL url = new URL(urlToRead);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setRequestMethod("GET");
+        conn.setConnectTimeout(8000);
+        conn.setReadTimeout(8000);
+        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+        String line;
+        while ((line = rd.readLine()) != null) {
+            if (sb.length() != 0) {
+                sb.append(System.lineSeparator());
+            }
+            sb.append(line);
+        }
+        return sb.toString();
     }
 }

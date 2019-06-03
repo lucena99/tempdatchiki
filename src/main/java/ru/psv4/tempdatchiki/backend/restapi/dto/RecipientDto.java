@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.dto;
+package ru.psv4.tempdatchiki.backend.restapi.dto;
 
 import ru.psv4.tempdatchiki.backend.data.Recipient;
 

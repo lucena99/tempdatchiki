@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.dto;
+package ru.psv4.tempdatchiki.backend.restapi.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -7,11 +7,11 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import io.swagger.annotations.ApiModelProperty;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 @JsonPropertyOrder({"uid", "name", "created_datetime"})
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class ReferenceDto {
+
     @JsonProperty("uid")
     @EntityField("uid")
     private String uid;

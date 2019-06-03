@@ -1,10 +1,9 @@
-package ru.psv4.tempdatchiki.dto;
+package ru.psv4.tempdatchiki.backend.restapi.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModelProperty;
 import ru.psv4.tempdatchiki.backend.data.Sensor;
-import ru.psv4.tempdatchiki.backend.data.Status;
 
 import java.time.LocalDateTime;
 

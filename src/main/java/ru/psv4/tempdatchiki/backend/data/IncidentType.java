@@ -40,6 +40,9 @@ public enum IncidentType {
         switch (event.getStatusNew()) {
             case Error:
             case Off:
+            case Unreachable:
+            case NotFound:
+            case SystemError:
                 return IncidentType.Error;
             case On:
                 if (value < sensor.getMinValue()) {

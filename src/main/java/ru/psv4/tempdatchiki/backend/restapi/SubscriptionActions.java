@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.restapi;
+package ru.psv4.tempdatchiki.backend.restapi;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,9 +11,9 @@ import ru.psv4.tempdatchiki.backend.service.ControllerService;
 import ru.psv4.tempdatchiki.backend.service.NotFoundException;
 import ru.psv4.tempdatchiki.backend.service.RecipientService;
 import ru.psv4.tempdatchiki.backend.service.SubscribtionService;
-import ru.psv4.tempdatchiki.dto.DtoUtils;
-import ru.psv4.tempdatchiki.dto.SubscriptionCreateDto;
-import ru.psv4.tempdatchiki.dto.SubscriptionDto;
+import ru.psv4.tempdatchiki.backend.restapi.dto.DtoUtils;
+import ru.psv4.tempdatchiki.backend.restapi.dto.SubscriptionCreateDto;
+import ru.psv4.tempdatchiki.backend.restapi.dto.SubscriptionDto;
 import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.backend.data.Subscription;

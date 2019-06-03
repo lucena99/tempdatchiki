@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.restapi;
+package ru.psv4.tempdatchiki.backend.restapi;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -6,7 +6,6 @@ import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,8 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.psv4.tempdatchiki.backend.data.Sensor;
 import ru.psv4.tempdatchiki.backend.service.IncidentService;
 import ru.psv4.tempdatchiki.backend.service.SensorService;
-import ru.psv4.tempdatchiki.dto.DtoUtils;
-import ru.psv4.tempdatchiki.dto.IncidentDto;
+import ru.psv4.tempdatchiki.backend.restapi.dto.DtoUtils;
+import ru.psv4.tempdatchiki.backend.restapi.dto.IncidentDto;
 
 import javax.annotation.Resource;
 import java.util.List;

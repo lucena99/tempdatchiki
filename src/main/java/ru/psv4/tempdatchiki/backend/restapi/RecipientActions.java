@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.restapi;
+package ru.psv4.tempdatchiki.backend.restapi;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -9,9 +9,9 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.web.bind.annotation.*;
 import ru.psv4.tempdatchiki.backend.service.NotFoundException;
 import ru.psv4.tempdatchiki.backend.service.RecipientService;
-import ru.psv4.tempdatchiki.dto.DtoUtils;
-import ru.psv4.tempdatchiki.dto.RecipientCreateDto;
-import ru.psv4.tempdatchiki.dto.RecipientDto;
+import ru.psv4.tempdatchiki.backend.restapi.dto.DtoUtils;
+import ru.psv4.tempdatchiki.backend.restapi.dto.RecipientCreateDto;
+import ru.psv4.tempdatchiki.backend.restapi.dto.RecipientDto;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.utils.UIDUtils;
 

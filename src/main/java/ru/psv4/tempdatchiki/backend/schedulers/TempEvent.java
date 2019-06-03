@@ -19,6 +19,12 @@ public class TempEvent {
         this.valueNew = valueNew;
     }
 
+    public TempEvent(Sensor sensor, Status statusOld, Status statusNew) {
+        this.sensor = sensor;
+        this.statusOld = statusOld;
+        this.statusNew = statusNew;
+    }
+
     public Sensor getSensor() {
         return sensor;
     }

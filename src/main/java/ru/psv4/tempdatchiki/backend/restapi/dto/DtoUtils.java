@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.dto;
+package ru.psv4.tempdatchiki.backend.restapi.dto;
 
 import ru.psv4.tempdatchiki.utils.ReflectionUtils;
 
@@ -6,7 +6,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class DtoUtils {
