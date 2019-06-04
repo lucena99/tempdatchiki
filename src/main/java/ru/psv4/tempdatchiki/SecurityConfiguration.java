@@ -96,9 +96,8 @@ public class SecurityConfiguration {
 //						.hasAuthority("!!!")
 //					.and()
 //						.httpBasic();
-			http.csrf().disable();
+			http.csrf().disable()
 			// the ant matcher is what limits the scope of this configuration.
-			http
 					.antMatcher("/restapi/**").authorizeRequests()
 					.antMatchers("/restapi/**").hasAnyAuthority(Role.RESTAPI, Role.ADMIN)
 					.and()
@@ -152,9 +151,8 @@ public class SecurityConfiguration {
 //						.hasAuthority("!!!")
 //					.and()
 //						.httpBasic();
-			http.csrf().disable();
+			http.csrf().disable()
 			// the ant matcher is what limits the scope of this configuration.
-			http
 					/*.antMatcher("/restapi/**").authorizeRequests()
 					.antMatchers("/restapi/**").hasAuthority(Role.RESTAPI)
 					.and().httpBasic().and()*/

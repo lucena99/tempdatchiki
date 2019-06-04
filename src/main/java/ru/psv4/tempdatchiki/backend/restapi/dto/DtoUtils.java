@@ -30,17 +30,16 @@ public class DtoUtils {
                     Class<?> oClass = rClass;
                     Object pValue = r;
                     for (String property : properties) {
-                        Method pGetter = ReflectionUtils.getMethod(oClass, "get" +
-                                property.substring(0,1).toUpperCase() +
-                                property.substring(1, property.length())).get();
-                        pValue = pGetter.invoke(pValue);
-                        oClass = pGetter.getReturnType();
+                        Field pField = ReflectionUtils.getField(oClass, property).get();
+                        pField.setAccessible(true);
+                        pValue = pField.get(pValue);
+                        oClass = pValue.getClass();
                     }
                     f.set(dto, pValue);
                 }
             }
             return dto;
-        } catch (IllegalAccessException | InstantiationException | InvocationTargetException e) {
+        } catch (IllegalAccessException | InstantiationException e) {
             throw new RuntimeException(e);
         }
     }

@@ -102,19 +102,19 @@ public class TempReadScheduler {
             TempEvent event = null;
             Integer num = sensor.getNum();
             if (values.contains(num)) {
-                Status status = values.getStatus(num);
-                if (status == Status.On) {
-                    Optional<Double> value = values.getValue(num);
-                    if (temp.getStatus() != status) {
-                        event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), status, value.get());
+                Status statusNew = values.getStatus(num);
+                if (statusNew == Status.On) {
+                    double valueNew = values.getValue(num).get();
+                    if (temp.getStatus() != statusNew || temp.getValue() != valueNew) {
+                        event = new TempEvent(sensor, temp.getStatus(), temp.getValue(), statusNew, valueNew);
                     }
-                    temp.setValue(value.get());
-                    temp.setStatus(status);
+                    temp.setValue(valueNew);
+                    temp.setStatus(statusNew);
                 } else {
-                    if (temp.getStatus() != status) {
-                        event = new TempEvent(sensor, temp.getStatus(), status);
+                    if (temp.getStatus() != statusNew) {
+                        event = new TempEvent(sensor, temp.getStatus(), statusNew);
                     }
-                    temp.setStatus(status);
+                    temp.setStatus(statusNew);
                 }
             } else {
                 Status notfound = Status.NotFound;

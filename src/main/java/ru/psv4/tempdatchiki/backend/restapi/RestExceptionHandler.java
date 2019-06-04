@@ -24,9 +24,21 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(new RestException(e.getMessage()), HttpStatus.CONFLICT);
     }
 
-    private static class RestException {
+    public static class RestException {
+
         private String message;
-        public RestException(String message) {this.message = message;}
+
+        public RestException(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public void setMessage(String message) {
+            this.message = message;
+        }
 
         @Override
         public String toString() {

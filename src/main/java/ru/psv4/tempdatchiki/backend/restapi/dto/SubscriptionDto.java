@@ -14,6 +14,11 @@ import java.time.LocalDateTime;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SubscriptionDto {
 
+    @EntityField("uid")
+    @ApiModelProperty(required = true)
+    @JsonProperty("uid")
+    private String uid;
+
     @EntityField("recipient.uid")
     @ApiModelProperty(required = true)
     @JsonProperty("recipientUid")
@@ -39,6 +44,14 @@ public class SubscriptionDto {
     @ApiModelProperty(required = true)
     @JsonProperty("notifyError")
     private boolean notifyError;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
 
     public String getRecipientUid() { return recipientUid; }
 
@@ -67,4 +80,5 @@ public class SubscriptionDto {
     public void setNotifyError(boolean notifyError) {
         this.notifyError = notifyError;
     }
+
 }

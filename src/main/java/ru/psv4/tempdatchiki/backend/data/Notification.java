@@ -18,6 +18,9 @@ public class Notification extends TdEntity implements IncidentTyped {
     @Column(name = "notification_code")
     private int notificationCode;
 
+    @Transient
+    private IncidentType type;
+
     public LocalDateTime getCreatedDatetime() {
         return createdDatetime;
     }
@@ -48,5 +51,10 @@ public class Notification extends TdEntity implements IncidentTyped {
 
     public IncidentType getType() {
         return IncidentType.getByCode(notificationCode);
+    }
+
+    @PostLoad
+    private void fillTransients() {
+        type = IncidentType.getByCode(notificationCode);
     }
 }

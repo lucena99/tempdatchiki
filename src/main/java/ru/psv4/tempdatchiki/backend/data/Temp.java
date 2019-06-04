@@ -22,6 +22,9 @@ public class Temp extends TdEntity implements TdJsonSerializable {
     @Column(name = "status_code")
     private int statusCode;
 
+    @Transient
+    private Status status;
+
     public double getValue() {
         return value;
     }
@@ -47,10 +50,16 @@ public class Temp extends TdEntity implements TdJsonSerializable {
     }
 
     public Status getStatus() {
-        return Status.getByCode(statusCode);
+        return status;
     }
 
     public void setStatus(Status status) {
+        this.status = status;
         this.statusCode = status.getCode();
+    }
+
+    @PostLoad
+    private void fillTransients() {
+        status = Status.getByCode(statusCode);
     }
 }
