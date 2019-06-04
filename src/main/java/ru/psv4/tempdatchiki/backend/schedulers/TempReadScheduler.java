@@ -182,7 +182,7 @@ public class TempReadScheduler {
                 --attempts;
                 response = execHttpRequest(urlToRead);
             } catch (IOException e) {
-                log.trace("Осталось количество попыток {} прочитать {}", attempts, urlToRead);
+                log.info("Осталось количество попыток {} прочитать {}", attempts, urlToRead);
                 if (attempts == 0) {
                     throw e; //попытки кончились
                 }
