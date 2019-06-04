@@ -15,8 +15,8 @@ public class Notification extends TdEntity implements IncidentTyped {
     @ManyToOne @JoinColumn(name = "sensor_uid")
     private Sensor sensor;
 
-    @Column(name = "notification_code")
-    private int notificationCode;
+    @Column(name = "type_code")
+    private int typeCode;
 
     @Transient
     private IncidentType type;
@@ -46,15 +46,15 @@ public class Notification extends TdEntity implements IncidentTyped {
     }
 
     public void setType(IncidentType type) {
-        this.notificationCode = type.getCode();
+        this.typeCode = type.getCode();
     }
 
     public IncidentType getType() {
-        return IncidentType.getByCode(notificationCode);
+        return IncidentType.getByCode(typeCode);
     }
 
     @PostLoad
     private void fillTransients() {
-        type = IncidentType.getByCode(notificationCode);
+        type = IncidentType.getByCode(typeCode);
     }
 }
