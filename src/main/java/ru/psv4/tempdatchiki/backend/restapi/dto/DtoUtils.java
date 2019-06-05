@@ -33,6 +33,9 @@ public class DtoUtils {
                         Field pField = ReflectionUtils.getField(oClass, property).get();
                         pField.setAccessible(true);
                         pValue = pField.get(pValue);
+                        if (pValue == null) {
+                            break;
+                        }
                         oClass = pValue.getClass();
                     }
                     f.set(dto, pValue);

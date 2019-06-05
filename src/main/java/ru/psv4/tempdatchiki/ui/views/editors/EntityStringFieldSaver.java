@@ -13,6 +13,7 @@ public class EntityStringFieldSaver<T extends TdEntity> implements Saver {
 
     EntityStringFieldSaver(CrudEntityPresenter<T> presenter, BiConsumer<T, String> setter) {
         this.presenter = presenter;
+        this.setter = setter;
     }
 
     @Override
