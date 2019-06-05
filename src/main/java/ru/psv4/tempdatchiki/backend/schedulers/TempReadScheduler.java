@@ -46,7 +46,7 @@ public class TempReadScheduler {
     @Value("${temp.scheduler.http.attemps}")
     private int attempts;
 
-    private static final Pattern controllerResponsePattern = Pattern.compile("(?<num>[\\d\\s]+)#(?<val>(-?[\\d\\s]+\\.?[\\d\\s]*)|(ERROR))");
+    private static final Pattern controllerResponsePattern = Pattern.compile("(?<num>[\\d\\s]+)#(?<val>(\\s?-?[\\d\\s]+\\.?[\\d\\s]*)|(ERROR))");
     private static final DecimalFormat tempFormat;
     static {
         DecimalFormatSymbols symbols = new DecimalFormatSymbols();
