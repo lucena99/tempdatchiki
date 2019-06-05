@@ -66,7 +66,7 @@ public class SubscriptionsEditor extends Div implements HasValueAndElement<Compo
 				setHasChanges(true);
 			}
 		});
-		editor.addNotifyOverChangeListener(e -> setHasChanges(true));
+		editor.addNotifyOutChangeListener(e -> setHasChanges(true));
 		editor.addNotifyErrorChangeListener(e -> setHasChanges(true));
 
 		editor.setValue(value);

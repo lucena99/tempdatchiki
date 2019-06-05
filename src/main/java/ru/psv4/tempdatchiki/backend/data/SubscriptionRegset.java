@@ -8,7 +8,7 @@ public class SubscriptionRegset extends Regset<Subscription> {
 
     @Override
     protected void replaceValue(Subscription found, Subscription item) {
-        found.setNotifyOver(item.isNotifyOver());
+        found.setNotifyOut(item.isNotifyOut());
         found.setNotifyError(item.isNotifyError());
         found.setCreatedDatetime(item.getCreatedDatetime());
     }

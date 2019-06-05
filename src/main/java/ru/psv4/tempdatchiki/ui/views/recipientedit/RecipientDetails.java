@@ -14,7 +14,6 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.polymertemplate.Id;
 import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.router.internal.RouteUtil;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.Include;
 import com.vaadin.flow.templatemodel.TemplateModel;
@@ -93,7 +92,7 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
 
 	public interface Model extends TemplateModel {
 		@Include({ "fcmToken",
-			"name", "subscriptions.controller.name", "subscriptions.notifyOver", "subscriptions.notifyError" })
+			"name", "subscriptions.controller.name", "subscriptions.notifyOut", "subscriptions.notifyError" })
 		void setItem(Recipient r);
 	}
 
@@ -136,7 +135,7 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
 		SubsriptionFieldInitValues values = new SubsriptionFieldInitValues();
 		values.setRecipientUid(subscription.getRecipient().getUid());
 		values.setControllerUid(subscription.getController().getUid());
-		values.setOver(subscription.isNotifyOver());
+		values.setOver(subscription.isNotifyOut());
 		values.setError(subscription.isNotifyError());
 		values.setBackwardUrl(currentLocation.getPath());
 		return SubsriptionFieldInitValues.convert(values);

@@ -20,13 +20,10 @@ import org.springframework.context.ApplicationContext;
 import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.backend.data.Subscription;
-import ru.psv4.tempdatchiki.backend.repositories.ControllerRepository;
-import ru.psv4.tempdatchiki.backend.repositories.RecipientRepository;
 import ru.psv4.tempdatchiki.backend.service.ControllerService;
 import ru.psv4.tempdatchiki.backend.service.RecipientService;
 import ru.psv4.tempdatchiki.backend.service.SubscribtionService;
 import ru.psv4.tempdatchiki.crud.CrudEntityPresenter;
-import ru.psv4.tempdatchiki.crud.EntityPresenter;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.views.HasNotifications;
@@ -48,8 +45,8 @@ public class SubscriptionFieldEditor extends PolymerTemplate<SubscriptionFieldEd
 	@Id("cancel")
 	private Button cancel;
 
-	@Id("over")
-	private Checkbox over;
+	@Id("out")
+	private Checkbox out;
 
 	@Id("error")
 	private Checkbox error;
@@ -84,7 +81,7 @@ public class SubscriptionFieldEditor extends PolymerTemplate<SubscriptionFieldEd
 		Subscription subscription = subscribtionService.get(recipient, controller).get();
 		switch (action) {
 			case SAVE:
-				subscription.setNotifyOver(over.getValue());
+				subscription.setNotifyOut(out.getValue());
 				subscription.setNotifyError(error.getValue());
 				presenter.save(subscription,
 						(s) -> UI.getCurrent().navigate(initValues.backwardUrl),
@@ -115,7 +112,7 @@ public class SubscriptionFieldEditor extends PolymerTemplate<SubscriptionFieldEd
 		controller = applicationContext.getBean(ControllerService.class).load(initValues.controllerUid);
 		getModel().setTitle(recipient.getName() + " : " + controller.getName());
 
-		over.setValue(initValues.over);
+		out.setValue(initValues.over);
 		error.setValue(initValues.error);
 	}
 

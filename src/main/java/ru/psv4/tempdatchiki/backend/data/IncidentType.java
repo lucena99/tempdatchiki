@@ -4,7 +4,7 @@ import ru.psv4.tempdatchiki.backend.schedulers.TempEvent;
 
 public enum IncidentType {
 
-    OverDown(1, "Ниже границы"), OverUp(2, "Выше границы"),
+    OutDown(1, "Ниже границы"), OutUp(2, "Выше границы"),
     Error(3, "Ошибка"), Normal(4, "Возвращение в норму");
 
     private int code;
@@ -25,11 +25,11 @@ public enum IncidentType {
 
     public static IncidentType getByCode(int code) {
         switch (code) {
-            case 1: return OverDown;
-            case 2: return OverUp;
+            case 1: return OutDown;
+            case 2: return OutUp;
             case 3: return Error;
             case 4: return Normal;
-            default: throw new IllegalArgumentException(String.format("Unknown event type code %d", code));
+            default: throw new IllegalArgumentException(String.format("Unknown incident type code %d", code));
         }
     }
 
@@ -46,9 +46,9 @@ public enum IncidentType {
                 return IncidentType.Error;
             case On:
                 if (value < sensor.getMinValue()) {
-                    return IncidentType.OverDown;
+                    return IncidentType.OutDown;
                 } else if (value > sensor.getMaxValue()) {
-                    return IncidentType.OverUp;
+                    return IncidentType.OutUp;
                 } else {
                     return IncidentType.Normal;
                 }

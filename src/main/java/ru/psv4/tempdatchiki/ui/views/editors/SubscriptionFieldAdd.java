@@ -22,11 +22,9 @@ import org.springframework.context.ApplicationContext;
 import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.backend.data.Subscription;
-import ru.psv4.tempdatchiki.backend.service.ControllerService;
 import ru.psv4.tempdatchiki.backend.service.RecipientService;
 import ru.psv4.tempdatchiki.backend.service.SubscribtionService;
 import ru.psv4.tempdatchiki.crud.CrudEntityPresenter;
-import ru.psv4.tempdatchiki.dataproviders.ControllerGridDataProvider;
 import ru.psv4.tempdatchiki.dataproviders.UnsubscribedControllersProvider;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.MainView;
@@ -49,8 +47,8 @@ public class SubscriptionFieldAdd extends PolymerTemplate<SubscriptionFieldAdd.M
 	@Id("cancel")
 	private Button cancel;
 
-	@Id("over")
-	private Checkbox over;
+	@Id("out")
+	private Checkbox out;
 
 	@Id("error")
 	private Checkbox error;
@@ -61,16 +59,23 @@ public class SubscriptionFieldAdd extends PolymerTemplate<SubscriptionFieldAdd.M
 	private SubsriptionFieldInitValues initValues;
 	private Recipient recipient;
 
-	private ApplicationContext applicationContext;
 	private UnsubscribedControllersProvider controllerSource;
+	private RecipientService recipientService;
+	private SubscribtionService subscribtionService;
+	private CurrentUser currentUser;
 
 	private static final Logger log = LoggerFactory.getLogger(SubscriptionFieldAdd.class);
 
 	@Autowired
 	public SubscriptionFieldAdd(ApplicationContext applicationContext,
-								UnsubscribedControllersProvider controllerSource) {
-		this.applicationContext = applicationContext;
+								UnsubscribedControllersProvider controllerSource,
+								RecipientService recipientService,
+								SubscribtionService subscribtionService,
+								CurrentUser currentUser) {
 		this.controllerSource = controllerSource;
+		this.recipientService = recipientService;
+		this.subscribtionService = subscribtionService;
+		this.currentUser = currentUser;
 
 		controller.setDataProvider(controllerSource);
 
@@ -82,17 +87,16 @@ public class SubscriptionFieldAdd extends PolymerTemplate<SubscriptionFieldAdd.M
 	}
 
 	private void saveAction() {
-		SubscribtionService subscribtionService = applicationContext.getBean(SubscribtionService.class);
 		CrudEntityPresenter<Subscription> presenter = new CrudEntityPresenter<Subscription>(
 				subscribtionService,
-				applicationContext.getBean(CurrentUser.class),
+				currentUser,
 				this);
 		Subscription subscription = new Subscription();
 		subscription.setUid(UIDUtils.generate());
 		subscription.setCreatedDatetime(LocalDateTime.now());
 		subscription.setRecipient(recipient);
 		subscription.setController(controller.getValue());
-		subscription.setNotifyOver(over.getValue());
+		subscription.setNotifyOut(out.getValue());
 		subscription.setNotifyError(error.getValue());
 		presenter.save(subscription,
 				(s) -> UI.getCurrent().navigate(initValues.backwardUrl),
@@ -103,7 +107,7 @@ public class SubscriptionFieldAdd extends PolymerTemplate<SubscriptionFieldAdd.M
 	public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
 		initValues = SubsriptionFieldInitValues.parse(event.getLocation().getQueryParameters());
 
-		recipient = applicationContext.getBean(RecipientService.class).load(initValues.recipientUid);
+		recipient = recipientService.load(initValues.recipientUid);
 		getModel().setTitle(recipient.getName() + " : Новая подписка");
 		controllerSource.setRecipient(recipient);
 	}

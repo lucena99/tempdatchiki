@@ -1,8 +1,5 @@
 package ru.psv4.tempdatchiki.backend.data;
 
-import com.vaadin.flow.component.JsonSerializable;
-import elemental.json.JsonObject;
-import ru.psv4.tempdatchiki.vaadin_json.JsonSerializerUtils;
 import ru.psv4.tempdatchiki.vaadin_json.TdJsonIgnore;
 
 import javax.persistence.*;
@@ -23,8 +20,8 @@ public class Subscription extends TdEntity implements IReg<Subscription>, TdJson
     @JoinColumn(name = "controller_uid", nullable = false)
     private Controller controller;
 
-    @Column(name = "notify_over", nullable = false)
-    private boolean notifyOver;
+    @Column(name = "notify_out", nullable = false)
+    private boolean notifyOut;
 
     @Column(name = "notify_error", nullable = false)
     private boolean notifyError;
@@ -53,12 +50,12 @@ public class Subscription extends TdEntity implements IReg<Subscription>, TdJson
         this.controller = controller;
     }
 
-    public boolean isNotifyOver() {
-        return notifyOver;
+    public boolean isNotifyOut() {
+        return notifyOut;
     }
 
-    public void setNotifyOver(boolean notifyOver) {
-        this.notifyOver = notifyOver;
+    public void setNotifyOut(boolean notifyOut) {
+        this.notifyOut = notifyOut;
     }
 
     public boolean isNotifyError() {

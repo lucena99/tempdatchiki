@@ -35,10 +35,10 @@ public class SubscriptionDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdDatetime;
 
-    @EntityField("notifyOver")
+    @EntityField("notifyOut")
     @ApiModelProperty(required = true)
-    @JsonProperty("notifyOver")
-    private boolean notifyOver;
+    @JsonProperty("notifyOut")
+    private boolean notifyOut;
 
     @EntityField("notifyError")
     @ApiModelProperty(required = true)
@@ -65,12 +65,12 @@ public class SubscriptionDto {
 
     public void setCreatedDatetime(LocalDateTime createdDatetime) { this.createdDatetime = createdDatetime; }
 
-    public boolean isNotifyOver() {
-        return notifyOver;
+    public boolean isNotifyOut() {
+        return notifyOut;
     }
 
-    public void setNotifyOver(boolean notifyOver) {
-        this.notifyOver = notifyOver;
+    public void setNotifyOut(boolean notifyOut) {
+        this.notifyOut = notifyOut;
     }
 
     public boolean isNotifyError() {

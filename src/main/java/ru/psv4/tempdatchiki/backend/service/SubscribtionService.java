@@ -1,7 +1,6 @@
 package ru.psv4.tempdatchiki.backend.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,13 +25,13 @@ public class SubscribtionService extends TdEntityService<Subscription> implement
     public SubscribtionService() { super(Subscription.class); }
 
     @Transactional(propagation = Propagation.REQUIRED)
-    public Subscription create(Recipient recipient, Controller controller, boolean notifyOver, boolean notifyError) {
+    public Subscription create(Recipient recipient, Controller controller, boolean notifyOut, boolean notifyError) {
         Subscription s = new Subscription();
         s.setUid(UIDUtils.generate());
         s.setRecipient(recipient);
         s.setController(controller);
         s.setCreatedDatetime(LocalDateTime.now());
-        s.setNotifyOver(notifyOver);
+        s.setNotifyOut(notifyOut);
         s.setNotifyError(notifyError);
         return em.merge(s);
     }

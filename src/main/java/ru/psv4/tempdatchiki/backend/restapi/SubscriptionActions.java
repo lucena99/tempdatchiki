@@ -69,7 +69,7 @@ public class SubscriptionActions {
         }
 
         try {
-            return DtoUtils.convert(SubscriptionDto.class, subscribtionService.create(r, c, dto.isNotifyOver(), dto.isNotifyError()));
+            return DtoUtils.convert(SubscriptionDto.class, subscribtionService.create(r, c, dto.isNotifyOut(), dto.isNotifyError()));
         } catch (Exception e) {
             log.error(e);
             throw new SystemRestException(e.getMessage());

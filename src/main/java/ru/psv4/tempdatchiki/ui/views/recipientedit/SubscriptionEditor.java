@@ -22,7 +22,7 @@ import ru.psv4.tempdatchiki.dataproviders.ControllerGridDataProvider;
 import ru.psv4.tempdatchiki.ui.events.ControllerChangeEvent;
 import ru.psv4.tempdatchiki.ui.events.DeleteEvent;
 import ru.psv4.tempdatchiki.ui.events.NotifyErrorChangeEvent;
-import ru.psv4.tempdatchiki.ui.events.NotifyOverChangeEvent;
+import ru.psv4.tempdatchiki.ui.events.NotifyOutChangeEvent;
 
 import java.util.Objects;
 import java.util.stream.Stream;
@@ -37,8 +37,8 @@ public class SubscriptionEditor extends PolymerTemplate<TemplateModel> implement
 	@Id("delete")
 	private Button delete;
 
-	@Id("over")
-	private Checkbox over;
+	@Id("out")
+	private Checkbox out;
 
 	@Id("error")
 	private Checkbox error;
@@ -55,12 +55,12 @@ public class SubscriptionEditor extends PolymerTemplate<TemplateModel> implement
 			fireEvent(new ControllerChangeEvent(this, e.getValue()));
 		});
 
-		over.addValueChangeListener(e -> fireEvent(new NotifyOverChangeEvent(this, e.getValue())));
+		out.addValueChangeListener(e -> fireEvent(new NotifyOutChangeEvent(this, e.getValue())));
 
 		error.addValueChangeListener(e -> fireEvent(new NotifyErrorChangeEvent(this, e.getValue())));
 
 		binder.forField(controllers).bind("controller");
-		binder.forField(over).bind("notifyOver");
+		binder.forField(out).bind("notifyOut");
 		binder.forField(error).bind("notifyError");
 		controllers.setRequired(true);
 
@@ -88,8 +88,8 @@ public class SubscriptionEditor extends PolymerTemplate<TemplateModel> implement
 		return addListener(ControllerChangeEvent.class, listener);
 	}
 
-	public Registration addNotifyOverChangeListener(ComponentEventListener<NotifyOverChangeEvent> listener) {
-		return addListener(NotifyOverChangeEvent.class, listener);
+	public Registration addNotifyOutChangeListener(ComponentEventListener<NotifyOutChangeEvent> listener) {
+		return addListener(NotifyOutChangeEvent.class, listener);
 	}
 
 	public Registration addNotifyErrorChangeListener(ComponentEventListener<NotifyErrorChangeEvent> listener) {

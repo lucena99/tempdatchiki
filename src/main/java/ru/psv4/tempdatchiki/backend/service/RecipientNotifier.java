@@ -31,12 +31,8 @@ import java.text.DecimalFormatSymbols;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static ru.psv4.tempdatchiki.backend.data.IncidentType.Error;
-import static ru.psv4.tempdatchiki.backend.data.IncidentType.*;
 
 @Service
 public class RecipientNotifier implements InitializingBean, EventBroker.EventListener {
@@ -182,11 +178,11 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
         Sensor sensor = event.getSensor();
         double value = event.getValueNew();
         switch (nt) {
-            case OverDown:
+            case OutDown:
                 return String.format("%1$s.%2$s. %3$s(%4$s)",
                         sensor.getController().getName(), sensor.getName(),
                         tempFormatter.format(value), tempFormatter.format(sensor.getMinValue()));
-            case OverUp:
+            case OutUp:
                 return String.format("%1$s.%2$s. %3$s(%4$s)",
                         sensor.getController().getName(), sensor.getName(),
                         tempFormatter.format(value), tempFormatter.format(sensor.getMaxValue()));

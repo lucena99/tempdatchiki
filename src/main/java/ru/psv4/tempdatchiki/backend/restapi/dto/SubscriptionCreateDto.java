@@ -18,10 +18,10 @@ public class SubscriptionCreateDto {
     @JsonProperty("controllerUid")
     private String controllerUid;
 
-    @EntityField("notifyOver")
+    @EntityField("notifyOut")
     @ApiModelProperty(required = true)
-    @JsonProperty("notifyOver")
-    private boolean notifyOver;
+    @JsonProperty("notifyOut")
+    private boolean notifyOut;
 
     @EntityField("notifyError")
     @ApiModelProperty(required = true)
@@ -36,12 +36,12 @@ public class SubscriptionCreateDto {
 
     public void setControllerUid(String controllerUid) { this.controllerUid = controllerUid; }
 
-    public boolean isNotifyOver() {
-        return notifyOver;
+    public boolean isNotifyOut() {
+        return notifyOut;
     }
 
-    public void setNotifyOver(boolean notifyOver) {
-        this.notifyOver = notifyOver;
+    public void setNotifyOut(boolean notifyOut) {
+        this.notifyOut = notifyOut;
     }
 
     public boolean isNotifyError() {

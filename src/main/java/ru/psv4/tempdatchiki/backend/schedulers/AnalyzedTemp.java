@@ -29,11 +29,11 @@ public class AnalyzedTemp {
     @Override
     public String toString() {
         switch (state) {
-            case OverDown:
+            case OutDown:
                 return String.format("%1$s.%2$s. %3$s(%4$s)",
                         sensor.getController().getName(), sensor.getName(),
                         tempFormatter.format(value), tempFormatter.format(sensor.getMinValue()));
-            case OverUp:
+            case OutUp:
                 return String.format("%1$s.%2$s. %3$s(%4$s)",
                         sensor.getController().getName(), sensor.getName(),
                         tempFormatter.format(value), tempFormatter.format(sensor.getMaxValue()));

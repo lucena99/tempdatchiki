@@ -2,7 +2,6 @@ package ru.psv4.tempdatchiki.utils;
 
 import ru.psv4.tempdatchiki.backend.data.IncidentType;
 import ru.psv4.tempdatchiki.backend.data.IncidentTyped;
-import ru.psv4.tempdatchiki.backend.data.Notification;
 import ru.psv4.tempdatchiki.backend.schedulers.TempEvent;
 
 import java.util.Optional;
@@ -32,16 +31,16 @@ public class IncidentDecisionResolver {
                 }
                 break;
             }
-            case OverDown: {
+            case OutDown: {
                 if (!ld.isPresent() ||
-                        (ld.isPresent() && ld.get().getType() != OverDown)) {
+                        (ld.isPresent() && ld.get().getType() != OutDown)) {
                     maker.make(event, it);
                 }
                 break;
             }
-            case OverUp: {
+            case OutUp: {
                 if (!ld.isPresent() ||
-                        (ld.isPresent() && ld.get().getType() != OverUp)) {
+                        (ld.isPresent() && ld.get().getType() != OutUp)) {
                     maker.make(event, it);
                 }
                 break;

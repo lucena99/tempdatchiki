@@ -44,7 +44,7 @@ public class SubscriptionDetails extends PolymerTemplate<SubscriptionDetails.Mod
 	}
 
 	public interface Model extends TemplateModel {
-		@Include({ "controller.name", "notifyOver", "notifyError" })
+		@Include({ "controller.name", "notifyOut", "notifyError" })
 		void setItem(Subscription s);
 	}
 }

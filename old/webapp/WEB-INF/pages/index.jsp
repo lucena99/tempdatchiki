@@ -101,7 +101,7 @@
                 <div class="col-md-4 text-left">${s.uid}</div>
                 <div class="col-md-3 text-left" >${s.recipient.name}</div>
                 <div class="col-md-2 text-left" >${s.controller.name}</div>
-                <div class="col-md-2 text-left" >${s.notifyOver}</div>
+                <div class="col-md-2 text-left" >${s.notifyOut}</div>
                 <div class="col-md-1 text-left" >${s.notifyError}</div>
             </div>
         </c:forEach>
