@@ -24,6 +24,9 @@ public class Incident extends TdEntity implements IncidentTyped {
     @Column(name = "created_datetime")
     private LocalDateTime createdDatetime;
 
+    @Transient
+    private IncidentType type;
+
     public LocalDateTime getCreatedDatetime() {
         return createdDatetime;
     }
@@ -70,5 +73,10 @@ public class Incident extends TdEntity implements IncidentTyped {
 
     public IncidentType getType() {
         return IncidentType.getByCode(typeCode);
+    }
+
+    @PostLoad
+    private void fillTransients() {
+        type = IncidentType.getByCode(typeCode);
     }
 }
