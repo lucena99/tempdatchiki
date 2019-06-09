@@ -2,6 +2,8 @@ package ru.psv4.tempdatchiki.backend.service;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.psv4.tempdatchiki.backend.data.*;
@@ -68,6 +70,22 @@ public class IncidentService implements CrudService<Incident>, InitializingBean,
                         incident.setType(it);
                         getRepository().saveAndFlush(incident);
                     });
+        }
+    }
+
+    public Page<Incident> findAnyMatching(Optional<String> optionalFilter, Pageable pageable) {
+        if (optionalFilter.isPresent() && !optionalFilter.get().isEmpty()) {
+            return incidentRepository.findByNameContainingIgnoreCase(optionalFilter.get(), pageable);
+        } else {
+            return incidentRepository.findAll(pageable);
+        }
+    }
+
+    public long countAnyMatching(Optional<String> optionalFilter) {
+        if (optionalFilter.isPresent() && !optionalFilter.get().isEmpty()) {
+            return incidentRepository.countByNameContainingIgnoreCase(optionalFilter.get());
+        } else {
+            return incidentRepository.count();
         }
     }
 }

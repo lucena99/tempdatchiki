@@ -5,7 +5,7 @@ import ru.psv4.tempdatchiki.backend.schedulers.TempEvent;
 public enum IncidentType {
 
     OutDown(1, "Ниже границы"), OutUp(2, "Выше границы"),
-    Error(3, "Ошибка"), Normal(4, "Возвращение в норму");
+    Error(3, "Ошибка"), Normal(4, "Норма");
 
     private int code;
     private String name;

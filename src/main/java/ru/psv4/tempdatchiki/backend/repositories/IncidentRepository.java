@@ -19,4 +19,12 @@ public interface IncidentRepository extends JpaRepository<Incident, String> {
 	public Optional<Incident> findBySensorLast(Sensor sensor);
 
 	public List<Incident> getListBySensorOrderByCreatedDatetime(Sensor sensor);
+
+	@Query("SELECT e FROM Incident e WHERE LOWER(e.sensor.name) LIKE LOWER(CONCAT('%',:searchQuery,'%')) OR " +
+			"LOWER(e.sensor.controller.name) LIKE LOWER(CONCAT('%',:searchQuery,'%'))")
+	Page<Incident> findByNameContainingIgnoreCase(String searchQuery, Pageable pageable);
+
+	@Query("SELECT COUNT(e) FROM Incident e WHERE LOWER(e.sensor.name) LIKE LOWER(CONCAT('%',:searchQuery,'%')) OR " +
+			"LOWER(e.sensor.controller.name) LIKE LOWER(CONCAT('%',:searchQuery,'%'))")
+	long countByNameContainingIgnoreCase(String searchQuery);
 }

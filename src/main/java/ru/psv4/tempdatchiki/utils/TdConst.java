@@ -15,6 +15,7 @@ public class TdConst {
     public static final String PAGE_CONTROLLERS_EDIT = "controllers/edit";
     public static final String PAGE_SETTINGS = "settings";
     public static final String PAGE_SETTINGS_EDIT = "settings/edit";
+    public static final String PAGE_INCIDENTS = "incidents";
 
     public static final String TITLE_RECIPIENTS = "Слушатели";
     public static final String TITLE_CONTROLLERS = "Контроллеры";
@@ -22,6 +23,7 @@ public class TdConst {
     public static final String TITLE_LOGOUT = "Выйти";
     public static final String TITLE_NOT_FOUND = "Page was not found";
     public static final String TITLE_ACCESS_DENIED = "Access denied";
+    public static final String TITLE_INCIDENTS = "Инциденты";
 
     public static final String[] REFERENCE_SORT_FIELDS = {"createdDatetime"};
     public static final Sort.Direction DEFAULT_SORT_DIRECTION = Sort.Direction.DESC;

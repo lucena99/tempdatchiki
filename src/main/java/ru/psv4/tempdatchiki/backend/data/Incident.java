@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Incident extends TdEntity implements IncidentTyped {
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne
     @JoinColumn(name = "sensor_uid")
     private Sensor sensor;
 
@@ -24,6 +24,9 @@ public class Incident extends TdEntity implements IncidentTyped {
     @Column(name = "created_datetime")
     private LocalDateTime createdDatetime;
 
+    @Transient
+    private IncidentType type;
+
     public LocalDateTime getCreatedDatetime() {
         return createdDatetime;
     }
@@ -38,10 +41,6 @@ public class Incident extends TdEntity implements IncidentTyped {
 
     public void setSensor(Sensor sensor) {
         this.sensor = sensor;
-    }
-
-    public void setType(IncidentType type) {
-        this.typeCode = type.getCode();
     }
 
     public double getValue() {
@@ -69,6 +68,16 @@ public class Incident extends TdEntity implements IncidentTyped {
     }
 
     public IncidentType getType() {
-        return IncidentType.getByCode(typeCode);
+        return type;
+    }
+
+    public void setType(IncidentType type) {
+        this.type = type;
+        this.typeCode = type.getCode();
+    }
+
+    @PostLoad
+    private void fillTransients() {
+        type = IncidentType.getByCode(typeCode);
     }
 }
