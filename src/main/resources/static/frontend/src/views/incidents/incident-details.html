@@ -8,17 +8,24 @@
 
 <link rel="import" href="../../components/buttons-bar.html">
 <link rel="import" href="../../components/utils-mixin.html">
+<link rel="import" href="../../components/editable-field.html">
 
 <link rel="import" href="../../../styles/shared-styles.html">
 
-<dom-module id="controller-details">
+<dom-module id="incident-details">
   <template>
     <style include="shared-styles">
       :host {
         display: flex;
         flex-direction: column;
+        height: 100%;
+
+        /*display: flex;
+        flex-direction: column;
         box-sizing: border-box;
         flex: auto;
+        height: 100%;
+        width: 100%;*/
       }
 
       /*
@@ -115,59 +122,39 @@
         color: var(--lumo-primary-color-50pct);
       }
 
-      @media (min-width: 600px) {
+      /*@media (min-width: 600px) {
         .main-row {
           padding: var(--lumo-space-l);
           flex-basis: auto;
         }
-      }
+      }*/
     </style>
 
-    <div class="scrollable main-row" id="main">
+      <div theme="orders no-row-borders">
 
-      <vaadin-form-layout id="form1">
-        <vaadin-form-item>
-          <label slot="label">Наименование</label>
-          <h3>[[item.name]]</h3>
-        </vaadin-form-item>
-      </vaadin-form-layout>
+          <buttons-bar id="top" no-scroll$="[[noScroll]]">
+              <vaadin-button slot="left" id="backward" theme="primary">
+                  Назад
+                  <iron-icon icon="vaadin:backwards" slot="suffix"></iron-icon>
+              </vaadin-button>
+          </buttons-bar>
 
-      <vaadin-form-layout id="form2">
-        <vaadin-form-item>
-          <label slot="label">URL</label>
-          <span>[[item.url]]</span>
-        </vaadin-form-item>
-      </vaadin-form-layout>
-
-      <vaadin-form-layout id="form3">
-        <vaadin-form-item>
-          <label slot="label">Датчики</label>
-          <div class="table products">
-            <template is="dom-repeat" items="[[item.sensors]]" as="item">
-                <div class="tr">
-                  <div class="td product-name">
-                    <div class="bold">[[item.name]]</div>
-                  </div>
-                </div>
-            </template>
+          <div class="scrollable main-row" id="main">
+              <vaadin-form-layout id="form1">
+                  <vaadin-form-item style="flex: auto;flex-direction: column;">
+                      <label slot="label" style="align:center;">Наименование</label>
+                      <h3>[[item.sensor.name]]</h3>
+                  </vaadin-form-item>
+              </vaadin-form-layout>
           </div>
-        </vaadin-form-item>
-      </vaadin-form-layout>
-    </div>
+      </div>
 
-    <buttons-bar id="footer" no-scroll$="[[noScroll]]">
-      <vaadin-button slot="right" id="cancel" theme="tertiary">Отмена</vaadin-button>
-      <vaadin-button slot="right" id="edit" theme="primary" hidden="[[review]]">
-        Редактировать
-        <iron-icon icon="vaadin:edit" slot="suffix"></iron-icon>
-      </vaadin-button>
-    </buttons-bar>
   </template>
 
   <script>
-    class ControllerDetails extends window.ScrollShadowMixin(Polymer.Element) {
+    class IncidentDetails extends window.ScrollShadowMixin(Polymer.Element) {
       static get is() {
-        return 'controller-details';
+        return 'incident-details';
       }
 
       static get properties() {
@@ -183,6 +170,6 @@
       }
     }
 
-    window.customElements.define(ControllerDetails.is, ControllerDetails);
+    window.customElements.define(IncidentDetails.is, IncidentDetails);
   </script>
 </dom-module>

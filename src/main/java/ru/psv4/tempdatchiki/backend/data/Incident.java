@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 @Entity
 public class Incident extends TdEntity implements IncidentTyped {
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sensor_uid")
     private Sensor sensor;
 

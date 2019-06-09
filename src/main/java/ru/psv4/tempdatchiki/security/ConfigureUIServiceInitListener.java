@@ -5,7 +5,6 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;
 import com.vaadin.flow.spring.annotation.SpringComponent;
-import ru.psv4.tempdatchiki.ui.components.OfflineBanner;
 import ru.psv4.tempdatchiki.ui.exceptions.AccessDeniedException;
 import ru.psv4.tempdatchiki.ui.views.login.LoginView;
 

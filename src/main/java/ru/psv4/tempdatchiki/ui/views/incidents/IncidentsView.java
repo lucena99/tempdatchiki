@@ -28,7 +28,7 @@ import java.util.stream.Stream;
 @HtmlImport("src/views/incidents/incidents-view.html")
 @Route(value = TdConst.PAGE_INCIDENTS, layout = MainView.class)
 @PageTitle(TdConst.TITLE_INCIDENTS)
-public class IncidentsView extends PolymerTemplate<TemplateModel> implements HasLogger {
+public class IncidentsView extends PolymerTemplate<TemplateModel> implements HasLogger, EntityView<Incident> {
     @Id("search")
     private SearchBar searchBar;
 
@@ -67,5 +67,25 @@ public class IncidentsView extends PolymerTemplate<TemplateModel> implements Has
 
     Grid<Incident> getGrid() {
         return grid;
+    }
+
+    @Override
+    public boolean isDirty() {
+        return false;
+    }
+
+    @Override
+    public void clear() {
+
+    }
+
+    @Override
+    public void write(Incident entity) throws ValidationException {
+
+    }
+
+    @Override
+    public String getEntityName() {
+        return EntityUtil.getName(Incident.class);
     }
 }
