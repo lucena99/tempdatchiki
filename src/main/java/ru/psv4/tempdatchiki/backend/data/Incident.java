@@ -80,4 +80,9 @@ public class Incident extends TdEntity implements IncidentTyped {
     private void fillTransients() {
         type = IncidentType.getByCode(typeCode);
     }
+
+    @PostLoad
+    private void fillTransients() {
+        type = IncidentType.getByCode(typeCode);
+    }
 }
