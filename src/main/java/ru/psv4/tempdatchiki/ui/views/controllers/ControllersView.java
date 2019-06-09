@@ -19,7 +19,6 @@ import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.SearchBar;
 import ru.psv4.tempdatchiki.ui.views.EntityView;
 import ru.psv4.tempdatchiki.ui.views.controlleredit.ControllerDetails;
-import ru.psv4.tempdatchiki.ui.views.controlleredit.ControllerDetails2;
 import ru.psv4.tempdatchiki.ui.views.controlleredit.ControllerEditor;
 import ru.psv4.tempdatchiki.utils.TdConst;
 

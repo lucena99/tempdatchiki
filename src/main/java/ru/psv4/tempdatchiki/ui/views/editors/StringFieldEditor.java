@@ -77,7 +77,10 @@ public class StringFieldEditor extends PolymerTemplate<StringFieldEditor.Model> 
 	private void saveAction() {
 		editor.save(initValues.uid,
 				valueField.getValue(),
-				() -> UI.getCurrent().navigate(initValues.backwardUrl),
+				() -> {
+					showNotification("Успешно сохранено!");
+					UI.getCurrent().navigate(initValues.backwardUrl);
+				},
 				() -> {});
 	}
 

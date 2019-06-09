@@ -49,7 +49,8 @@ public class IncidentsView extends PolymerTemplate<TemplateModel> implements Has
 
         grid.addColumn(IncidentCard.getTemplate()
                 .withProperty("incidentCard", IncidentCard::create)
-                .withEventHandler("cardClick", System.out::println));
+                .withEventHandler("cardClick",
+                        r -> UI.getCurrent().navigate("incident/" + r.getUid())));
 
         getSearchBar().addFilterChangeListener(
                 e -> presenter.filterChanged(getSearchBar().getFilter()));

@@ -94,7 +94,10 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 		sensor.setMinValue(minField.getValue());
 		sensor.setMaxValue(maxField.getValue());
 		presenter.save(sensor,
-				(s) -> UI.getCurrent().navigate(initValues.backwardUrl),
+				(s) -> {
+					showNotification("Успешно сохранено!");
+					UI.getCurrent().navigate(initValues.backwardUrl);
+				},
 				(s) -> {});
 	}
 

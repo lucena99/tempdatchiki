@@ -84,7 +84,10 @@ public class SubscriptionFieldEditor extends PolymerTemplate<SubscriptionFieldEd
 				subscription.setNotifyOut(out.getValue());
 				subscription.setNotifyError(error.getValue());
 				presenter.save(subscription,
-						(s) -> UI.getCurrent().navigate(initValues.backwardUrl),
+						(s) -> {
+							showNotification("Успешно сохранено!");
+							UI.getCurrent().navigate(initValues.backwardUrl);
+						},
 						(s) -> {});
 				break;
 			case DELETE:
@@ -94,7 +97,10 @@ public class SubscriptionFieldEditor extends PolymerTemplate<SubscriptionFieldEd
 						.withMessage("Вы уверены, что хотите удалить подписку?")
 						.withOkButton(() -> {
 							presenter.delete(subscription,
-									(s) -> UI.getCurrent().navigate(initValues.backwardUrl),
+									(s) -> {
+										showNotification("Успешно удалено!");
+										UI.getCurrent().navigate(initValues.backwardUrl);
+									},
 									(s) -> {});
 						}, ButtonOption.focus(), ButtonOption.caption("YES"))
 						.withCancelButton(ButtonOption.caption("NO"))
