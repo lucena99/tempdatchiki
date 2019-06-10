@@ -59,6 +59,8 @@ public class SubscriptionFieldEditor extends PolymerTemplate<SubscriptionFieldEd
 
 	private static final Logger log = LoggerFactory.getLogger(SubscriptionFieldEditor.class);
 
+	private enum Action {SAVE, DELETE};
+
 	@Autowired
 	public SubscriptionFieldEditor(ApplicationContext applicationContext) {
 		this.applicationContext = applicationContext;
@@ -69,8 +71,6 @@ public class SubscriptionFieldEditor extends PolymerTemplate<SubscriptionFieldEd
 		save.addClickListener(e -> saveDeleteAction(Action.SAVE));
 		delete.addClickListener(e -> saveDeleteAction(Action.DELETE));
 	}
-
-	private enum Action {SAVE, DELETE};
 
 	private void saveDeleteAction(Action action) {
 		SubscribtionService subscribtionService = applicationContext.getBean(SubscribtionService.class);

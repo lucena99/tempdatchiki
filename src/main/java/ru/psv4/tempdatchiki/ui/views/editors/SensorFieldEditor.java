@@ -16,10 +16,11 @@ import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.templatemodel.TemplateModel;
+import org.claspina.confirmdialog.ButtonOption;
+import org.claspina.confirmdialog.ConfirmDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
 import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.data.Sensor;
 import ru.psv4.tempdatchiki.backend.service.ControllerService;
@@ -34,7 +35,7 @@ import ru.psv4.tempdatchiki.ui.views.HasNotifications;
 @HtmlImport("src/views/editors/sensor-field-editor.html")
 public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> implements HasUrlParameter<String>, HasNotifications {
 
-//	@Id("delete")
+	@Id("delete")
 	private Button delete;
 
 	@Id("backward")
@@ -58,19 +59,27 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 	private SensorFieldInitValues initValues;
 	private Controller controller;
 
-	private ApplicationContext applicationContext;
+	private SensorService sensorService;
+	private CurrentUser currentUser;
+	private ControllerService controllerService;
 
 	private static final Logger log = LoggerFactory.getLogger(SensorFieldEditor.class);
 
+	private enum Action {SAVE, DELETE};
+
 	@Autowired
-	public SensorFieldEditor(ApplicationContext applicationContext) {
-		this.applicationContext = applicationContext;
+	public SensorFieldEditor(SensorService sensorService, CurrentUser currentUser,
+							 ControllerService controllerService) {
+		this.sensorService = sensorService;
+		this.currentUser = currentUser;
+		this.controllerService = controllerService;
 
 		ComponentEventListener<ClickEvent<Button>> backwardAction = e -> UI.getCurrent().navigate(initValues.backwardUrl);
 		backward.addClickListener(backwardAction);
 		cancel.addClickListener(backwardAction);
 
-		save.addClickListener(e -> saveAction());
+		save.addClickListener(e -> saveDeleteAction(Action.SAVE));
+		delete.addClickListener(e -> saveDeleteAction(Action.DELETE));
 
 		minField.setValueChangeMode(ValueChangeMode.EAGER);
 		maxField.setValueChangeMode(ValueChangeMode.EAGER);
@@ -82,30 +91,50 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 		maxField.setPreventInvalidInput(true);
 	}
 
-	private void saveAction() {
-		SensorService sensorService = applicationContext.getBean(SensorService.class);
+	private void saveDeleteAction(Action action) {
 		CrudEntityPresenter<Sensor> presenter = new CrudEntityPresenter<Sensor>(
 				sensorService,
-				applicationContext.getBean(CurrentUser.class),
+				currentUser,
 				this);
 		Sensor sensor = sensorService.getRepository()
 				.findByControllerAndNameIgnoreCase(controller, initValues.name).get();
-		sensor.setName(nameField.getValue());
-		sensor.setMinValue(minField.getValue());
-		sensor.setMaxValue(maxField.getValue());
-		presenter.save(sensor,
-				(s) -> {
-					showNotification("Успешно сохранено!");
-					UI.getCurrent().navigate(initValues.backwardUrl);
-				},
-				(s) -> {});
+		switch (action) {
+			case SAVE:
+				sensor.setName(nameField.getValue());
+				sensor.setMinValue(minField.getValue());
+				sensor.setMaxValue(maxField.getValue());
+				presenter.save(sensor,
+						(s) -> {
+							showNotification("Успешно сохранено!");
+							UI.getCurrent().navigate(initValues.backwardUrl);
+						},
+						(s) -> {});
+				break;
+			case DELETE:
+				ConfirmDialog
+						.createQuestion()
+						.withCaption("Подтверждение")
+						.withMessage("Вы уверены, что хотите удалить датчик?")
+						.withOkButton(() -> {
+							presenter.delete(sensor,
+									(s) -> {
+										showNotification("Успешно удалено!");
+										UI.getCurrent().navigate(initValues.backwardUrl);
+									},
+									(s) -> {});
+						}, ButtonOption.focus(), ButtonOption.caption("YES"))
+						.withCancelButton(ButtonOption.caption("NO"))
+						.open();
+
+				break;
+		}
 	}
 
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
 		initValues = SensorFieldInitValues.parse(event.getLocation().getQueryParameters());
 
-		controller = applicationContext.getBean(ControllerService.class).load(initValues.controllerUid);
+		controller = controllerService.load(initValues.controllerUid);
 		getModel().setTitle(controller.getName() + " : " + initValues.name);
 
 		minField.setValue(initValues.minValue);
