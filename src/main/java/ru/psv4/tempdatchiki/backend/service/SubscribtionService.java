@@ -53,15 +53,6 @@ public class SubscribtionService extends TdEntityService<Subscription> implement
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public Subscription createNew(User currentUser) {
-        Subscription e = new Subscription();
-        e.setUid(UIDUtils.generate());
-        e.setCreatedDatetime(LocalDateTime.now());
-        return e;
-    }
-
-    @Override
     public SubscriptionRepository getRepository() {
         return subscriptionRepository;
     }

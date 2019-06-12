@@ -167,8 +167,8 @@ public class EntityPresenter<T extends TdEntity, V extends EntityView<T>>
 		});
 	}
 
-	public T createNew() {
-		state.updateEntity(crudService.createNew(currentUser.getUser()), true);
+	public T createNew(T sample) {
+		state.updateEntity(sample, true);
 		return state.getEntity();
 	}
 

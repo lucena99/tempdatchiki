@@ -20,11 +20,14 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.backend.data.Subscription;
-import ru.psv4.tempdatchiki.crud.EntityPresenter;
+import ru.psv4.tempdatchiki.backend.service.RecipientService;
+import ru.psv4.tempdatchiki.crud.CrudEntityPresenter;
+import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.EditableField;
 import ru.psv4.tempdatchiki.ui.events.CancelEvent;
 import ru.psv4.tempdatchiki.ui.events.EditEvent;
+import ru.psv4.tempdatchiki.ui.views.HasNotifications;
 import ru.psv4.tempdatchiki.ui.views.editors.*;
 import ru.psv4.tempdatchiki.ui.views.recipients.RecipientsView;
 import ru.psv4.tempdatchiki.utils.RouteUtils;
@@ -36,7 +39,7 @@ import ru.psv4.tempdatchiki.utils.RouteUtils;
 @Tag("recipient-details")
 @HtmlImport("src/views/recipientedit/recipient-details.html")
 @Route(value = "recipient", layout = MainView.class)
-public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> implements HasUrlParameter<String> {
+public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> implements HasUrlParameter<String>, HasNotifications {
 
 	@Id("backward")
 	private Button backward;
@@ -50,18 +53,18 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
     @Id("subscriptions")
     private Div subsrDiv;
 
-	private boolean isDirty;
+	private Recipient recipient;
 
-	private final EntityPresenter<Recipient, RecipientsView> presenter;
+	private final CrudEntityPresenter<Recipient> crud;
 
 	private Location currentLocation;
 
 	@Autowired
-	public RecipientDetails(EntityPresenter<Recipient, RecipientsView> presenter) {
-		this.presenter = presenter;
+	public RecipientDetails(RecipientService recipientService, CurrentUser currentUser) {
+		crud = new CrudEntityPresenter<>(recipientService, currentUser, this);
 		backward.addClickListener(e -> UI.getCurrent().navigate(RecipientsView.class));
-		nameField.addActionClickListener(e -> navigateEditor("name", presenter.getEntity().getName()));
-		fcmTokenField.addActionClickListener(e -> navigateEditor("fcmToken", presenter.getEntity().getFcmToken()));
+		nameField.addActionClickListener(e -> navigateEditor("name", recipient.getName()));
+		fcmTokenField.addActionClickListener(e -> navigateEditor("fcmToken", recipient.getFcmToken()));
 	}
 
 	private void navigateEditor(String property, String value) {
@@ -70,7 +73,7 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
 
 	private QueryParameters createEditorParameters(String property, String value) {
 		TextFieldInitValues values = new TextFieldInitValues();
-		values.setUid(presenter.getEntity().getUid());
+		values.setUid(recipient.getUid());
 		values.setBackwardUrl(currentLocation.getPath());
 		values.setEntityClass(Recipient.class.getSimpleName());
 		values.setProperty(property);
@@ -80,14 +83,6 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
 
 	@Deprecated
 	public void display(Recipient recipient) {
-	}
-
-	public boolean isDirty() {
-		return isDirty;
-	}
-
-	public void setDirty(boolean isDirty) {
-		this.isDirty = isDirty;
 	}
 
 	public interface Model extends TemplateModel {
@@ -107,7 +102,8 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String uid) {
 		if (uid != null) {
-			presenter.loadEntity(uid, r -> {
+			crud.loadEntity(uid, r -> {
+				recipient = r;
                 getModel().setItem(r);
                 for (Subscription s : r.getSubscriptions()) {
                     SubscriptionDetails details = new SubscriptionDetails(s);

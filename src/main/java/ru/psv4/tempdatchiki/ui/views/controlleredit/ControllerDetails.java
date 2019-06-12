@@ -17,20 +17,25 @@ import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.Include;
 import com.vaadin.flow.templatemodel.TemplateModel;
+import org.claspina.confirmdialog.ButtonOption;
+import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.psv4.tempdatchiki.backend.data.Controller;
-import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.backend.data.Sensor;
-import ru.psv4.tempdatchiki.backend.data.Subscription;
-import ru.psv4.tempdatchiki.crud.EntityPresenter;
+import ru.psv4.tempdatchiki.backend.service.ControllerService;
+import ru.psv4.tempdatchiki.backend.service.SensorService;
+import ru.psv4.tempdatchiki.crud.CrudEntityPresenter;
+import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.EditableField;
 import ru.psv4.tempdatchiki.ui.events.CancelEvent;
 import ru.psv4.tempdatchiki.ui.events.EditEvent;
+import ru.psv4.tempdatchiki.ui.views.HasNotifications;
 import ru.psv4.tempdatchiki.ui.views.controllers.ControllersView;
-import ru.psv4.tempdatchiki.ui.views.editors.*;
-import ru.psv4.tempdatchiki.ui.views.recipientedit.SubscriptionDetails;
-import ru.psv4.tempdatchiki.ui.views.recipients.RecipientsView;
+import ru.psv4.tempdatchiki.ui.views.editors.SensorFieldEditor;
+import ru.psv4.tempdatchiki.ui.views.editors.SensorFieldInitValues;
+import ru.psv4.tempdatchiki.ui.views.editors.StringFieldEditor;
+import ru.psv4.tempdatchiki.ui.views.editors.TextFieldInitValues;
 import ru.psv4.tempdatchiki.utils.RouteUtils;
 
 /**
@@ -40,10 +45,13 @@ import ru.psv4.tempdatchiki.utils.RouteUtils;
 @Tag("controller-details")
 @HtmlImport("src/views/controlleredit/controller-details.html")
 @Route(value = "controller", layout = MainView.class)
-public class ControllerDetails extends PolymerTemplate<ControllerDetails.Model> implements HasUrlParameter<String> {
+public class ControllerDetails extends PolymerTemplate<ControllerDetails.Model> implements HasUrlParameter<String>, HasNotifications {
 
 	@Id("backward")
 	private Button backward;
+
+	@Id("delete")
+	private Button delete;
 
     @Id("name")
 	private EditableField nameField;
@@ -54,18 +62,49 @@ public class ControllerDetails extends PolymerTemplate<ControllerDetails.Model> 
     @Id("sensors")
     private Div sensorsDiv;
 
-	private boolean isDirty;
+	private Controller controller;
 
-	private final EntityPresenter<Controller, ControllersView> presenter;
+	private ControllerService controllerService;
+	private SensorService sensorService;
+	private CurrentUser currentUser;
+	private CrudEntityPresenter<Controller> crud;
 
 	private Location currentLocation;
 
 	@Autowired
-	public ControllerDetails(EntityPresenter<Controller, ControllersView> presenter) {
-		this.presenter = presenter;
-		backward.addClickListener(e -> UI.getCurrent().navigate(ControllersView.class));
-		nameField.addActionClickListener(e -> navigateEditor("name", presenter.getEntity().getName()));
-		fcmTokenField.addActionClickListener(e -> navigateEditor("url", presenter.getEntity().getUrl()));
+	public ControllerDetails(ControllerService controllerService, SensorService sensorService, CurrentUser currentUser) {
+		this.controllerService = controllerService;
+		this.sensorService = sensorService;
+		this.currentUser = currentUser;
+
+		crud = new CrudEntityPresenter<Controller>(controllerService, currentUser, this);
+
+		backward.addClickListener(e -> navigateControllers());
+		delete.addClickListener(e -> deleteAction());
+		nameField.addActionClickListener(e -> navigateEditor("name", controller.getName()));
+		fcmTokenField.addActionClickListener(e -> navigateEditor("url", controller.getUrl()));
+	}
+
+	private void deleteAction() {
+		ConfirmDialog
+				.createQuestion()
+				.withCaption("Подтверждение")
+				.withMessage("Вы уверены, что хотите удалить контроллер?")
+				.withOkButton(() -> {
+					crud.delete(
+							controller,
+							(c) -> {
+								showNotification("Успешно удалено!");
+								navigateControllers();
+							},
+							(c) -> {});
+				}, ButtonOption.focus(), ButtonOption.caption("YES"))
+				.withCancelButton(ButtonOption.caption("NO"))
+				.open();
+	}
+
+	private void navigateControllers() {
+		UI.getCurrent().navigate(ControllersView.class);
 	}
 
 	private void navigateEditor(String property, String value) {
@@ -74,7 +113,7 @@ public class ControllerDetails extends PolymerTemplate<ControllerDetails.Model> 
 
 	private QueryParameters createEditorParameters(String property, String value) {
 		TextFieldInitValues values = new TextFieldInitValues();
-		values.setUid(presenter.getEntity().getUid());
+		values.setUid(controller.getUid());
 		values.setBackwardUrl(currentLocation.getPath());
 		values.setEntityClass(Controller.class.getSimpleName());
 		values.setProperty(property);
@@ -84,14 +123,6 @@ public class ControllerDetails extends PolymerTemplate<ControllerDetails.Model> 
 
 	public void display(Controller controller) {
 		getModel().setItem(controller);
-	}
-
-	public boolean isDirty() {
-		return isDirty;
-	}
-
-	public void setDirty(boolean isDirty) {
-		this.isDirty = isDirty;
 	}
 
 	public interface Model extends TemplateModel {
@@ -111,15 +142,17 @@ public class ControllerDetails extends PolymerTemplate<ControllerDetails.Model> 
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String uid) {
 		if (uid != null) {
-			presenter.loadEntity(uid, e -> {
-                getModel().setItem(e);
-                for (Sensor s : e.getSensors()) {
+			crud.loadEntity(uid, c -> {
+				controller = c;
+                getModel().setItem(c);
+                for (Sensor s : c.getSensors()) {
                     SensorDetails details = new SensorDetails(s);
 					details.addEditListener(ev -> navigateEditor(s));
                     sensorsDiv.add(details);
 				}
                 Button button = new Button("Добавить датчик", new Icon(VaadinIcon.PLUS));
                 button.setThemeName("tertiary");
+				button.addClickListener(ev -> navigateAdd());
 				sensorsDiv.add(button);
 				currentLocation = event.getLocation();
             });
@@ -130,6 +163,10 @@ public class ControllerDetails extends PolymerTemplate<ControllerDetails.Model> 
 		RouteUtils.route(SensorFieldEditor.class, createEditorParameters(sensor));
 	}
 
+	private void navigateAdd() {
+		RouteUtils.route(SensorFieldEditor.class, createAddParameters(controller));
+	}
+
 	private QueryParameters createEditorParameters(Sensor sensor) {
 		SensorFieldInitValues values = new SensorFieldInitValues();
 		values.setName(sensor.getName());
@@ -137,6 +174,17 @@ public class ControllerDetails extends PolymerTemplate<ControllerDetails.Model> 
 		values.setMinValue(sensor.getMinValue());
 		values.setMaxValue(sensor.getMaxValue());
 		values.setBackwardUrl(currentLocation.getPath());
+		values.setaNew(false);
+		values.setNum(sensor.getNum());
+		return SensorFieldInitValues.convert(values);
+	}
+
+	private QueryParameters createAddParameters(Controller controller) {
+		SensorFieldInitValues values = new SensorFieldInitValues();
+		values.setControllerUid(controller.getUid());
+		values.setBackwardUrl(currentLocation.getPath());
+		values.setNum(sensorService.getRepository().getNextNum(controller));
+		values.setaNew(true);
 		return SensorFieldInitValues.convert(values);
 	}
 }

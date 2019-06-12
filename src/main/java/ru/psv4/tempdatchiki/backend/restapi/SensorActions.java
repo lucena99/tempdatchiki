@@ -64,6 +64,9 @@ public class SensorActions {
             s.setUid(UIDUtils.generate());
             s.setName(dto.getName());
             s.setCreatedDatetime(LocalDateTime.now());
+            s.setNum(dto.getNum());
+            s.setMinValue(dto.getMinValue());
+            s.setMaxValue(dto.getMaxValue());
             s.setController(c);
             s = sensorService.save(s);
             return DtoUtils.convert(SensorDto.class, s);

@@ -13,7 +13,9 @@ import ru.psv4.tempdatchiki.backend.service.SensorService;
 import ru.psv4.tempdatchiki.dataproviders.ControllerGridDataProvider;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.events.HasChangesEvent;
+import ru.psv4.tempdatchiki.utils.UIDUtils;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -85,7 +87,9 @@ public class SensorsEditor extends Div implements HasValueAndElement<ComponentVa
 		setHasChanges(true);
 		if (empty == item) {
 			createEmptyElement();
-			Sensor s = service.createNew(currentUser.getUser());
+			Sensor s = new Sensor();
+			s.setUid(UIDUtils.generate());
+			s.setCreatedDatetime(LocalDateTime.now());
 			s.setName(name);
 			s.setController(controller);
 			item.setValue(s);

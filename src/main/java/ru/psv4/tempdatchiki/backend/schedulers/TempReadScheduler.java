@@ -10,6 +10,7 @@ import org.springframework.util.StringUtils;
 import ru.psv4.tempdatchiki.backend.data.*;
 import ru.psv4.tempdatchiki.backend.service.*;
 import ru.psv4.tempdatchiki.utils.Lazy;
+import ru.psv4.tempdatchiki.utils.UIDUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -96,7 +97,9 @@ public class TempReadScheduler {
         for (Sensor sensor : sensors) {
             Temp temp = sensor.getTemp();
             if (temp == null) {
-                temp = tempService.createNew(null);
+                temp = new Temp();
+                temp.setUid(UIDUtils.generate());
+                temp.setUpdatedDatetime(LocalDateTime.now());
                 temp.setSensor(sensor);
             }
             TempEvent event = null;

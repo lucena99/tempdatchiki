@@ -22,6 +22,8 @@ public class CrudEntityPresenter<E extends TdEntity> implements HasLogger {
 
 	private final HasNotifications view;
 
+	private E entity;
+
 	public CrudEntityPresenter(CrudService<E> crudService, CurrentUser currentUser, HasNotifications view) {
 		this.crudService = crudService;
 		this.currentUser = currentUser;

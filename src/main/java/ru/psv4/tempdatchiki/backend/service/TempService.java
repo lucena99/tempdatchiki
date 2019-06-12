@@ -20,13 +20,4 @@ public class TempService implements CrudService<Temp> {
     public TempRepository getRepository() {
         return tempRepository;
     }
-
-    @Transactional
-    @Override
-    public Temp createNew(User currentUser) {
-        Temp e = new Temp();
-        e.setUid(UIDUtils.generate());
-        e.setUpdatedDatetime(LocalDateTime.now());
-        return e;
-    }
 }

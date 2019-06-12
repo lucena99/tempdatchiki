@@ -21,13 +21,4 @@ public class NotificationService implements CrudService<Notification> {
     public NotificationRepository getRepository() {
         return messageRepository;
     }
-
-    @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public Notification createNew(User currentUser) {
-        Notification e = new Notification();
-        e.setUid(UIDUtils.generate());
-        e.setCreatedDatetime(LocalDateTime.now());
-        return e;
-    }
 }

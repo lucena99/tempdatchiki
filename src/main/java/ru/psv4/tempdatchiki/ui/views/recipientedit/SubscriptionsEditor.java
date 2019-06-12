@@ -14,7 +14,9 @@ import ru.psv4.tempdatchiki.backend.service.SubscribtionService;
 import ru.psv4.tempdatchiki.dataproviders.ControllerGridDataProvider;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.events.HasChangesEvent;
+import ru.psv4.tempdatchiki.utils.UIDUtils;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -88,7 +90,9 @@ public class SubscriptionsEditor extends Div implements HasValueAndElement<Compo
 		setHasChanges(true);
 		if (empty == item) {
 			createEmptyElement();
-			Subscription s = subscribtionService.createNew(currentUser.getUser());
+			Subscription s = new Subscription();
+			s.setUid(UIDUtils.generate());
+			s.setCreatedDatetime(LocalDateTime.now());
 			s.setController(controller);
 			s.setRecipient(recipient);
 			item.setValue(s);

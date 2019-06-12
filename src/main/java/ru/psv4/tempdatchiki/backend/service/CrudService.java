@@ -36,6 +36,4 @@ public interface CrudService<T extends TdEntity> {
 		}
 		return entity;
 	}
-
-	T createNew(User currentUser);
 }

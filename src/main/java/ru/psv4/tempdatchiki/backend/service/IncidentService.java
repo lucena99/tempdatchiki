@@ -32,15 +32,6 @@ public class IncidentService implements CrudService<Incident>, InitializingBean,
         return incidentRepository;
     }
 
-    @Transactional
-    @Override
-    public Incident createNew(User currentUser) {
-        Incident e = new Incident();
-        e.setUid(UIDUtils.generate());
-        e.setCreatedDatetime(LocalDateTime.now());
-        return e;
-    }
-
     @Override
     public void afterPropertiesSet() throws Exception {
         eventBroker.addListener(this);

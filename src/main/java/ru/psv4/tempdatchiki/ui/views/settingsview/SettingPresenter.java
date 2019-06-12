@@ -56,8 +56,8 @@ public class SettingPresenter {
 		entityPresenter.loadEntity(id, e -> open(e, edit));
 	}
 
-	void createNew() {
-		open(entityPresenter.createNew(), true);
+	void createNew(Setting sample) {
+		open(entityPresenter.createNew(sample), true);
 	}
 
 	void cancel() {

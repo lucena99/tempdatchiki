@@ -56,14 +56,4 @@ public class RecipientService extends ReferenceService<Recipient> implements Cru
             return recipientRepository.count();
         }
     }
-
-    @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public Recipient createNew(User currentUser) {
-        Recipient e = new Recipient();
-        e.setUid(UIDUtils.generate());
-        e.setCreatedDatetime(LocalDateTime.now());
-        e.setSubscriptions(new ArrayList<Subscription>());
-        return e;
-    }
 }

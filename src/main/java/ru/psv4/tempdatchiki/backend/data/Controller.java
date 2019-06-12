@@ -19,9 +19,12 @@ public class Controller extends Reference implements TdJsonSerializable {
     @NotNull
     private String url;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "controller")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "controller")
     @OrderBy("num ASC")
     private List<Sensor> sensors;
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "controller")
+    private List<Subscription> subscriptions;
 
     public String getUrl() { return url; }
 
@@ -31,7 +34,7 @@ public class Controller extends Reference implements TdJsonSerializable {
         return sensors;
     }
 
-    public void setSensors(List<Sensor> sensors) {
-        this.sensors = sensors;
+    public List<Subscription> getSubscriptions() {
+        return subscriptions;
     }
 }

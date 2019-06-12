@@ -42,13 +42,4 @@ public class SensorService extends ReferenceService<Sensor> implements CrudServi
     public List<Sensor> getListOrderByControllerNameAndNum() {
         return sensorRepository.findAll(Sort.by("controller.name", "num").ascending());
     }
-
-    @Transactional
-    @Override
-    public Sensor createNew(User currentUser) {
-        Sensor e = new Sensor();
-        e.setUid(UIDUtils.generate());
-        e.setCreatedDatetime(LocalDateTime.now());
-        return e;
-    }
 }

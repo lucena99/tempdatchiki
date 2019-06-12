@@ -23,6 +23,7 @@ import ru.psv4.tempdatchiki.backend.data.*;
 import ru.psv4.tempdatchiki.backend.schedulers.ControllerEvent;
 import ru.psv4.tempdatchiki.backend.schedulers.TempEvent;
 import ru.psv4.tempdatchiki.utils.IncidentDecisionResolver;
+import ru.psv4.tempdatchiki.utils.UIDUtils;
 
 import javax.annotation.PreDestroy;
 import java.io.IOException;
@@ -47,7 +48,7 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
     private SettingService settingService;
 
     @Autowired
-    private NotificationService messageService;
+    private NotificationService notificationService;
 
     private ExecutorService executorService = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder()
             .setNameFormat("Notifications-%d")
@@ -102,7 +103,7 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
                 for (TempEvent event : events) {
                     IncidentDecisionResolver.resolve(event,
                             (e) -> {
-                                return messageService.getRepository()
+                                return notificationService.getRepository()
                                         .findByRecipientAndSensorLast(recipient, e.getSensor());
                             },
                             (e, it) -> {
@@ -150,11 +151,13 @@ public class RecipientNotifier implements InitializingBean, EventBroker.EventLis
                     log.info(String.format("Отправлено слушателю %s темп %s", recipient, event));
 
                     //сохранение в базу отметки об отправке уведомления
-                    Notification message = messageService.createNew(null);
-                    message.setType(nt);
-                    message.setRecipient(recipient);
-                    message.setSensor(event.getSensor());
-                    messageService.getRepository().saveAndFlush(message);
+                    Notification notification = new Notification();
+                    notification.setUid(UIDUtils.generate());
+                    notification.setCreatedDatetime(LocalDateTime.now());
+                    notification.setType(nt);
+                    notification.setRecipient(recipient);
+                    notification.setSensor(event.getSensor());
+                    notificationService.getRepository().saveAndFlush(notification);
                 } else {
                     log.error("http {}; response: {}", http, statusLine);
                 }

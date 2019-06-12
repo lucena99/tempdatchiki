@@ -29,6 +29,9 @@ import ru.psv4.tempdatchiki.crud.CrudEntityPresenter;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.views.HasNotifications;
+import ru.psv4.tempdatchiki.utils.UIDUtils;
+
+import java.time.LocalDateTime;
 
 @Tag("sensor-field-editor")
 @Route(value = "sensor-field-editor", layout = MainView.class)
@@ -47,6 +50,9 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 	@Id("cancel")
 	private Button cancel;
 
+	@Id("num")
+	private NumberField numField;
+
 	@Id("name")
 	private TextField nameField;
 
@@ -62,8 +68,6 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 	private SensorService sensorService;
 	private CurrentUser currentUser;
 	private ControllerService controllerService;
-
-	private static final Logger log = LoggerFactory.getLogger(SensorFieldEditor.class);
 
 	private enum Action {SAVE, DELETE};
 
@@ -84,6 +88,8 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 		minField.setValueChangeMode(ValueChangeMode.EAGER);
 		maxField.setValueChangeMode(ValueChangeMode.EAGER);
 
+		numField.setPreventInvalidInput(true);
+
 		minField.setPattern("\\d\\\\.\\d");
 		minField.setPreventInvalidInput(true);
 
@@ -96,13 +102,22 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 				sensorService,
 				currentUser,
 				this);
-		Sensor sensor = sensorService.getRepository()
-				.findByControllerAndNameIgnoreCase(controller, initValues.name).get();
 		switch (action) {
 			case SAVE:
+				Sensor sensor;
+				if (initValues.aNew) {
+					sensor = new Sensor();
+					sensor.setUid(UIDUtils.generate());
+					sensor.setCreatedDatetime(LocalDateTime.now());
+					sensor.setController(controller);
+				} else {
+					sensor = sensorService.getRepository()
+							.findByControllerAndNameIgnoreCase(controller, initValues.name).get();
+				}
 				sensor.setName(nameField.getValue());
 				sensor.setMinValue(minField.getValue());
 				sensor.setMaxValue(maxField.getValue());
+				sensor.setNum(numField.getValue().intValue());
 				presenter.save(sensor,
 						(s) -> {
 							showNotification("Успешно сохранено!");
@@ -111,6 +126,8 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 						(s) -> {});
 				break;
 			case DELETE:
+				sensor = sensorService.getRepository()
+						.findByControllerAndNameIgnoreCase(controller, initValues.name).get();
 				ConfirmDialog
 						.createQuestion()
 						.withCaption("Подтверждение")
@@ -125,7 +142,6 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 						}, ButtonOption.focus(), ButtonOption.caption("YES"))
 						.withCancelButton(ButtonOption.caption("NO"))
 						.open();
-
 				break;
 		}
 	}
@@ -133,16 +149,37 @@ public class SensorFieldEditor extends PolymerTemplate<SensorFieldEditor.Model> 
 	@Override
 	public void setParameter(BeforeEvent event, @OptionalParameter String parameter) {
 		initValues = SensorFieldInitValues.parse(event.getLocation().getQueryParameters());
-
 		controller = controllerService.load(initValues.controllerUid);
-		getModel().setTitle(controller.getName() + " : " + initValues.name);
 
-		minField.setValue(initValues.minValue);
-		maxField.setValue(initValues.maxValue);
-		nameField.setValue(initValues.name);
+		getModel().setANew(initValues.aNew);
+
+		String title;
+		if (initValues.aNew) {
+			title = controller.getName() + " : " + "Новый датчик";
+		} else {
+			title = controller.getName() + " : " + initValues.name;
+		}
+		getModel().setTitle(title);
+
+		if (initValues.num != null) {
+			numField.setValue((double) initValues.num);
+		}
+
+		if (initValues.minValue != null) {
+			minField.setValue(initValues.minValue);
+		}
+
+		if (initValues.maxValue != null) {
+			maxField.setValue(initValues.maxValue);
+		}
+
+		if (initValues.name != null) {
+			nameField.setValue(initValues.name);
+		}
 	}
 
 	public interface Model extends TemplateModel {
 		void setTitle(String title);
+		void setANew(boolean aNew);
 	}
 }

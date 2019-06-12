@@ -3,6 +3,7 @@ package ru.psv4.tempdatchiki.backend.data;
 import ru.psv4.tempdatchiki.vaadin_json.TdJsonIgnore;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Sensor extends Reference implements TdJsonSerializable {
@@ -20,8 +21,11 @@ public class Sensor extends Reference implements TdJsonSerializable {
     @Column(name = "maxvalue")
     private double maxValue;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "sensor")
+    @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.EAGER, mappedBy = "sensor")
     private Temp temp;
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "sensor")
+    private List<Incident> incidents;
 
     public Controller getController() {
         return controller;
@@ -57,5 +61,9 @@ public class Sensor extends Reference implements TdJsonSerializable {
 
     public Temp getTemp() {
         return temp;
+    }
+
+    public List<Incident> getIncidents() {
+        return incidents;
     }
 }

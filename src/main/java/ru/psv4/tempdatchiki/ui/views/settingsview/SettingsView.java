@@ -21,7 +21,9 @@ import ru.psv4.tempdatchiki.ui.views.EntityView;
 import ru.psv4.tempdatchiki.ui.views.settingedit.SettingDetails;
 import ru.psv4.tempdatchiki.ui.views.settingedit.SettingEditor;
 import ru.psv4.tempdatchiki.utils.TdConst;
+import ru.psv4.tempdatchiki.utils.UIDUtils;
 
+import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 @Tag("settings-view")
@@ -65,7 +67,12 @@ public class SettingsView extends PolymerTemplate<TemplateModel>
 
 		getSearchBar().addFilterChangeListener(
 				e -> presenter.filterChanged(getSearchBar().getFilter()));
-		getSearchBar().addActionClickListener(e -> presenter.createNew());
+		getSearchBar().addActionClickListener(e -> {
+			Setting s = new Setting();
+			s.setUid(UIDUtils.generate());
+			s.setCreatedDatetime(LocalDateTime.now());
+			presenter.createNew(s);
+		});
 //
 		presenter.init(this);
 //

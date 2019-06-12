@@ -78,15 +78,6 @@ public class ControllerService extends ReferenceService<Controller> implements C
     }
 
     @Override
-    public Controller createNew(User currentUser) {
-        Controller e = new Controller();
-        e.setUid(UIDUtils.generate());
-        e.setCreatedDatetime(LocalDateTime.now());
-        e.setSensors(new ArrayList<>());
-        return e;
-    }
-
-    @Override
     public Controller save(User currentUser, Controller entity) {
         try {
             return CrudService.super.save(currentUser, entity);

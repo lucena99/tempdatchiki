@@ -36,15 +36,6 @@ public class SettingService extends ReferenceService<Setting> implements CrudSer
     }
 
     @Override
-    @Transactional(propagation = Propagation.SUPPORTS)
-    public Setting createNew(User currentUser) {
-        Setting e = new Setting();
-        e.setUid(UIDUtils.generate());
-        e.setCreatedDatetime(LocalDateTime.now());
-        return e;
-    }
-
-    @Override
     public void afterPropertiesSet() throws Exception {
         SettingService service = applicationContext.getBean(SettingService.class);
         for (String key : new String[]{
@@ -53,7 +44,9 @@ public class SettingService extends ReferenceService<Setting> implements CrudSer
                 Setting.DB_VERSION}) {
             Optional<Setting> opSetting = service.getRepository().findByName(key);
             if (!opSetting.isPresent()) {
-                Setting setting = service.createNew(null);
+                Setting setting = new Setting();
+                setting.setUid(UIDUtils.generate());
+                setting.setCreatedDatetime(LocalDateTime.now());
                 setting.setName(key);
                 service.save(null, setting);
             }
