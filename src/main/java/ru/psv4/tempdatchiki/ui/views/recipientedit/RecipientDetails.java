@@ -17,6 +17,8 @@ import com.vaadin.flow.router.*;
 import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.Include;
 import com.vaadin.flow.templatemodel.TemplateModel;
+import org.claspina.confirmdialog.ButtonOption;
+import org.claspina.confirmdialog.ConfirmDialog;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.backend.data.Subscription;
@@ -44,6 +46,9 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
 	@Id("backward")
 	private Button backward;
 
+	@Id("delete")
+	private Button delete;
+
     @Id("name")
 	private EditableField nameField;
 
@@ -62,9 +67,32 @@ public class RecipientDetails extends PolymerTemplate<RecipientDetails.Model> im
 	@Autowired
 	public RecipientDetails(RecipientService recipientService, CurrentUser currentUser) {
 		crud = new CrudEntityPresenter<>(recipientService, currentUser, this);
-		backward.addClickListener(e -> UI.getCurrent().navigate(RecipientsView.class));
+		backward.addClickListener(e -> navigateRecipients());
 		nameField.addActionClickListener(e -> navigateEditor("name", recipient.getName()));
 		fcmTokenField.addActionClickListener(e -> navigateEditor("fcmToken", recipient.getFcmToken()));
+		delete.addClickListener(e -> deleteAction());
+	}
+
+	private void deleteAction() {
+		ConfirmDialog
+				.createQuestion()
+				.withCaption("Подтверждение")
+				.withMessage("Вы уверены, что хотите удалить слушателя?")
+				.withOkButton(() -> {
+					crud.delete(
+							recipient,
+							(c) -> {
+								showNotification("Успешно удалено!");
+								navigateRecipients();
+							},
+							(c) -> {});
+				}, ButtonOption.focus(), ButtonOption.caption("YES"))
+				.withCancelButton(ButtonOption.caption("NO"))
+				.open();
+	}
+
+	private void navigateRecipients() {
+		UI.getCurrent().navigate(RecipientsView.class);
 	}
 
 	private void navigateEditor(String property, String value) {

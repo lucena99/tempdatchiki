@@ -14,9 +14,13 @@ public class Recipient extends Reference {
     @Column(name = "fcm_token")
     private String fcmToken;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "recipient")
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "recipient")
     @OrderBy("createdDatetime ASC")
     private List<Subscription> subscriptions;
+
+    @OneToMany(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY, mappedBy = "recipient")
+    @OrderBy("createdDatetime ASC")
+    private List<Notification> notifications;
 
     public String getFcmToken() {
         return fcmToken;
@@ -30,7 +34,7 @@ public class Recipient extends Reference {
         return subscriptions;
     }
 
-    public void setSubscriptions(List<Subscription> subscriptions) {
-        this.subscriptions = subscriptions;
+    public List<Notification> getNotifications() {
+        return notifications;
     }
 }

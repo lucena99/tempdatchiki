@@ -99,7 +99,10 @@ public class SubscriptionFieldAdd extends PolymerTemplate<SubscriptionFieldAdd.M
 		subscription.setNotifyOut(out.getValue());
 		subscription.setNotifyError(error.getValue());
 		presenter.save(subscription,
-				(s) -> UI.getCurrent().navigate(initValues.backwardUrl),
+				(s) -> {
+					showNotification("Успешно сохранено!");
+					UI.getCurrent().navigate(initValues.backwardUrl);
+				},
 				(s) -> {});
 	}
 
