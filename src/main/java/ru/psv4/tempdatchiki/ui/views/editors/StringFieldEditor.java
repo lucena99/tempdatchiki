@@ -3,7 +3,10 @@
  */
 package ru.psv4.tempdatchiki.ui.views.editors;
 
-import com.vaadin.flow.component.*;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.HtmlImport;
 import com.vaadin.flow.component.polymertemplate.Id;
@@ -11,22 +14,12 @@ import com.vaadin.flow.component.polymertemplate.PolymerTemplate;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.*;
-import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.templatemodel.TemplateModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import ru.psv4.tempdatchiki.backend.data.Recipient;
 import ru.psv4.tempdatchiki.ui.MainView;
-import ru.psv4.tempdatchiki.ui.events.CancelEvent;
-import ru.psv4.tempdatchiki.ui.events.EditEvent;
 import ru.psv4.tempdatchiki.ui.views.HasNotifications;
-import ru.psv4.tempdatchiki.ui.views.recipients.RecipientsView;
-import ru.psv4.tempdatchiki.utils.TdConst;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * The component displaying a full (read-only) summary of an order, and a comment
@@ -51,15 +44,11 @@ public class StringFieldEditor extends PolymerTemplate<StringFieldEditor.Model> 
     @Id("value")
 	private TextArea valueField;
 
-	private boolean isDirty;
-
 	private ApplicationContext applicationContext;
 
 	private TextFieldInitValues initValues;
 
 	private Saver editor;
-
-	private static final Logger log = LoggerFactory.getLogger(StringFieldEditor.class);
 
 	@Autowired
 	public StringFieldEditor(ApplicationContext applicationContext) {
@@ -82,22 +71,6 @@ public class StringFieldEditor extends PolymerTemplate<StringFieldEditor.Model> 
 					UI.getCurrent().navigate(initValues.backwardUrl);
 				},
 				() -> {});
-	}
-
-	public boolean isDirty() {
-		return isDirty;
-	}
-
-	public void setDirty(boolean isDirty) {
-		this.isDirty = isDirty;
-	}
-
-	public Registration addEditListener(ComponentEventListener<EditEvent> listener) {
-		return addListener(EditEvent.class, listener);
-	}
-
-	public Registration addCancelListener(ComponentEventListener<CancelEvent> listener) {
-		return addListener(CancelEvent.class, listener);
 	}
 
 	@Override

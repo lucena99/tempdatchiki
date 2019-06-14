@@ -20,6 +20,8 @@ import ru.psv4.tempdatchiki.ui.HasLogger;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.SearchBar;
 import ru.psv4.tempdatchiki.ui.views.HasNotifications;
+import ru.psv4.tempdatchiki.ui.views.controlleredit.ControllerAdd;
+import ru.psv4.tempdatchiki.utils.RouteUtils;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
 @Tag("controllers-view")
@@ -54,7 +56,7 @@ public class ControllersView  extends PolymerTemplate<TemplateModel> implements 
 
         getSearchBar().addFilterChangeListener(
                 e -> dataProvider.setFilter(e.getSource().getFilter()));
-        getSearchBar().addActionClickListener(e -> {});
+        getSearchBar().addActionClickListener(e -> { UI.getCurrent().navigate(ControllerAdd.class); });
     }
 
     SearchBar getSearchBar() {

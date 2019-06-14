@@ -12,18 +12,16 @@ import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.router.*;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
-import ru.psv4.tempdatchiki.ui.HasLogger;
 import ru.psv4.tempdatchiki.backend.data.EntityUtil;
 import ru.psv4.tempdatchiki.backend.data.Setting;
+import ru.psv4.tempdatchiki.ui.HasLogger;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.SearchBar;
 import ru.psv4.tempdatchiki.ui.views.EntityView;
 import ru.psv4.tempdatchiki.ui.views.settingedit.SettingDetails;
 import ru.psv4.tempdatchiki.ui.views.settingedit.SettingEditor;
 import ru.psv4.tempdatchiki.utils.TdConst;
-import ru.psv4.tempdatchiki.utils.UIDUtils;
 
-import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
 @Tag("settings-view")
@@ -42,8 +40,6 @@ public class SettingsView extends PolymerTemplate<TemplateModel>
 
 	@Id("dialog")
 	private Dialog dialog;
-
-	//private ConfirmDialog confirmation;
 
 	private final SettingEditor editor;
 
@@ -67,27 +63,11 @@ public class SettingsView extends PolymerTemplate<TemplateModel>
 
 		getSearchBar().addFilterChangeListener(
 				e -> presenter.filterChanged(getSearchBar().getFilter()));
-		getSearchBar().addActionClickListener(e -> {
-			Setting s = new Setting();
-			s.setUid(UIDUtils.generate());
-			s.setCreatedDatetime(LocalDateTime.now());
-			presenter.createNew(s);
-		});
-//
+		getSearchBar().addActionClickListener(e -> {});
+
 		presenter.init(this);
-//
 		dialog.addDialogCloseActionListener(e -> presenter.cancel());
 	}
-
-//	@Override
-//	public ConfirmDialog getConfirmDialog() {
-//		return confirmation;
-//	}
-//
-//	@Override
-//	public void setConfirmDialog(ConfirmDialog confirmDialog) {
-//		this.confirmation = confirmDialog;
-//	}
 
 	void setOpened(boolean opened) {
 		dialog.setOpened(opened);

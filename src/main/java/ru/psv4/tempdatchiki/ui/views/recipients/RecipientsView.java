@@ -17,6 +17,7 @@ import ru.psv4.tempdatchiki.ui.HasLogger;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.SearchBar;
 import ru.psv4.tempdatchiki.ui.views.HasNotifications;
+import ru.psv4.tempdatchiki.ui.views.recipientedit.RecipientAdd;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
 @Tag("recipients-view")
@@ -46,7 +47,7 @@ public class RecipientsView extends PolymerTemplate<TemplateModel>
 						r -> UI.getCurrent().navigate("recipient/" + r.getUid())));
 
 		getSearchBar().addFilterChangeListener(e -> dataProvider.setFilter(e.getSource().getFilter()));
-		getSearchBar().addActionClickListener(e -> {});
+		getSearchBar().addActionClickListener(e -> { UI.getCurrent().navigate(RecipientAdd.class); } );
 	}
 
 	void navigateToMainView() {
