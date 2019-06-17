@@ -10,7 +10,7 @@
   </parent>
   <groupId>ru.psv4</groupId>
   <artifactId>tempdatchiki</artifactId>
-  <version>RC8</version>
+  <version>RC9</version>
   <name>tempdatchiki</name>
   <description>tempdatchiki</description>
   <packaging>war</packaging>

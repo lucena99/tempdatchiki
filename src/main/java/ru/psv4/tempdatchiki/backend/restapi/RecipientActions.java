@@ -6,6 +6,7 @@ import io.swagger.annotations.SwaggerDefinition;
 import io.swagger.annotations.Tag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.psv4.tempdatchiki.backend.service.NotFoundException;
 import ru.psv4.tempdatchiki.backend.service.RecipientService;
@@ -41,6 +42,18 @@ public class RecipientActions {
     @ApiOperation(value = "Создать нового получателя", response = RecipientDto.class)
     @RequestMapping(path = "/recipients", method = RequestMethod.POST, produces = "application/json")
     public @ResponseBody RecipientDto createRecipient(@RequestBody RecipientCreateDto dto) {
+        String fcmToken = dto.getFcmToken();
+        /*
+        если fcmToken задан, то проверяем существование получателя с этим fcmToken, если таковой
+        имеется, то возвращаем его
+        */
+        if (!StringUtils.isEmpty(fcmToken)) {
+            List<Recipient> list = recipientService.getRepository().findAllByFcmToken(fcmToken);
+            if (!list.isEmpty()) {
+                return DtoUtils.convert(RecipientDto.class, list.get(0));
+            }
+        }
+
         String name = dto.getName();
         List<Recipient> existedList = recipientService.getByNameIgnoreCase(name);
         if (existedList.size() > 0) {

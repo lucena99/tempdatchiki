@@ -37,7 +37,7 @@ public class RecipientService extends ReferenceService<Recipient> implements Cru
     }
 
     @Override
-    public JpaRepository<Recipient, String> getRepository() {
+    public RecipientRepository getRepository() {
         return recipientRepository;
     }
 

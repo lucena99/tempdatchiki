@@ -30,4 +30,7 @@ public interface RecipientRepository extends JpaRepository<Recipient, String> {
 	Page<Recipient> findByNameContainingIgnoreCase(String searchQuery, Pageable pageable);
 
 	long countByNameContainingIgnoreCase(String searchQuery);
+
+	@EntityGraph(value = Recipient.ENTITY_GRAPTH_FULL, type = EntityGraphType.LOAD)
+	public List<Recipient> findAllByFcmToken(String fcmToken);
 }
