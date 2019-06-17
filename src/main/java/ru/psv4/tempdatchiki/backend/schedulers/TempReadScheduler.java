@@ -58,22 +58,35 @@ public class TempReadScheduler {
 
     private static Logger log = LoggerFactory.getLogger(TempReadScheduler.class);
 
+    private class ReadContext {
+        String responseBody;
+    }
+
     @Scheduled(fixedRate = 5000)
     public void tempRead() {
         if (active) {
             LocalTime now = LocalTime.now();
             log.info(String.format("Temp read scheduler time = %s", now));
             List<Controller> controllers = controllerService.getList();
-            controllers.stream().forEach(c -> tempReadAndNotifyIfNeed(c));
+            controllers.stream().forEach(c -> {
+                ReadContext readContext = null;
+                try {
+                    readContext = new ReadContext();
+                    tempReadAndNotifyIfNeed(c, readContext);
+                } catch (Exception e) {
+                    log.error("Error temp read {}", c);
+                    log.error(System.lineSeparator() + readContext.responseBody);
+                }
+            });
         }
     }
 
-    private void tempReadAndNotifyIfNeed(Controller controller) {
+    private void tempReadAndNotifyIfNeed(Controller controller, ReadContext readContext) {
         String urlToRead = controller.getUrl();
         TempValues values;
         try {
             log.trace("Start read controller {}", controller);
-            values = readTemp(urlToRead);
+            values = readTemp(urlToRead, readContext);
             values.trace(log);
             log.trace("Successful read controller {}", controller);
         } catch (IOException e) {
@@ -175,7 +188,7 @@ public class TempReadScheduler {
         }
     }
 
-    private TempValues readTemp(String urlToRead) throws IOException {
+    private TempValues readTemp(String urlToRead, ReadContext readContext) throws IOException {
         TempValues values = new TempValues(LocalDateTime.now());
 
         int attempts = this.attempts;
@@ -184,6 +197,7 @@ public class TempReadScheduler {
             try {
                 --attempts;
                 response = execHttpRequest(urlToRead);
+                readContext.responseBody  = new String(response);
             } catch (IOException e) {
                 log.info("Осталось количество попыток {} прочитать {}", attempts, urlToRead);
                 if (attempts == 0) {
