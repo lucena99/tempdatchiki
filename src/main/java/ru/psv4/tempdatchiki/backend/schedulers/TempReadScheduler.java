@@ -58,10 +58,6 @@ public class TempReadScheduler {
 
     private static Logger log = LoggerFactory.getLogger(TempReadScheduler.class);
 
-    private class ReadContext {
-        String responseBody;
-    }
-
     @Scheduled(fixedRate = 5000)
     public void tempRead() {
         if (active) {
@@ -75,7 +71,7 @@ public class TempReadScheduler {
                     tempReadAndNotifyIfNeed(c, readContext);
                 } catch (Exception e) {
                     log.error("Error temp read {}", c);
-                    log.error(System.lineSeparator() + readContext.responseBody);
+                    log.error(readContext.toString());
                 }
             });
         }
@@ -150,44 +146,6 @@ public class TempReadScheduler {
         return events.get();
     }
 
-    private class TempValues {
-
-        LocalDateTime time;
-        Map<Integer, Double> values = new HashMap<>();
-        Map<Integer, Status> statuses = new HashMap<>();
-
-        public TempValues(LocalDateTime time) {
-            this.time = time;
-        }
-
-        void addValue(Integer num, Double value) {
-            values.put(num, value);
-            statuses.put(num, Status.On);
-        }
-
-        void setStatus(Integer num, Status value) {
-            statuses.put(num, value);
-        }
-
-        Status getStatus(Integer num) {
-            return statuses.get(num);
-        }
-
-        boolean contains(Integer num) {
-            return statuses.containsKey(num);
-        }
-
-        Optional<Double> getValue(Integer num) {
-            return Optional.ofNullable(values != null && values.containsKey(num) ? values.get(num) : null);
-        }
-
-        void trace(Logger log) {
-            values.entrySet().stream().forEach(e -> log.trace(e.toString()));
-            statuses.entrySet().stream().filter(e -> e.getValue() != Status.On)
-                    .forEach(e -> log.trace("{} #{}",e.getValue(), e.getKey()));
-        }
-    }
-
     private TempValues readTemp(String urlToRead, ReadContext readContext) throws IOException {
         TempValues values = new TempValues(LocalDateTime.now());
 
@@ -243,5 +201,56 @@ public class TempReadScheduler {
             sb.append(line);
         }
         return sb.toString();
+    }
+
+    private class TempValues {
+
+        LocalDateTime time;
+        Map<Integer, Double> values = new HashMap<>();
+        Map<Integer, Status> statuses = new HashMap<>();
+
+        public TempValues(LocalDateTime time) {
+            this.time = time;
+        }
+
+        void addValue(Integer num, Double value) {
+            values.put(num, value);
+            statuses.put(num, Status.On);
+        }
+
+        void setStatus(Integer num, Status value) {
+            statuses.put(num, value);
+        }
+
+        Status getStatus(Integer num) {
+            return statuses.get(num);
+        }
+
+        boolean contains(Integer num) {
+            return statuses.containsKey(num);
+        }
+
+        Optional<Double> getValue(Integer num) {
+            return Optional.ofNullable(values != null && values.containsKey(num) ? values.get(num) : null);
+        }
+
+        void trace(Logger log) {
+            values.entrySet().stream().forEach(e -> log.trace(e.toString()));
+            statuses.entrySet().stream().filter(e -> e.getValue() != Status.On)
+                    .forEach(e -> log.trace("{} #{}",e.getValue(), e.getKey()));
+        }
+    }
+
+    private class ReadContext {
+
+        String responseBody;
+
+        public String toString() {
+            StringBuffer sb = new StringBuffer();
+            if (responseBody != null) {
+                sb.append("Response body: " + System.lineSeparator() + responseBody);
+            }
+            return sb.toString();
+        }
     }
 }
