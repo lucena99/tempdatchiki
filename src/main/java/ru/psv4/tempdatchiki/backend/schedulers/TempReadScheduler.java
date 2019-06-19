@@ -78,8 +78,8 @@ public class TempReadScheduler {
     }
 
     private void tempReadAndNotifyIfNeed(Controller controller, ReadContext readContext) {
-        String urlToRead = controller.getUrl();
         TempValues values;
+        String urlToRead = controller.getUrl();
         try {
             log.trace("Start read controller {}", controller);
             values = readTemp(urlToRead, readContext);
@@ -94,13 +94,13 @@ public class TempReadScheduler {
             }
         }
 
-        List<TempEvent> events = updateTempsAndCreateEvents(controller, values);
-        if (!events.isEmpty()) {
-            eventBroker.notify(new ControllerEvent(controller, events));
+        Optional<List<TempEvent>> opEvents = updateTempsAndCreateEvents(controller, values);
+        if (opEvents.isPresent()) {
+            eventBroker.notify(new ControllerEvent(controller, opEvents.get()));
         }
     }
 
-    private List<TempEvent> updateTempsAndCreateEvents(Controller controller, TempValues values) {
+    private Optional<List<TempEvent>> updateTempsAndCreateEvents(Controller controller, TempValues values) {
         Lazy<List<TempEvent>> events = new Lazy<>(() -> new ArrayList<>());
         List<Sensor> sensors = sensorService.getRepository().findByController(controller);
         for (Sensor sensor : sensors) {
@@ -143,7 +143,7 @@ public class TempReadScheduler {
                 events.get().add(event);
             }
         }
-        return events.get();
+        return events.getOptional();
     }
 
     private TempValues readTemp(String urlToRead, ReadContext readContext) throws IOException {
