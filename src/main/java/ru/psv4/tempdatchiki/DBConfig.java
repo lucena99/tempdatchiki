@@ -1,5 +1,6 @@
 package ru.psv4.tempdatchiki;
 
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +12,7 @@ import java.net.URISyntaxException;
 @Configuration
 public class DBConfig {
     @Bean
+    @ConfigurationProperties("spring.datasource.hikari")
     public javax.sql.DataSource getDataSource(Environment env) throws URISyntaxException {
         URI dburl = new URI(env.getProperty("dburl"));
         String username = dburl.getUserInfo().split(":")[0];

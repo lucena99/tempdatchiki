@@ -1,9 +1,5 @@
 package ru.psv4.tempdatchiki.backend.data;
 
-import com.vaadin.flow.component.JsonSerializable;
-import elemental.json.JsonObject;
-import ru.psv4.tempdatchiki.vaadin_json.JsonSerializerUtils;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.util.List;

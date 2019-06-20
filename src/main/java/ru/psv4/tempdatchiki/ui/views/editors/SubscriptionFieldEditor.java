@@ -23,7 +23,7 @@ import ru.psv4.tempdatchiki.backend.data.Subscription;
 import ru.psv4.tempdatchiki.backend.service.ControllerService;
 import ru.psv4.tempdatchiki.backend.service.RecipientService;
 import ru.psv4.tempdatchiki.backend.service.SubscribtionService;
-import ru.psv4.tempdatchiki.crud.CrudEntityPresenter;
+import ru.psv4.tempdatchiki.ui.crud.CrudEntityPresenter;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.views.HasNotifications;

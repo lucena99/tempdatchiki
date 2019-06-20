@@ -17,7 +17,7 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.psv4.tempdatchiki.backend.data.Incident;
 import ru.psv4.tempdatchiki.backend.service.IncidentService;
-import ru.psv4.tempdatchiki.crud.CrudEntityPresenter;
+import ru.psv4.tempdatchiki.ui.crud.CrudEntityPresenter;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.events.CancelEvent;

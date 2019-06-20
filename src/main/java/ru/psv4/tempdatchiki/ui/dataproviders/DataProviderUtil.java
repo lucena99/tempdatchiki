@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.dataproviders;
+package ru.psv4.tempdatchiki.ui.dataproviders;
 
 import com.vaadin.flow.component.ItemLabelGenerator;
 

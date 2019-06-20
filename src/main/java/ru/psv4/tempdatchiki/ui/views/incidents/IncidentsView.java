@@ -11,7 +11,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.psv4.tempdatchiki.backend.data.Incident;
-import ru.psv4.tempdatchiki.dataproviders.IncidentGridDataProvider;
+import ru.psv4.tempdatchiki.ui.dataproviders.IncidentGridDataProvider;
 import ru.psv4.tempdatchiki.ui.HasLogger;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.SearchBar;

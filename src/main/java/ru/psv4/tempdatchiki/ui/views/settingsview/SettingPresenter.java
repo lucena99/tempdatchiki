@@ -9,8 +9,8 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import ru.psv4.tempdatchiki.backend.data.Setting;
 import ru.psv4.tempdatchiki.backend.service.SettingService;
-import ru.psv4.tempdatchiki.crud.EntityPresenter;
-import ru.psv4.tempdatchiki.dataproviders.SettingGridDataProvider;
+import ru.psv4.tempdatchiki.ui.crud.EntityPresenter;
+import ru.psv4.tempdatchiki.ui.dataproviders.SettingGridDataProvider;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.utils.TdConst;
 

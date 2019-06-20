@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.crud;
+package ru.psv4.tempdatchiki.ui.crud;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.OptimisticLockingFailureException;

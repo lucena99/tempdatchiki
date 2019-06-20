@@ -1,7 +1,7 @@
 /**
  *
  */
-package ru.psv4.tempdatchiki.crud;
+package ru.psv4.tempdatchiki.ui.crud;
 
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;

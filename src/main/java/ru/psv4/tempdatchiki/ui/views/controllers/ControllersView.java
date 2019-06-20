@@ -13,15 +13,14 @@ import com.vaadin.flow.templatemodel.TemplateModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import ru.psv4.tempdatchiki.backend.data.Controller;
 import ru.psv4.tempdatchiki.backend.service.ControllerService;
-import ru.psv4.tempdatchiki.crud.CrudEntityPresenter;
-import ru.psv4.tempdatchiki.dataproviders.ControllerGridDataProvider;
+import ru.psv4.tempdatchiki.ui.crud.CrudEntityPresenter;
+import ru.psv4.tempdatchiki.ui.dataproviders.ControllerGridDataProvider;
 import ru.psv4.tempdatchiki.security.CurrentUser;
 import ru.psv4.tempdatchiki.ui.HasLogger;
 import ru.psv4.tempdatchiki.ui.MainView;
 import ru.psv4.tempdatchiki.ui.components.SearchBar;
 import ru.psv4.tempdatchiki.ui.views.HasNotifications;
 import ru.psv4.tempdatchiki.ui.views.controlleredit.ControllerAdd;
-import ru.psv4.tempdatchiki.utils.RouteUtils;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
 @Tag("controllers-view")

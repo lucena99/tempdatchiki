@@ -1,7 +1,6 @@
 package ru.psv4.tempdatchiki.backend.data;
 
-import com.vaadin.flow.component.JsonSerializable;
-import ru.psv4.tempdatchiki.vaadin_json.TdJsonIgnore;
+import ru.psv4.tempdatchiki.ui.vaadin_json.TdJsonIgnore;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.dataproviders;
+package ru.psv4.tempdatchiki.ui.dataproviders;
 
 import com.vaadin.flow.data.provider.Query;
 import com.vaadin.flow.data.provider.QuerySortOrder;
@@ -11,9 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.vaadin.artur.spring.dataprovider.FilterablePageableDataProvider;
 import ru.psv4.tempdatchiki.backend.data.Controller;
-import ru.psv4.tempdatchiki.backend.data.Incident;
 import ru.psv4.tempdatchiki.backend.service.ControllerService;
-import ru.psv4.tempdatchiki.backend.service.IncidentService;
 import ru.psv4.tempdatchiki.utils.TdConst;
 
 import java.util.List;
@@ -24,13 +22,13 @@ import java.util.Optional;
  */
 @SpringComponent
 @UIScope
-public class IncidentGridDataProvider extends FilterablePageableDataProvider<Incident, String> {
+public class ControllerGridDataProvider extends FilterablePageableDataProvider<Controller, String> {
 
 	@Autowired
-	private IncidentService incidentService;
+	private ControllerService controllerService;
 	private List<QuerySortOrder> defaultSortOrders;
 
-	public IncidentGridDataProvider() {
+	public ControllerGridDataProvider() {
 		setSortOrders(TdConst.DEFAULT_SORT_DIRECTION, TdConst.REFERENCE_SORT_FIELDS);
 	}
 
@@ -47,9 +45,9 @@ public class IncidentGridDataProvider extends FilterablePageableDataProvider<Inc
 	}
 
 	@Override
-	protected Page<Incident> fetchFromBackEnd(Query<Incident, String> query, Pageable pageable) {
+	protected Page<Controller> fetchFromBackEnd(Query<Controller, String> query, Pageable pageable) {
 		String filter = query.getFilter().orElse("");
-		return incidentService.findAnyMatching(Optional.ofNullable(filter), pageable);
+		return controllerService.findAnyMatching(Optional.ofNullable(filter), pageable);
 	}
 
 	@Override
@@ -58,13 +56,13 @@ public class IncidentGridDataProvider extends FilterablePageableDataProvider<Inc
 	}
 
 	@Override
-	protected int sizeInBackEnd(Query<Incident, String> query) {
+	protected int sizeInBackEnd(Query<Controller, String> query) {
 		String filter = query.getFilter().orElse("");
-		return (int) incidentService.countAnyMatching(Optional.ofNullable(filter));
+		return (int) controllerService.countAnyMatching(Optional.ofNullable(filter));
 	}
 
 	@Override
-	public Object getId(Incident item) {
+	public Object getId(Controller item) {
 		return item.getUid();
 	}
 }

@@ -1,10 +1,9 @@
 package ru.psv4.tempdatchiki.ui.views.editors;
 
 import ru.psv4.tempdatchiki.backend.data.TdEntity;
-import ru.psv4.tempdatchiki.crud.CrudEntityPresenter;
+import ru.psv4.tempdatchiki.ui.crud.CrudEntityPresenter;
 
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 public class EntityStringFieldSaver<T extends TdEntity> implements Saver {
 

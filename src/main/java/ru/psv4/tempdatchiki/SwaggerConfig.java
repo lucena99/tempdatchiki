@@ -26,33 +26,12 @@ public class SwaggerConfig implements WebMvcConfigurer {
     }
 
     @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-//        registry.addRedirectViewController("/swagger/v2/api-docs", "/v2/api-docs");
-//        registry.addRedirectViewController("/swagger/configuration/ui", "/configuration/ui");
-//        registry.addRedirectViewController("/swagger/configuration/security", "/configuration/security");
-//        registry.addRedirectViewController("/swagger/swagger-resources", "/swagger-resources");
-//        registry.addRedirectViewController("/swagger", "/swagger/swagger-ui.html");
-//        registry.addRedirectViewController("/swagger/", "/swagger/swagger-ui.html");
-    }
-
-    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-//        registry
-//                .addResourceHandler("/swagger/**").addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/swagger-ui.html")
                 .addResourceLocations("classpath:/META-INF/resources/");
 
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
-
-//        registry.addResourceHandler("/frontend/**")
-//                .addResourceLocations("classpath:/static/");
-//
-//        registry.addResourceHandler("/VAADIN/**")
-//                .addResourceLocations("classpath:/META-INF/resources/webjars/");
-//
-//        registry.addResourceHandler("/sw.js")
-//                .addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
     @Bean

@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.crud;
+package ru.psv4.tempdatchiki.ui.crud;
 
 import com.vaadin.flow.data.binder.ValidationException;
 import com.vaadin.flow.shared.Registration;

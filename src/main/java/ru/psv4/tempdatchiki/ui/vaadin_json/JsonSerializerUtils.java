@@ -1,4 +1,4 @@
-package ru.psv4.tempdatchiki.vaadin_json;
+package ru.psv4.tempdatchiki.ui.vaadin_json;
 
 import com.vaadin.flow.component.JsonSerializable;
 import com.vaadin.flow.internal.JsonSerializer;
