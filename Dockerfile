@@ -11,13 +11,20 @@ RUN mkdir -p /log
 
 WORKDIR /app
 
-#EXPOSE 8181
-
 CMD [ "java", \
     "-Dspring.profiles.active=prod", \
     "-Dport=${PORT}", \
     "-Ddburl=${DATABASE_URL}", \
-    "-Xmx512m", \
+    "-Xms1G", \
+    "-Xmx2G", \
+    "-Xloggc:/log/gc.log", \
+    "-XX:+PrintGCDetails", \
+    "-XX:+PrintGCDateStamps", \
+    "-XX:+UseGCLogFileRotation", \
+    "-XX:NumberOfGCLogFiles=10", \
+    "-XX:GCLogFileSize=10M", \
+    "-XX:+UseG1GC", \
+    "-XX:MaxGCPauseMillis=400", \
     "-DlogPath=/log", \
     "-Dfile.encoding=UTF8", \
     "-jar", "/app/tempdatchiki.war"]
